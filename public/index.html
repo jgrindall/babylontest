@@ -1,0 +1,82 @@
+<html>
+    <head>
+        <script src='babylon.custom.js'></script>
+        <style>
+            #renderCanvas{
+                width:800px;
+                height:600px;
+                border:1px solid #ccc;
+            }
+        </style>
+    </head>
+    <body>
+        <canvas width='800' height='600' id="renderCanvas"></canvas>
+        <script>
+            var canvas, engine, origBox, box, scene, createScene, newMesh, SIZE = 7, NUM_BOXES = 1, NUM_MESH = 2500, _customMesh, getCustom;
+            canvas = document.querySelector("#renderCanvas");
+            engine = new BABYLON.Engine(canvas, true);
+            getCustom = function(scene){
+                var customMesh = new BABYLON.Mesh("custom", scene);
+                var positions = [-2, 2, -3, 4, -2, -3, -1, -2, -3, 9, 0, 3, 6, -2, 3, 3, -1, 0];
+                var indices = [0, 1, 2, 3, 4, 5];
+                var uvs = [0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0];
+                var normals = [];   
+                var vertexData = new BABYLON.VertexData();
+                BABYLON.VertexData.ComputeNormals(positions, indices, normals);
+                vertexData.positions = positions;
+                vertexData.indices = indices;
+                vertexData.normals = normals;
+                vertexData.uvs = uvs;
+                vertexData.applyToMesh(customMesh);
+                return customMesh;
+            };
+            createScene = function () {
+                var boxes = [], scene, material, camera, box, mesh, ground, sphere, light, meshes = [], customMesh, origMesh;
+                scene = new BABYLON.Scene(engine);
+                scene.clearColor = new BABYLON.Color3(0, 1, 0);
+                material = new BABYLON.StandardMaterial("brickMaterial", scene);
+                material.diffuseTexture = new BABYLON.Texture("brick.jpg", scene);
+                origBox = BABYLON.Mesh.CreateBox("box", 1.0, scene);
+                origBox.material = material;
+                origMesh = getCustom(scene);
+                origMesh.material = material;
+                for(var i = 0; i < NUM_BOXES; i++){
+                    box = origBox.createInstance("index: " + i);
+                    box.position = new BABYLON.Vector3(Math.random()*SIZE - SIZE/2, Math.random()*SIZE - SIZE/2, Math.random()*SIZE - SIZE/2);
+                    box.rotation = new BABYLON.Vector3(Math.random()*SIZE, Math.random()*SIZE, Math.random()*SIZE);
+                    boxes.push(box);    
+                }
+                for(var i = 0; i < NUM_MESH; i++){
+                    mesh = origMesh.createInstance("index: " + i);
+                    mesh.position = new BABYLON.Vector3(Math.random()*SIZE - SIZE/2, Math.random()*SIZE - SIZE/2, Math.random()*SIZE - SIZE/2);
+                    mesh.rotation = new BABYLON.Vector3(Math.random()*SIZE, Math.random()*SIZE, Math.random()*SIZE);
+                    meshes.push(mesh);    
+                }
+                camera = new BABYLON.FreeCamera("camera", new BABYLON.Vector3(0, 5, -10), scene);
+                camera.setTarget(BABYLON.Vector3.Zero());
+                camera.attachControl(canvas, false);
+                light = new BABYLON.HemisphericLight("light", new BABYLON.Vector3(0, 1, 0), scene);
+                light.intensity = 0.6;
+                //sphere = BABYLON.Mesh.CreateSphere("sphere", 16, 2, scene);
+                //sphere.position.y = 1.0;
+                //sphere.material = material;
+                //ground = BABYLON.Mesh.CreateGround("ground", 16, 16, 2, scene);
+                //ground.material = material;
+                //newMesh = BABYLON.Mesh.MergeMeshes(boxes.concat(meshes), true);
+                return scene;
+            };
+            scene = createScene();
+            engine.runRenderLoop(function () {
+                if(_customMesh){
+                    _customMesh.rotation.x += 0.02;
+                    _customMesh.rotation.y += 0.01;
+                    _customMesh.rotation.z += 0.04;
+                }
+                scene.render();
+            });
+            window.addEventListener("resize", function () {
+               engine.resize();
+            });
+        </script>
+    </body>
+</html>
