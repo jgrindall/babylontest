@@ -1,0 +1,100 @@
+<html>
+    <head>
+        <script src='babylon.custom.js'></script>
+        <script src='jquery.js'></script>
+        <script src='hand.js'></script>
+        <script src='underscore-min.js'></script>
+        <script src='pointinpoly.js'></script>
+        <script src='custommesh.js'></script>
+        <script src='getboundary.js'></script>
+
+        <style>
+            #renderCanvas{
+                width:1200px;
+                height:800px;
+                border:1px solid #ccc;
+            }
+        </style>
+    </head>
+    <body>
+        <canvas width='1200' height='800' id="renderCanvas"></canvas>
+        <span class='fps'></span>
+        <script>
+			var _sum = function(a){
+				return _.reduce(a, function(memo, num){ return memo + num; }, 0);
+			};
+            var canvas, camera, scene, engine, scene, createScene, NUMS = [500, 500, 50, 50, 150], TOTAL = 0, WORLD = 100, CAMERA = 0, SIZE = 1, brickMaterial, steelMaterial;
+			var LENGTHS = [1, 2, 4, 8, 16];
+			_.each(LENGTHS, function(len, index){
+				TOTAL += len*NUMS[index];
+			});
+			console.log("TOTAL", TOTAL);
+            canvas = document.querySelector("#renderCanvas");
+            var antialiasing = false;
+            var TYPE = 1;
+            var makeMaterials = function(){
+                brickMaterial = new BABYLON.StandardMaterial("brickMaterial", scene);
+                brickMaterial.diffuseTexture = new BABYLON.Texture("brick.jpg", scene);
+                brickMaterial.backFaceCulling = false
+                brickMaterial.freeze();
+                steelMaterial = new BABYLON.StandardMaterial("steelMaterial", scene);
+                steelMaterial.diffuseTexture = new BABYLON.Texture("steel.jpg", scene);
+                steelMaterial.backFaceCulling = false
+                steelMaterial.freeze();
+            };
+            var addMeshes = function(){
+                if(TYPE === 1){
+					_.each(LENGTHS, function(len, index){
+						for(var i = 0; i < NUMS[index]; i++){
+							mesh = getMesh(scene, len,  Math.random()< 0.5 ? "brick" : "steel", true);
+							mesh.position = new BABYLON.Vector3(Math.random()*WORLD - WORLD/2, Math.random()*WORLD - WORLD/2, Math.random()*WORLD - WORLD/2);
+							mesh.rotation = new BABYLON.Vector3(Math.random()*SIZE, Math.random()*SIZE, Math.random()*SIZE);
+							mesh.freezeWorldMatrix();
+						}
+					});
+                }
+                else if(TYPE === 2){
+                    for(var i = 0; i < TOTAL; i++){
+                        mesh = getMesh(scene, 1, Math.random()< 0.5 ? "brick" : "steel", true);
+                        mesh.position = new BABYLON.Vector3(Math.random()*WORLD - WORLD/2, Math.random()*WORLD - WORLD/2, Math.random()*WORLD - WORLD/2);
+                        mesh.rotation = new BABYLON.Vector3(Math.random()*SIZE, Math.random()*SIZE, Math.random()*SIZE);
+                        mesh.freezeWorldMatrix();
+                    }
+                }
+            };
+            createScene = function (type) {
+                scene = new BABYLON.Scene(engine);
+                scene.clearColor = new BABYLON.Color3(1, 0.9, 0.9);
+				camera = new BABYLON.FreeCamera("camera", new BABYLON.Vector3(0, -5, -20), scene);
+                camera.setTarget(BABYLON.Vector3.Zero());
+                camera.attachControl(canvas, true);
+                light = new BABYLON.HemisphericLight("light", new BABYLON.Vector3(0, 1, 0), scene);
+                light.intensity = 0.6;
+            };
+            var $fps = $(".fps");
+            engine = new BABYLON.Engine(canvas, antialiasing, null, false);
+            createScene();
+            scene.debugLayer.show();
+            //makeMaterials();
+            //makeMeshes();
+            //addMeshes();
+			//addSky();
+			addGround();
+			addBoxes();
+			setupGravity();
+            engine.runRenderLoop(function () {
+                scene.render();
+            });
+            
+            window.addEventListener("resize", function () {
+               engine.resize();
+            });
+                
+            
+        </script>
+    </body>
+</html>
+
+
+           
+			
