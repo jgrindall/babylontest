@@ -10,150 +10,66 @@
         <script src='pointinpoly.js'></script>
         <script src='custommesh.js'></script>
         <script src='getboundary.js'></script>
+        <script src='nipplejs.min.js'></script>
+        <script src='greedymesh.js'></script>
 
         <style>
             #renderCanvas{
-                width:1200px;
-                height:800px;
-                border:1px solid #ccc;
+                width:100%;
+                height:100%;
+
             }
         </style>
     </head>
     <body>
-        <canvas width='1200' height='800' id="renderCanvas"></canvas>
-        <span class='fps'></span>
+        <canvas width='100%' height='100%' id="renderCanvas"></canvas>
+
+
         <script>
-			
-			
-			//https://stackoverflow.com/questions/5919298/algorithm-for-finding-the-fewest-rectangles-to-cover-a-set-of-rectangles-without/6634668#6634668
-			
-			
-			
-            var canvas, camera, engine, scene;
+            var scene;
+
 			canvas = document.querySelector("#renderCanvas");
-			var createScene = function () {
-				scene = new BABYLON.Scene(engine);
-				var light0 = new BABYLON.DirectionalLight("Omni", new BABYLON.Vector3(-2, -5, 2), scene);
-				var light1 = new BABYLON.PointLight("Omni", new BABYLON.Vector3(2, -5, -2), scene);
-				camera = new BABYLON.FreeCamera("FreeCamera", new BABYLON.Vector3(0, -8, 0), scene);
-				camera.attachControl(canvas, true);
-				var ground = BABYLON.Mesh.CreatePlane("ground", 2000.0, scene);
-				ground.material = new BABYLON.StandardMaterial("groundMat", scene);
-				ground.material.diffuseColor = new BABYLON.Color3(1, 1, 1);
-				ground.material.backFaceCulling = false;
-				ground.position = new BABYLON.Vector3(5, -10, -15);
-				ground.rotation = new BABYLON.Vector3(Math.PI / 2, 0, 0);
-				scene.gravity = new BABYLON.Vector3(0, -0.9, 0);
-				scene.collisionsEnabled = true;
-				camera.checkCollisions = true;
-				camera.applyGravity = true;
-				camera.ellipsoid = new BABYLON.Vector3(5, 1, 5);
-				ground.checkCollisions = true;
-				
-			}
-			var addBoxes = function(){
-				var SIZE = 5;
-				//var plane = new BABYLON.Mesh.CreatePlane("crate", SIZE, scene, false, BABYLON.Mesh.DEFAULTSIDE);
-				var plane = BABYLON.MeshBuilder.CreateBox("crate", {height: SIZE, width:SIZE}, scene);
-				plane.material = new BABYLON.StandardMaterial("Mat", scene);
-				plane.material.diffuseTexture = new BABYLON.Texture("img/crate.png", scene);
-				plane.material.backFaceCulling = false;
-				plane.checkCollisions = true;
-				var ins = 1, x, z, NUM = 20, d, y = -SIZE*1.5, x, z;
-				d = NUM*SIZE/2;
-				_.times(NUM, function(i){
-					// right
-					var p = plane.createInstance("ins"+ins);
-					p.scaling.x = p.scaling.y = 1.1;
-					x = d;
-					z = -d + (SIZE/2) + (i/(NUM-1))*(2*d-SIZE);
-					p.position = new BABYLON.Vector3(x, y, z);
-					console.log(i, x, y, z);
-					p.rotation = new BABYLON.Vector3(0, Math.PI/2, 0);
-					p.checkCollisions = true;
-					ins++;
-				});
-				_.times(NUM, function(i){
-					//top
-					var p = plane.createInstance("ins"+ins);
-					p.scaling.x = p.scaling.y = 1.1;
-					x = -d + (SIZE/2) + (i/(NUM-1))*(2*d-SIZE);
-					z = d;
-					p.position = new BABYLON.Vector3(x, y, z);
-					console.log(i, x, y, z);
-					//p.rotation = new BABYLON.Vector3(0, Math.PI/2, 0);
-					p.checkCollisions = true;
-					ins++;
-				});
-				_.times(NUM, function(i){
-					// left
-					var p = plane.createInstance("ins"+ins);
-					p.scaling.x = p.scaling.y = 1.1;
-					x = -d;
-					z = -d + (SIZE/2) + (i/(NUM-1))*(2*d-SIZE);
-					p.position = new BABYLON.Vector3(x, y, z);
-					console.log(i, x, y, z);
-					p.rotation = new BABYLON.Vector3(0, -Math.PI/2, 0);
-					p.checkCollisions = true;
-					ins++;
-				});
-				_.times(NUM, function(i){
-					// bottom
-					var p = plane.createInstance("ins"+ins);
-					p.scaling.x = p.scaling.y = 1.1;
-					x = -d + (SIZE/2) + (i/(NUM-1))*(2*d-SIZE);
-					z = -d;
-					p.position = new BABYLON.Vector3(x, y, z);
-					console.log(i, x, y, z);
-					//p.rotation = new BABYLON.Vector3(0, Math.PI/2, 0);
-					p.checkCollisions = true;
-					ins++;
-				});
-				
-				
-				
-				
-				var path0 = [new BABYLON.Vector3(-d/2, y + 10, -d*0.75 - 5), new BABYLON.Vector3(-d/2, y + 10, -d*0.75), new BABYLON.Vector3(d/2, y + 10, -d*0.75), new BABYLON.Vector3(-d/2, y + 10, -d*0.75 - 5)];
-				var path1 = _.map(path0, function(p){
-					return new BABYLON.Vector3(p.x, p.y - 20, p.z);
-				});
-				
-				var paths = [path0, path1];
-				
-				var ribbon = BABYLON.Mesh.CreateRibbon("ribbon", paths, false, false, 0, scene);
-				ribbon.material = new BABYLON.StandardMaterial("Mat", scene);
-				ribbon.material.diffuseTexture = new BABYLON.Texture("img/crate.png", scene);
-				ribbon.material.backFaceCulling = false;
-				ribbon.checkCollisions = true;
-				
-				console.log(paths, ribbon);
-				
-				
-				var box = new BABYLON.Mesh.CreateBox("crate", 2, scene);
-				box.material = new BABYLON.StandardMaterial("Mat", scene);
-				box.material.diffuseTexture = new BABYLON.Texture("img/crate.png", scene);
-				box.material.diffuseTexture.hasAlpha = true;
-				box.position = new BABYLON.Vector3(5, -9, -10);
-				box.checkCollisions = true;
-	
-			};
+
             engine = new BABYLON.Engine(canvas, false, null, false);
-            createScene();
-			addBoxes();
-            scene.debugLayer.show();
-            engine.runRenderLoop(function () {
-                scene.render();
-            });
-            
-            window.addEventListener("resize", function () {
-               engine.resize();
-            });
-                
-            
+
+            var createScene = function () {
+                scene = new BABYLON.Scene(engine);
+                scene.debugLayer.show();
+
+                // Light
+                var spot = new BABYLON.PointLight("spot", new BABYLON.Vector3(0, 30, 10), scene);
+                spot.diffuse = new BABYLON.Color3(1, 1, 1);
+                spot.specular = new BABYLON.Color3(0, 0, 0);
+
+                // Camera
+                var camera = new BABYLON.ArcRotateCamera("Camera", 0, 0.8, 100, BABYLON.Vector3.Zero(), scene);
+                camera.lowerBetaLimit = 0.1;
+                camera.upperBetaLimit = (Math.PI / 2) * 0.9;
+                camera.lowerRadiusLimit = 30;
+                camera.upperRadiusLimit = 150;
+                camera.attachControl(canvas, true);
+
+                // Ground
+                var groundMaterial = new BABYLON.StandardMaterial("ground", scene);
+                groundMaterial.diffuseTexture = new BABYLON.Texture("earth.jpg", scene);
+
+                var ground = BABYLON.Mesh.CreateGroundFromHeightMap("ground", "worldHeightMap.jpg", 200, 200, 10, 0, 10, scene, false);
+                ground.material = groundMaterial;
+
+
+
+                return scene;
+            }
+
+
+            //createScene();
+
+
+            //engine.runRenderLoop(function () {
+                //scene.render();
+            //});
+
+
         </script>
     </body>
 </html>
-
-
-           
-			
