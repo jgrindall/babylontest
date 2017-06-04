@@ -1,10 +1,36 @@
-var img = [[0, 1, 0, 1], [1, 1, 1, 1], [0, 1, 0, 0], [0, 0, 1, 1]];
 
-var MAX = 3;
+
+var MAX = 24;
+
+
+
+var makeEmpty = function(){
+    var a = [];
+    for(var _i = 0; _i < MAX; _i++){
+        a[_i] = [];
+        for(var _j = 0; _j < MAX; _j++){
+            a[_i][_j] = 0;
+        }
+    }
+    return a;
+};
+
+var makeRnd = function(){
+    var a = [];
+    for(var _i = 0; _i < MAX; _i++){
+        a[_i] = [];
+        for(var _j = 0; _j < MAX; _j++){
+            a[_i][_j] = (Math.random() < 0.5) ? 0 : 1;
+        }
+    }
+    return a;
+};
+
+var img = makeRnd();
 
 var greedymesh = function(a){
     var i = 0, j = 0, quads = [];
-    var visited = [[0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0]];
+    var visited = makeEmpty();
     var moveToNext = function(){
         var ok = function(){
             return ( i<= MAX && j <= MAX && !visited[i][j] && a[i][j]);
@@ -48,13 +74,12 @@ var greedymesh = function(a){
             h++;
         }
         h--;
+        console.log('found', i, j, ', ', w, h);
         mark(i, j, w, h);
         quads.push([i, j, w, h]);
     };
-    var _N = 0;
-    while(moveToNext() && _N < 10){
+    while(moveToNext()){
         buildQuad();
-        _N++;
     }
     console.log('quads', quads);
 };
