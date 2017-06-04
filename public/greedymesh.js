@@ -25,7 +25,6 @@ var greedymesh = function(a){
         for(var _i = i; _i < i + h; _i++){
             for(var _j = j; _j < j + w; _j++){
                 if(!a[_i][_j] || visited[_i][_j]){
-                    console.log("no", _i, _j);
                     return false;
                 }
             }
