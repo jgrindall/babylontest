@@ -68,12 +68,19 @@
 			
 			var makeCache = function(size){
 				var key = "brick_" + size[0] + "_" + size[1];
-				var brick = BABYLON.MeshBuilder.CreateBox(key, {height: SIZE, width:SIZE*size[0], depth:SIZE*size[1]}, scene);
-				brick.convertToUnIndexedMesh();
-				brick.material = brickMaterial;
-				setUVScale(brick, size[0], size[1]);
-				cache[key] = brick;
-				scene.meshes.pop();
+				var box = BABYLON.MeshBuilder.CreateBox(key, {height: SIZE, width:SIZE*size[0], depth:SIZE*size[1]}, scene);
+				box.convertToUnIndexedMesh();
+				box.material = brickMaterial;
+				setUVScale(box, size[0], size[1]);
+				cache[key] = box;
+				scene.meshes.pop(); // remove from the scene
+			};
+			var cacheI = 0;
+			var getFromCache = function(size){
+				var key = "brick_" + size[0] + "_" + size[1];
+				var cached = cache[key];
+				cacheI++;
+				return cached.createInstance("_" + cacheI);
 			};
 			
 			var addControls = function(){
@@ -127,7 +134,7 @@
 				var light0 = new BABYLON.DirectionalLight("Omni", new BABYLON.Vector3(-2, -5, 2), scene);
 				var light1 = new BABYLON.PointLight("Omni", new BABYLON.Vector3(2, -5, -2), scene);
 				camera = new BABYLON.FreeCamera("FreeCamera", new BABYLON.Vector3(0, -8, 0), scene);
-				camera.attachControl(canvas, true);
+				//camera.attachControl(canvas, true);
 				var ground = BABYLON.Mesh.CreatePlane("ground", 2000.0, scene);
 				ground.material = new BABYLON.StandardMaterial("groundMat", scene);
 				ground.material.diffuseColor = new BABYLON.Color3(1, 1, 1);
@@ -150,9 +157,9 @@
                 dz = speed*Math.cos(angle) * (60/fps);
                 player.moveWithCollisions(new BABYLON.Vector3(dx, 0, dz));
 				console.log("move with coll", dx, dz);
-                //camera.position.x = player.position.x;
-                //camera.position.y = player.position.y;
-                //camera.position.z = player.position.z;
+                camera.position.x = player.position.x;
+                camera.position.y = player.position.y;
+                camera.position.z = player.position.z;
             }
 			
 			var addPlayer = function(){
@@ -167,16 +174,44 @@
                 player.setPhysicsState(BABYLON.PhysicsEngine.SphereImpostor, { mass: 0 });
             };
 			
+			var addWalls = function(quads){
+				var y = -SIZE*1.5;
+				_.each(quads, function(quad){
+					var centre = {x:0, z:0};
+					var size = (quad[2] >= quad[3]) ? [quad[2], quad[3]] : [quad[3], quad[2]]; // long and thin only
+					var wall = getFromCache(size);
+					if(quad[2] < quad[3]){
+						wall.rotation = new BABYLON.Vector3(0, Math.PI/2, 0);
+					}
+					wall.position.x = (quad[0] + quad[2]/2)*SIZE;
+					wall.position.z = (quad[1] + quad[3]/2)*SIZE;
+					wall.position.y = y;
+				});
+			};
+			
+			 var moveBoxCentreTo = function(box, w, h, centre){
+				box.position.x = centre.x;
+				box.position.z = centre.z;
+				// TODO?...
+			 };
+			
 			engine = new BABYLON.Engine(canvas, false, null, false);
 			makeScene();
 			addControls();
-			addPlayer();
 			makeMaterials();
+			
+			
 			var img = makeRnd();
 			var greedy = getBestGreedyMesh(img);
 			_.each(greedy.dims, function(size){
 				makeCache(size);
 			});
+			
+			addWalls(greedy.quads);
+			addPlayer();
+			
+			
+			
 			scene.debugLayer.show();
             engine.runRenderLoop(function () {
 				if(_mode !== "off" && speed !== 0){
