@@ -7,9 +7,6 @@
         <script src='jquery.js'></script>
         <script src='hand.js'></script>
         <script src='underscore-min.js'></script>
-        <script src='pointinpoly.js'></script>
-        <script src='custommesh.js'></script>
-        <script src='getboundary.js'></script>
         <script src='nipplejs.min.js'></script>
         <script src='greedymesh.js'></script>
 
@@ -17,47 +14,186 @@
             #renderCanvas{
                 width:100%;
                 height:100%;
-
+            }
+			#zone_joystick{
+                position: absolute;
+                bottom:60px;
+                right:60px;
             }
         </style>
     </head>
     <body>
+	
         <canvas width='100%' height='100%' id="renderCanvas"></canvas>
-
+		<div id="zone_joystick"></div>
 
         <script>
-            var scene;
+            var canvas, scene, engine, player;
+			var _mode = "off";
+			canvas = document.querySelector("#renderCanvas");
+			var SIZE_I = 24;
+			var SIZE_J = 32;
+			var SIZE = 5;
+			
+			
+            var speed = 0, ang_speed = 0, angle = 0, friction = 0.75;
+			
+			var makeMaterials = function(){
+                brickMaterial = new BABYLON.StandardMaterial("brickMaterial", scene);
+                brickMaterial.diffuseTexture = new BABYLON.Texture("brick.jpg", scene);
+                brickMaterial.backFaceCulling = false
+                brickMaterial.freeze();
+                steelMaterial = new BABYLON.StandardMaterial("steelMaterial", scene);
+                steelMaterial.diffuseTexture = new BABYLON.Texture("steel.jpg", scene);
+                steelMaterial.backFaceCulling = false
+                steelMaterial.freeze();
+            };
+			
+			var setUVScale = function(mesh, uScale, vScale) {
+				var i, UVs = mesh.getVerticesData(BABYLON.VertexBuffer.UVKind), len = UVs.length;
+				if (uScale !== 1) {
+					for (i = 0; i < len; i += 2) {
+						UVs[i] *= uScale;
+					}
+				}
+				if (vScale !== 1) {
+					for (i = 1; i < len; i += 2) {
+						UVs[i] *= vScale;
+					}
+				}
+				mesh.setVerticesData(BABYLON.VertexBuffer.UVKind, UVs);
+			};
+			
+			var cache = {};
+			
+			var makeCache = function(size){
+				var key = "brick_" + size[0] + "_" + size[1];
+				var brick = BABYLON.MeshBuilder.CreateBox(key, {height: SIZE, width:SIZE*size[0], depth:SIZE*size[1]}, scene);
+				brick.convertToUnIndexedMesh();
+				brick.material = brickMaterial;
+				setUVScale(brick, size[0], size[1]);
+				cache[key] = brick;
+				scene.meshes.pop();
+			};
+			
+			var addControls = function(){
+				var ROT_SPEED = 0.025, SPEED = 0.6;
+				var manager = nipplejs.create({
+					zone: document.getElementById('zone_joystick'),
+					mode: 'static',
+					position: {
+					  left: '50%',
+					  top: '50%'
+					},
+					color: 'red'
+				});
 
-			canvas = document.querySelector("#renderCanvas");engine = new BABYLON.Engine(canvas, false, null, false);
+				manager.on("dir:up", function(e, data){
+					_mode = "on";
+					speed = SPEED;
+					ang_speed = 0;
+					console.log(data);
+				});
 
-            var createScene = function () {
+				manager.on("dir:left", function(e, data){
+					_mode = "on";
+					speed = 0;
+					ang_speed = -ROT_SPEED;
+				});
+
+				manager.on("dir:right", function(e, data){
+					_mode = "on";
+					speed = 0;
+					ang_speed = ROT_SPEED;
+				});
+
+				manager.on("dir:down", function(e, data){
+					_mode = "on";
+					speed = -SPEED;
+					ang_speed = 0;
+				});
+
+				manager.on("end", function(e, data){
+					_mode = "off";
+					ang_speed = 0;
+					//speed = 0;
+				});
+
+			};
+
+            var makeScene = function () {
                 scene = new BABYLON.Scene(engine);
-                scene.debugLayer.show();
-
-                // Light
-                var spot = new BABYLON.PointLight("spot", new BABYLON.Vector3(0, 30, 10), scene);
-                spot.diffuse = new BABYLON.Color3(1, 1, 1);
-                spot.specular = new BABYLON.Color3(0, 0, 0);
-
-                // Camera
-                var camera = new BABYLON.ArcRotateCamera("Camera", 0, 0.8, 100, BABYLON.Vector3.Zero(), scene);
-                camera.lowerBetaLimit = 0.1;
-                camera.upperBetaLimit = (Math.PI / 2) * 0.9;
-                camera.lowerRadiusLimit = 30;
-                camera.upperRadiusLimit = 150;
-                camera.attachControl(canvas, true);
-
-                // Ground
-                var groundMaterial = new BABYLON.StandardMaterial("ground", scene);
-                groundMaterial.diffuseTexture = new BABYLON.Texture("earth.jpg", scene);
-
-                var ground = BABYLON.Mesh.CreateGroundFromHeightMap("ground", "worldHeightMap.jpg", 200, 200, 10, 0, 10, scene, false);
-                ground.material = groundMaterial;
-
-
-
-                return scene;
+				scene.enablePhysics();
+				var light0 = new BABYLON.DirectionalLight("Omni", new BABYLON.Vector3(-2, -5, 2), scene);
+				var light1 = new BABYLON.PointLight("Omni", new BABYLON.Vector3(2, -5, -2), scene);
+				camera = new BABYLON.FreeCamera("FreeCamera", new BABYLON.Vector3(0, -8, 0), scene);
+				camera.attachControl(canvas, true);
+				var ground = BABYLON.Mesh.CreatePlane("ground", 2000.0, scene);
+				ground.material = new BABYLON.StandardMaterial("groundMat", scene);
+				ground.material.diffuseColor = new BABYLON.Color3(1, 1, 1);
+				ground.material.backFaceCulling = false;
+				ground.position = new BABYLON.Vector3(5, -10, -15);
+				ground.rotation = new BABYLON.Vector3(Math.PI / 2, 0, 0);
+				scene.gravity = new BABYLON.Vector3(0, -0.9, 0);
+				scene.collisionsEnabled = true;
+				camera.checkCollisions = true;
+				camera.applyGravity = true;
+				camera.ellipsoid = new BABYLON.Vector3(5, 1, 5);
+				ground.checkCollisions = true;
             }
+			
+			
+			var movePlayer = function(){
+                var dx, dz;
+                var fps = engine.getFps();
+                dx = speed*Math.sin(angle) * (60/fps);
+                dz = speed*Math.cos(angle) * (60/fps);
+                player.moveWithCollisions(new BABYLON.Vector3(dx, 0, dz));
+				console.log("move with coll", dx, dz);
+                //camera.position.x = player.position.x;
+                //camera.position.y = player.position.y;
+                //camera.position.z = player.position.z;
+            }
+			
+			var addPlayer = function(){
+                var mat = new BABYLON.StandardMaterial("Mat", scene);
+				mat.diffuseTexture = new BABYLON.Texture("img/skybox_nx.jpg", scene);
+				mat.backFaceCulling = false;
+                player = BABYLON.MeshBuilder.CreateBox("player", {height: 1, width:1, depth:1}, scene);
+                player.material = mat;
+                player.checkCollisions = true;
+                player.position = new BABYLON.Vector3(0, -7, 30);
+                player.ellipsoid = new BABYLON.Vector3(2, 2, 2);
+                player.setPhysicsState(BABYLON.PhysicsEngine.SphereImpostor, { mass: 0 });
+            };
+			
+			engine = new BABYLON.Engine(canvas, false, null, false);
+			makeScene();
+			addControls();
+			addPlayer();
+			makeMaterials();
+			var img = makeRnd();
+			var greedy = getBestGreedyMesh(img);
+			_.each(greedy.dims, function(size){
+				makeCache(size);
+			});
+			scene.debugLayer.show();
+            engine.runRenderLoop(function () {
+				if(_mode !== "off" && speed !== 0){
+                    movePlayer();
+                }
+                if(_mode === "off"){
+                    ang_speed *= friction;
+                    speed *= friction;
+                    if(Math.abs(speed) < 0.1){
+                        speed = 0;
+                    }
+                }
+                scene.render();
+            });
+            window.addEventListener("resize", function () {
+               engine.resize();
+            });
         </script>
     </body>
 </html>

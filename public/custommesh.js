@@ -16,9 +16,9 @@ var getMesh = function(scene, len, materialName){
 };
 
 var makeMeshes = function(){
-	_.each(LENGTHS, function(len){
-		var brick = BABYLON.Mesh.CreatePlane("brick" + len, SIZE, scene, false, BABYLON.Mesh.DEFAULTSIDE);
-		var steel = BABYLON.Mesh.CreatePlane("steel" + len, SIZE, scene, false, BABYLON.Mesh.DEFAULTSIDE);
+	_.each(SIZES, function(size){
+		var brick = BABYLON.Mesh.CreatePlane("brick_" + size[0] + "_" + size[1], SIZE, scene, false, BABYLON.Mesh.DEFAULTSIDE);
+		var steel = BABYLON.Mesh.CreatePlane("steel_" + len, SIZE, scene, false, BABYLON.Mesh.DEFAULTSIDE);
 		brick.convertToUnIndexedMesh();
 		steel.convertToUnIndexedMesh();
 		brick.material = brickMaterial;

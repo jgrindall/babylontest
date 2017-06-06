@@ -1,11 +1,6 @@
 
 
-var SIZE_I = 8;
-var SIZE_J = 8;
-
-
-
-var makeEmpty = function(){
+var makeEmpty = function(SIZE_I, SIZE_J){
     var a = [];
     for(var _i = 0; _i < SIZE_I; _i++){
         a[_i] = [];
@@ -17,9 +12,10 @@ var makeEmpty = function(){
 };
 
 var log = function(a){
-	for(var _i = 0; _i < SIZE_I; _i++){
-		var s = "";
-        for(var _j = 0; _j < SIZE_J; _j++){
+	var _i, _j, s;
+	for(_i = 0; _i < a.length; _i++){
+		s = "";
+        for(_j = 0; _j < a[0].length; _j++){
 			s += a[_i][_j] + " ";
         }
 		console.log(s);
@@ -27,43 +23,50 @@ var log = function(a){
 };
 
 var makeRnd = function(){
-    var a = [];
-    for(var _i = 0; _i < SIZE_I; _i++){
+    var _i, _j, a = [];
+    for(_i = 0; _i < SIZE_I; _i++){
         a[_i] = [];
-        for(var _j = 0; _j < SIZE_J; _j++){
+        for(_j = 0; _j < SIZE_J; _j++){
             a[_i][_j] = (Math.random() < 0.5) ? 0 : 1;
         }
     }
     return a;
 };
 
-var img = makeRnd();
+var rectPassesTest = function(i, j, w, h, test){
+	var _i, _j;
+    for(_i = i; _i < i + h; _i++){
+        for(_j = j; _j < j + w; _j++){
+            if(!test(_i, _j)){
+                return false;
+            }
+        }
+    }
+    return true;
+};
 
-//img = [[1,0,1],[0,0,1],[1,1,1]];
-
-log(img);
-
-var greedymesh = function(a){
-    var i = 0, j = -1, quads = [];
-    var visited = makeEmpty();
-	var isInside = function(){
+var greedyMesh = function(a, options){
+    var i = 0, j = -1; // start just off the grid because we will make one step in to point 0,0.
+	var shouldVisitCell, quads = [], SIZE_I, SIZE_J, visited = [], isInside, moveToNext, rectIsFullAndNotVisited, mark, buildQuad;
+	SIZE_I = a.length;
+	SIZE_J = a[0].length;
+	visited = makeEmpty(SIZE_I, SIZE_J);
+	isInside = function(){
 		return (i < SIZE_I && j < SIZE_J && i >= 0 && j >= 0);
 	};
-    var moveToNext = function(){
-		//console.log("I start at", i, j);
-		var shouldVisitCell = function(){
-			return (isInside() && a[i][j] && !visited[i][j]);
-		};
+	shouldVisitCell = function(){
+		return (isInside() && a[i][j] && !visited[i][j]);
+	};
+    moveToNext = function(){
 		var step = function(){
-            j++;
-            if(j >= SIZE_J){
-                j = 0;
-                i++;
-				if(i >= SIZE_I){
-					throw new Error("out of bounds");
-				}
-            }
-			//console.log("I stepped to", i, j);
+			j++;
+			if(j >= SIZE_J){
+				j = 0;
+				i++;
+			}
+			if(!isInside()){
+				throw new Error("out of bounds");
+			}
         };
 		if(shouldVisitCell()){
 			return;
@@ -74,54 +77,80 @@ var greedymesh = function(a){
 			}
 		}
 		catch(e){
-			// outside
 			return false;
 		}
-		//console.log("ended up at", i, j);
         return isInside();
     };
-    var rectIsFullAndNotVisited = function(i, j, w, h){
-		//console.log("check rect is full and not vis", i, j, "  ", w, h);
-        for(var _i = i; _i < i + h; _i++){
-            for(var _j = j; _j < j + w; _j++){
-                if(!a[_i][_j] || visited[_i][_j]){
-					// no, break!
-                    return false;
-                }
-            }
-        }
-        return true;
+    rectIsFullAndNotVisited = function(i, j, w, h){
+		return rectPassesTest(i, j, w, h, function(_i, _j){
+			return (a[_i][_j] && !visited[_i][_j]);
+		});
     };
-    var mark = function(i, j, w, h){
-        for(var _i = i; _i < i + h; _i++){
-            for(var _j = j; _j < j + w; _j++){
+    markVisited = function(i, j, w, h){
+        var _i, _j;
+		for(_i = i; _i < i + h; _i++){
+            for(_j = j; _j < j + w; _j++){
                 visited[_i][_j] = 1;
             }
         }
     };
-    var buildQuad = function(){
-        var w = 1, h = 1;
-		//console.log("build at", i, j);
-        while(w <= SIZE_J - j && rectIsFullAndNotVisited(i, j, w, h) ){
+	buildHoriz = function(w, h){
+		while(w <= SIZE_J - j && rectIsFullAndNotVisited(i, j, w, h) ){
             w++;
         }
         w--;
-		//console.log("got w", w);
-        while(h <= SIZE_I - i && rectIsFullAndNotVisited(i, j, w, h) ){
+		return w;
+	};
+	buildVertic = function(w, h){
+		while(h <= SIZE_I - i && rectIsFullAndNotVisited(i, j, w, h) ){
             h++;
         }
         h--;
-		//console.log("got h", h);
-        //console.log('found!!  ', i, j, ', ', w, h);
-        mark(i, j, w, h);
+		return h;
+	};
+	buildQuad = function(){
+        var w = 1, h = 1;
+		if(options && options.dir === "horiz"){
+			w = buildHoriz(w, h);
+			h = buildVertic(w, h);
+		}
+		else{
+			h = buildVertic(w, h);
+			w = buildHoriz(w, h);
+		}
+		markVisited(i, j, w, h);
         quads.push([i, j, w, h]);
     };
     while(moveToNext()){
         buildQuad();
     }
-    console.log('quads', JSON.stringify(quads, null, 2));
-	return quads;
+    return quads;
 };
 
+var getDimensions = function(quads){
+	var _contains, dims = [];
+	_contains = function(arr, needle){
+		var found = _.filter(arr, function(a){
+			return (a[0] === needle[0] && a[1] === needle[1]);
+		});
+		return (found.length >= 1);
+	}; 
+	_.each(quads, function(quad){
+		var dim = (quad[2] >= quad[3]) ? [quad[2], quad[3]] : [quad[3], quad[2]]; // long and thin only
+		if(!_contains(dims, dim)){
+			dims.push(dim);
+		}
+	});
+	return dims;
+};
 
-var quads = greedymesh(img);
+var getBestGreedyMesh = function(img){
+	var quadsH, quadsV, dimsV, dimsH;
+	quadsH = greedyMesh(img, {dir:"horiz"});
+	quadsV = greedyMesh(img, {dir:"vertic"});
+	dimsV = getDimensions(quadsV);
+	dimsH = getDimensions(quadsH);
+	// best one please
+	return (dimsH.length <= dimsV.length) ? {"quads":quadsH, "dims":dimsH} : {"quads":quadsV, "dims":dimsV};
+};
+
