@@ -22,14 +22,36 @@ var log = function(a){
     }
 };
 
-var makeRnd = function(){
+var getEmpty = function(a){
+	var coords = [];
+	for(_i = 0; _i < SIZE_I; _i++){
+        for(_j = 0; _j < SIZE_J; _j++){
+			coords.push([_i, _j]);
+		}
+	}
+	coords = _.shuffle(coords);
+	for(var k = 0; k < coords.length; k++){
+		if(a[coords[k][0]][coords[k][1]] === 0){
+			return coords[k];
+		}
+	}
+};
+
+var makeRnd = function(options){
     var _i, _j, a = [];
-    for(_i = 0; _i < SIZE_I; _i++){
+	options = _.defaults(options || {}, {"rnd":0.5});
+	for(_i = 0; _i < SIZE_I; _i++){
         a[_i] = [];
         for(_j = 0; _j < SIZE_J; _j++){
-            a[_i][_j] = (Math.random() < 0.5) ? 0 : 1;
+			if(_i === 0 || _j === 0 || _i === SIZE_I - 1 || _j === SIZE_J - 1){
+				a[_i][_j] = 1;
+			}
+			else{
+				a[_i][_j] = (Math.random() > options.rnd) ? 0 : 1;
+			}
         }
     }
+	console.log(a);
     return a;
 };
 
@@ -48,6 +70,10 @@ var rectPassesTest = function(i, j, w, h, test){
 var greedyMesh = function(a, options){
     var i = 0, j = -1; // start just off the grid because we will make one step in to point 0,0.
 	var shouldVisitCell, quads = [], SIZE_I, SIZE_J, visited = [], isInside, moveToNext, rectIsFullAndNotVisited, mark, buildQuad;
+	options = _.defaults(options || {}, {
+		"dir":"horiz",
+		"minSize":Infinity
+	});
 	SIZE_I = a.length;
 	SIZE_J = a[0].length;
 	visited = makeEmpty(SIZE_I, SIZE_J);
@@ -95,14 +121,14 @@ var greedyMesh = function(a, options){
         }
     };
 	buildHoriz = function(w, h){
-		while(w <= SIZE_J - j && rectIsFullAndNotVisited(i, j, w, h) ){
+		while(w <= SIZE_J - j && w <= options.minSize && rectIsFullAndNotVisited(i, j, w, h) ){
             w++;
         }
         w--;
 		return w;
 	};
 	buildVertic = function(w, h){
-		while(h <= SIZE_I - i && rectIsFullAndNotVisited(i, j, w, h) ){
+		while(h <= SIZE_I - i && h <= options.minSize && rectIsFullAndNotVisited(i, j, w, h) ){
             h++;
         }
         h--;
