@@ -1,6 +1,6 @@
 define([], function(){
 	
-	var ROT_SPEED = 0.03, SPEED = 0.6, RADIUS = 40;
+	var RADIUS = 40;
 	
 	var GamePad = function(id){
 		this.update = new MiniRunner('update');
@@ -8,6 +8,7 @@ define([], function(){
 	};
 	
 	GamePad.prototype.make = function(id){
+		var update = this.update;
 		this.manager = nipplejs.create({
 			zone: document.getElementById(id),
 			mode: 'static',
@@ -22,11 +23,18 @@ define([], function(){
 			var d, a;
 			d = (data.distance / RADIUS);// from 0 to 1
 			a = data.angle.degree;
-			this.update.emit("change", {d:d, a:a});
+			update.emit("change", {d:d, a:a});
 		});
 		this.manager.on("end", function(e, data){
-			this.update.emit("end");
+			update.emit("end");
 		});
+	};
+	
+	GamePad.prototype.destroy = function(){
+		this.manager.off();
+		this.update = null;
+		this.manager = null;
+		//TODO - MORE NEEDED
 	};
 
 	return GamePad;

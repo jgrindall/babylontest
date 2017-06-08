@@ -4,7 +4,7 @@ require(["MeshUtils", "MeshCache", "GreedyMesh", "Materials", "GamePad"], functi
 	var SIZE_J = 32;
 	var SIZE = 5;
 	var FRICTION = 0.4;
-	
+	var ROT_SPEED = 0.03, SPEED = 0.6;
 	
 	var canvas, scene, engine, player, angle = 0, speed = 0, ang_speed = 0, angle = 0, _mode = "off";
 	
@@ -13,8 +13,31 @@ require(["MeshUtils", "MeshCache", "GreedyMesh", "Materials", "GamePad"], functi
 	var addControls = function(){
 		this.gamePad = new GamePad("zone_joystick");
 		this.gamePad.update.add({
-			update : function(time){
-				console.log(arguments);
+			update : function(name, obj){
+				if(name === "end"){
+					_mode = "off";
+					ang_speed = 0;
+					speed = 0;
+					ang_speed = 0;
+					speed = 0;
+				}
+				else{
+					_mode = "on";
+					if(obj.d < 0.1){
+						// not moved it much
+						return;
+					}
+					if(obj.a < 30 || obj.a > 330){
+						ang_speed = ROT_SPEED;
+					}
+					else if(obj.a > 150 && obj.a < 210){
+						ang_speed = -ROT_SPEED;
+					}
+					else{
+						speed = obj.d * Math.sin(obj.a*Math.PI/180) * SPEED;
+						ang_speed = 0;
+					}
+				}
 			}
 		});
 	};
@@ -64,10 +87,10 @@ require(["MeshUtils", "MeshCache", "GreedyMesh", "Materials", "GamePad"], functi
 		player.checkCollisions = true;
 		//player.isVisible = false;
 		player.moveWithCollisions(new BABYLON.Vector3(dx, 0, dz));
-		camera.position.x = player.position.x;
-		camera.position.y = player.position.y;
-		camera.position.z = player.position.z;
-		camera.rotationQuaternion = BABYLON.Quaternion.RotationAxis(new BABYLON.Vector3(0, 1, 0), angle);
+		//camera.position.x = player.position.x;
+		//camera.position.y = player.position.y;
+		//camera.position.z = player.position.z;
+		//camera.rotationQuaternion = BABYLON.Quaternion.RotationAxis(new BABYLON.Vector3(0, 1, 0), angle);
 	}
 
 	var ijToBabylon = function(i, j){
@@ -79,15 +102,17 @@ require(["MeshUtils", "MeshCache", "GreedyMesh", "Materials", "GamePad"], functi
 	};
 
 	var addPlayer = function(pos){
+		console.log("add player at ", pos);
+		var y = -SIZE*1.5
 		var mat = new BABYLON.StandardMaterial("Mat", scene);
-		mat.diffuseTexture = new BABYLON.Texture("img/skybox_nx.jpg", scene);
+		mat.diffuseTexture = new BABYLON.Texture("assets/skybox_nx.jpg", scene);
 		mat.backFaceCulling = false;
 		var babylonPos = ijToBabylon(pos[0], pos[1]);
 		player = BABYLON.MeshBuilder.CreateBox("player", {height: SIZE, width:SIZE, depth:SIZE}, scene);
 		player.material = mat;
-		player.isVisible = false;
+		//player.isVisible = false;
 		player.checkCollisions = true;
-		player.position = new BABYLON.Vector3(babylonPos.x + SIZE/2, -7, babylonPos.z + SIZE/2);
+		player.position = new BABYLON.Vector3(babylonPos.x + SIZE/2, y, babylonPos.z - SIZE/2);
 		player.ellipsoid = new BABYLON.Vector3(SIZE/3, SIZE/3, SIZE/3);
 		player.setPhysicsState(BABYLON.PhysicsEngine.SphereImpostor, { mass: 0 });
 	};
@@ -105,6 +130,7 @@ require(["MeshUtils", "MeshCache", "GreedyMesh", "Materials", "GamePad"], functi
 			wall.position.z = topLeft.z - (quad[0] + quad[3]/2)*SIZE;
 			wall.position.y = y;
 			wall.freezeWorldMatrix();
+			wall.opacity = 0.5;
 		});
 	};
 	var birdsEye = function(){
