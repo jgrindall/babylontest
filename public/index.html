@@ -12,8 +12,8 @@
 
         <style>
             #renderCanvas{
-                width:100%;
-                height:100%;
+                width:90%;
+                height:90%;
             }
 			#zone_joystick{
                 position: absolute;
@@ -24,7 +24,8 @@
     </head>
     <body>
 	
-        <canvas width='100%' height='100%' id="renderCanvas"></canvas>
+        <canvas width='90%' height='90%' id="renderCanvas"></canvas>
+		<p id="speed"></p>
 		<div id="zone_joystick"></div>
 
         <script>
@@ -36,7 +37,7 @@
 			var SIZE = 5;
 			
 			
-            var speed = 0, ang_speed = 0, angle = 0, friction = 0.75;
+            var speed = 0, ang_speed = 0, angle = 0, friction = 0.4;
 			
 			var makeMaterials = function(){
                 brickMaterial = new BABYLON.StandardMaterial("brickMaterial", scene);
@@ -87,7 +88,7 @@
 			};
 			
 			var addControls = function(){
-				var ROT_SPEED = 0.025, SPEED = 0.6;
+				var ROT_SPEED = 0.03, SPEED = 0.6;
 				var manager = nipplejs.create({
 					zone: document.getElementById('zone_joystick'),
 					mode: 'static',
@@ -98,38 +99,33 @@
 					},
 					color: 'red'
 				});
-
-				manager.on("dir:up", function(e, data){
+				
+				manager.on("move", function(e, data){
+					var d = (data.distance / 40);// from 0 to 1
+					var a = data.angle.degree;
 					_mode = "on";
-					speed = SPEED;
 					ang_speed = 0;
-					console.log(data);
-				});
-
-				manager.on("dir:left", function(e, data){
-					_mode = "on";
 					speed = 0;
-					ang_speed = -ROT_SPEED;
-					angle -= 0.1;
-				});
-
-				manager.on("dir:right", function(e, data){
-					_mode = "on";
-					speed = 0;
-					ang_speed = ROT_SPEED;
-					angle += 0.1;
-				});
-
-				manager.on("dir:down", function(e, data){
-					_mode = "on";
-					speed = -SPEED;
-					ang_speed = 0;
+					if(a < 30 || a > 330){
+						ang_speed = ROT_SPEED;
+					}
+					else if(a > 150 && a < 210){
+						ang_speed = -ROT_SPEED;
+					}
+					else{
+						speed = d * Math.sin(a*Math.PI/180) * SPEED;
+						ang_speed = 0;
+					}
+					console.log("speed, ang_speed", speed, ang_speed);
+					$("#speed").text(a.toFixed() + ":" + d.toFixed(2) + "  speed " + speed.toFixed(2) + " ang_speed " + ang_speed.toFixed(2));
 				});
 
 				manager.on("end", function(e, data){
-					_mode = "off";
+					console.log("end");
+					//_mode = "off";
 					ang_speed = 0;
-					//speed = 0;
+					speed = 0;
+					$("#speed").text("  speed " + speed.toFixed(2) + " ang_speed " + ang_speed.toFixed(2));
 				});
 
 			};
@@ -139,7 +135,7 @@
 				scene.enablePhysics();
 				var light0 = new BABYLON.DirectionalLight("Omni", new BABYLON.Vector3(-2, -5, 2), scene);
 				var light1 = new BABYLON.PointLight("Omni", new BABYLON.Vector3(2, -5, -2), scene);
-				camera = new BABYLON.FreeCamera("FreeCamera", new BABYLON.Vector3(SIZE_I*SIZE/2, 350, SIZE_J*SIZE/2), scene);
+				camera = new BABYLON.FreeCamera("FreeCamera", new BABYLON.Vector3(SIZE_I*SIZE/2, 250, SIZE_J*SIZE/2), scene);
 				//camera.attachControl(canvas, true);
 				//camera.rotation = new BABYLON.Vector3(Math.PI/2, 0 , 0);
 				var ground = BABYLON.Mesh.CreatePlane("ground", 2000.0, scene);
@@ -148,7 +144,7 @@
 				ground.material.backFaceCulling = false;
 				ground.position = new BABYLON.Vector3(5, -10, -15);
 				ground.rotation = new BABYLON.Vector3(Math.PI / 2, 0, 0);
-				scene.gravity = new BABYLON.Vector3(0, -0.9, 0);
+				scene.gravity = new BABYLON.Vector3(0, 0, 0);
 				scene.collisionsEnabled = true;
 				camera.checkCollisions = true;
 				camera.applyGravity = true;
@@ -158,15 +154,17 @@
 			
 			
 			var movePlayer = function(){
-                var dx, dz;
-                var fps = engine.getFps();
-				player.rotation.y = angle;
-                dx = speed*Math.sin(angle) * (60/fps);
-                dz = speed*Math.cos(angle) * (60/fps);
+                var dx, dz, scaleFactor = (60/engine.getFps());
+                angle += ang_speed;
+				//player.rotation.y = angle;
+				player.rotationQuaternion = BABYLON.Quaternion.RotationAxis(new BABYLON.Vector3(0, 1, 0), angle);
+				console.log(player.rotation);
+                dx = speed*Math.sin(angle) * scaleFactor;
+                dz = speed*Math.cos(angle) * scaleFactor;
 				player.checkCollisions = true;
-				player.isVisible = false;
+				//player.isVisible = false;
                 player.moveWithCollisions(new BABYLON.Vector3(dx, 0, dz));
-				console.log("move with coll", dx, dz);
+				//console.log("move with coll", dx, dz);
                 //camera.position.x = player.position.x;
                 //camera.position.y = player.position.y;
                 //camera.position.z = player.position.z;
@@ -185,10 +183,11 @@
 				mat.diffuseTexture = new BABYLON.Texture("img/skybox_nx.jpg", scene);
 				mat.backFaceCulling = false;
 				var babylonPos = ijToBabylon(pos[0], pos[1]);
-                player = BABYLON.MeshBuilder.CreateBox("player", {height: 1, width:1, depth:1}, scene);
+				console.log(pos, babylonPos);
+                player = BABYLON.MeshBuilder.CreateBox("player", {height: SIZE, width:SIZE, depth:SIZE}, scene);
                 player.material = mat;
                 player.checkCollisions = true;
-                player.position = new BABYLON.Vector3(babylonPos.x, -7, babylonPos.z);
+                player.position = new BABYLON.Vector3(babylonPos.x + SIZE/2, -7, babylonPos.z + SIZE/2);
                 player.ellipsoid = new BABYLON.Vector3(SIZE/3, SIZE/3, SIZE/3);
                 player.setPhysicsState(BABYLON.PhysicsEngine.SphereImpostor, { mass: 0 });
             };
@@ -220,7 +219,7 @@
 			addControls();
 			makeMaterials();
 			
-			var img = makeRnd({rnd:0.2});
+			var img = makeRnd({rnd:0.1});
 			var greedy = getBestGreedyMesh(img);
 			_.each(greedy.dims, function(size){
 				makeCache(size);
@@ -234,7 +233,7 @@
 			
 			//scene.debugLayer.show();
             engine.runRenderLoop(function () {
-				if(_mode !== "off" && speed !== 0){
+				if(_mode !== "off"){
                     movePlayer();
                 }
                 if(_mode === "off"){
@@ -242,6 +241,9 @@
                     speed *= friction;
                     if(Math.abs(speed) < 0.1){
                         speed = 0;
+                    }
+					if(Math.abs(ang_speed) < 0.1){
+                        ang_speed = 0;
                     }
                 }
                 scene.render();
