@@ -106,6 +106,10 @@
 					_mode = "on";
 					ang_speed = 0;
 					speed = 0;
+					if(d < 0.1){
+						// not moved it much
+						return;
+					}
 					if(a < 30 || a > 330){
 						ang_speed = ROT_SPEED;
 					}
@@ -116,16 +120,11 @@
 						speed = d * Math.sin(a*Math.PI/180) * SPEED;
 						ang_speed = 0;
 					}
-					console.log("speed, ang_speed", speed, ang_speed);
-					$("#speed").text(a.toFixed() + ":" + d.toFixed(2) + "  speed " + speed.toFixed(2) + " ang_speed " + ang_speed.toFixed(2));
 				});
 
 				manager.on("end", function(e, data){
-					console.log("end");
-					//_mode = "off";
 					ang_speed = 0;
 					speed = 0;
-					$("#speed").text("  speed " + speed.toFixed(2) + " ang_speed " + ang_speed.toFixed(2));
 				});
 
 			};
@@ -136,8 +135,6 @@
 				var light0 = new BABYLON.DirectionalLight("Omni", new BABYLON.Vector3(-2, -5, 2), scene);
 				var light1 = new BABYLON.PointLight("Omni", new BABYLON.Vector3(2, -5, -2), scene);
 				camera = new BABYLON.FreeCamera("FreeCamera", new BABYLON.Vector3(SIZE_I*SIZE/2, 250, SIZE_J*SIZE/2), scene);
-				//camera.attachControl(canvas, true);
-				//camera.rotation = new BABYLON.Vector3(Math.PI/2, 0 , 0);
 				var ground = BABYLON.Mesh.CreatePlane("ground", 2000.0, scene);
 				ground.material = new BABYLON.StandardMaterial("groundMat", scene);
 				ground.material.diffuseColor = new BABYLON.Color3(1, 1, 1);
@@ -156,7 +153,6 @@
 			var movePlayer = function(){
                 var dx, dz, scaleFactor = (60/engine.getFps());
                 angle += ang_speed;
-				//player.rotation.y = angle;
 				player.rotationQuaternion = BABYLON.Quaternion.RotationAxis(new BABYLON.Vector3(0, 1, 0), angle);
 				console.log(player.rotation);
                 dx = speed*Math.sin(angle) * scaleFactor;
@@ -165,9 +161,10 @@
 				//player.isVisible = false;
                 player.moveWithCollisions(new BABYLON.Vector3(dx, 0, dz));
 				//console.log("move with coll", dx, dz);
-                //camera.position.x = player.position.x;
-                //camera.position.y = player.position.y;
-                //camera.position.z = player.position.z;
+                camera.position.x = player.position.x;
+                camera.position.y = player.position.y;
+                camera.position.z = player.position.z;
+				//camera.rotationQuaternion = player.rotationQuaternion;
             }
 			
 			var ijToBabylon = function(i, j){
@@ -186,6 +183,7 @@
 				console.log(pos, babylonPos);
                 player = BABYLON.MeshBuilder.CreateBox("player", {height: SIZE, width:SIZE, depth:SIZE}, scene);
                 player.material = mat;
+				player.isVisible = false;
                 player.checkCollisions = true;
                 player.position = new BABYLON.Vector3(babylonPos.x + SIZE/2, -7, babylonPos.z + SIZE/2);
                 player.ellipsoid = new BABYLON.Vector3(SIZE/3, SIZE/3, SIZE/3);
@@ -211,7 +209,7 @@
 			};
 			
 			var birdsEye = function(){
-				camera.rotation = new BABYLON.Vector3(Math.PI/2, 0 , 0);
+				//camera.rotation = new BABYLON.Vector3(Math.PI/2, 0 , 0);
 			};
 			
 			engine = new BABYLON.Engine(canvas, false, null, false);
