@@ -1,5 +1,4 @@
 define(["MeshUtils", "Materials"], function(MeshUtils, Materials){
-	/* helper functions */
 	
 	var MeshCache = {};
 	
@@ -11,26 +10,26 @@ define(["MeshUtils", "Materials"], function(MeshUtils, Materials){
 		cache = {};
 	};
 	
-	MeshCache.addToCache = function(scene, size, SIZE){
+	MeshCache.addToCache = function(scene, size, SIZE, materialName){
 		var key, box;
 		key = "brick_" + size[0] + "_" + size[1];
 		box = BABYLON.MeshBuilder.CreateBox(key, {height: SIZE, width:SIZE*size[0], depth:SIZE*size[1]}, scene);
 		box.convertToUnIndexedMesh();
-		box.material = Materials.brickMaterial;
+		box.material = Materials[materialName + "Material"];
 		MeshUtils.setUVScale(box, size[0], size[1]);
 		cache[key] = box;
 		scene.meshes.pop();
 	};
 	
-	MeshCache.setForDims = function(scene, dims, SIZE){
+	MeshCache.setForDims = function(scene, dims, SIZE, materialName){
 		MeshCache.clear();
 		_.each(dims, function(size){
-			MeshCache.addToCache(scene, size, SIZE);
+			MeshCache.addToCache(scene, size, SIZE, materialName);
 		});
 	};
 	
-	MeshCache.getFromCache = function(size, material){
-		var cached, box, key = material + "_" + size[0] + "_" + size[1];
+	MeshCache.getFromCache = function(size, materialName){
+		var cached, box, key = materialName + "_" + size[0] + "_" + size[1];
 		cached = cache[key];
 		cacheI++;
 		box = cached.createInstance("_" + cacheI);

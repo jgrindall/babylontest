@@ -1,6 +1,6 @@
 define([], function(){
 	
-	var RADIUS = 40;
+	var RADIUS = 80;
 	
 	var GamePad = function(id){
 		this.update = new MiniRunner('update');

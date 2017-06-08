@@ -87,11 +87,12 @@ require(["MeshUtils", "MeshCache", "GreedyMesh", "Materials", "GamePad"], functi
 		player.checkCollisions = true;
 		//player.isVisible = false;
 		player.moveWithCollisions(new BABYLON.Vector3(dx, 0, dz));
-		//camera.position.x = player.position.x;
-		//camera.position.y = player.position.y;
-		//camera.position.z = player.position.z;
-		//camera.rotationQuaternion = BABYLON.Quaternion.RotationAxis(new BABYLON.Vector3(0, 1, 0), angle);
 	}
+	
+	var matchPlayer = function(){
+		// camera.position = player.position.clone();
+		// camera.rotationQuaternion = BABYLON.Quaternion.RotationAxis(new BABYLON.Vector3(0, 1, 0), angle);
+	};
 
 	var ijToBabylon = function(i, j){
 		var topLeft = {"x":0, "z":SIZE_I * SIZE};
@@ -142,7 +143,7 @@ require(["MeshUtils", "MeshCache", "GreedyMesh", "Materials", "GamePad"], functi
 	addControls();
 	Materials.makeMaterials(scene);
 	var greedy = GreedyMesh.getBest(img);
-	MeshCache.setForDims(scene, greedy.dims, SIZE);
+	MeshCache.setForDims(scene, greedy.dims, SIZE, "brick");
 	addWalls(greedy.quads);
 	addPlayer(MeshUtils.getEmptyLocation(img));
 	addGround();
@@ -169,6 +170,26 @@ require(["MeshUtils", "MeshCache", "GreedyMesh", "Materials", "GamePad"], functi
 	window.addEventListener("resize", function () {
 	   engine.resize();
 	});
+	
+	document.onkeydown = function(e){
+		if(e.which === 38){
+			// fd
+			speed = SPEED;
+			_mode = "on";
+		}
+		else if(e.which === 40){
+			// fd
+			speed = -SPEED;
+			_mode = "on";
+		}
+	};
+	
+	document.onkeyup = function(){
+		speed = 0;
+		_mode = "off";
+	};
+
+	
 });
 
 
