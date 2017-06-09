@@ -111,7 +111,6 @@ require(["MeshUtils", "MeshCache", "GreedyMesh", "Materials", "GamePad"], functi
 		var babylonPos = ijToBabylon(pos[0], pos[1]);
 		player = BABYLON.MeshBuilder.CreateBox("player", {height: SIZE, width:SIZE, depth:SIZE}, scene);
 		player.material = mat;
-		//player.isVisible = false;
 		player.checkCollisions = true;
 		player.position = new BABYLON.Vector3(babylonPos.x + SIZE/2, y, babylonPos.z - SIZE/2);
 		player.ellipsoid = new BABYLON.Vector3(SIZE/3, SIZE/3, SIZE/3);
@@ -137,7 +136,7 @@ require(["MeshUtils", "MeshCache", "GreedyMesh", "Materials", "GamePad"], functi
 	};
 	
 	var addWalls = function(quads){
-		var y = -SIZE*1.5;
+		var y = -SIZE*1.5, arr = [];
 		var topLeft = {"x":0, "z":SIZE_I * SIZE};
 		_.each(quads, function(quad){
 			var size = (quad[2] >= quad[3]) ? [quad[2], quad[3]] : [quad[3], quad[2]];
@@ -149,6 +148,7 @@ require(["MeshUtils", "MeshCache", "GreedyMesh", "Materials", "GamePad"], functi
 			wall.position.z = topLeft.z - (quad[0] + quad[3]/2)*SIZE;
 			wall.position.y = y;
 			wall.freezeWorldMatrix();
+			arr.push(wall);
 			wall.opacity = 0.5;
 		});
 	};
@@ -168,7 +168,7 @@ require(["MeshUtils", "MeshCache", "GreedyMesh", "Materials", "GamePad"], functi
 	addCharacter(empty[1]);
 	addGround();
 	addSky();
-	birdsEye();
+	//birdsEye();
 
 	scene.debugLayer.show();
 	engine.runRenderLoop(function () {
@@ -206,7 +206,7 @@ require(["MeshUtils", "MeshCache", "GreedyMesh", "Materials", "GamePad"], functi
 		else if(e.which === 37){
 			// fd
 			speed = 0;
-			ang_speed = ROT_SPEED;
+			ang_speed = -ROT_SPEED;
 			_mode = "on";
 		}
 		else if(e.which === 39){
