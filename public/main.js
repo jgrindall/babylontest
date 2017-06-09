@@ -163,7 +163,7 @@ require(["MeshUtils", "MeshCache", "GreedyMesh", "Materials", "GamePad"], functi
 	var greedy = GreedyMesh.getBest(img);
 	MeshCache.setForDims(scene, greedy.dims, SIZE, "brick");
 	addWalls(greedy.quads);
-	var empty = MeshUtils.getEmptyLocations(img);
+	var empty = _.shuffle(MeshUtils.getMatchingLocations(img, 0));
 	addPlayer(empty[0]);
 	addCharacter(empty[1]);
 	addGround();
