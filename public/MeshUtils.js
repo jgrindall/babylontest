@@ -25,8 +25,8 @@ define([], function(){
 		}
 	};
 
-	MeshUtils.getEmptyLocation = function(a){
-		var coords = [], _i, _j, k, SIZE_I = a.length, SIZE_J = a[0].length;
+	MeshUtils.getEmptyLocations = function(a){
+		var coords = [], _i, _j, k, SIZE_I = a.length, SIZE_J = a[0].length, empty = [];
 		for(_i = 0; _i < SIZE_I; _i++){
 			for(_j = 0; _j < SIZE_J; _j++){
 				coords.push([_i, _j]);
@@ -35,9 +35,10 @@ define([], function(){
 		coords = _.shuffle(coords);
 		for(k = 0; k < coords.length; k++){
 			if(a[coords[k][0]][coords[k][1]] === 0){
-				return coords[k];
+				empty.push(coords[k]);
 			}
 		}
+		return empty;
 	};
 
 	MeshUtils.makeRnd = function(SIZE_I, SIZE_J, options){

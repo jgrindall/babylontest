@@ -6,7 +6,7 @@ require(["MeshUtils", "MeshCache", "GreedyMesh", "Materials", "GamePad"], functi
 	var FRICTION = 0.4;
 	var ROT_SPEED = 0.03, SPEED = 0.6;
 	
-	var canvas, scene, engine, player, angle = 0, speed = 0, ang_speed = 0, angle = 0, _mode = "off";
+	var canvas, scene, engine, player, character, angle = 0, speed = 0, ang_speed = 0, angle = 0, _mode = "off";
 	
 	canvas = document.querySelector("#renderCanvas");
 	
@@ -115,9 +115,27 @@ require(["MeshUtils", "MeshCache", "GreedyMesh", "Materials", "GamePad"], functi
 		player.checkCollisions = true;
 		player.position = new BABYLON.Vector3(babylonPos.x + SIZE/2, y, babylonPos.z - SIZE/2);
 		player.ellipsoid = new BABYLON.Vector3(SIZE/3, SIZE/3, SIZE/3);
-		player.setPhysicsState(BABYLON.PhysicsEngine.SphereImpostor, { mass: 0 });
+		player.setPhysicsState(BABYLON.PhysicsEngine.SphereImpostor, { mass: 0, restitution:0.5, friction:0.5 });
+	};
+	
+	var addCharacter = function(pos){
+		var y = -SIZE*1.5
+		var mat = new BABYLON.StandardMaterial("Mat", scene);
+		mat.diffuseTexture = new BABYLON.Texture("assets/red.jpg", scene);
+		mat.backFaceCulling = false;
+		var babylonPos = ijToBabylon(pos[0], pos[1]);
+		character = BABYLON.MeshBuilder.CreateBox("character", {height: SIZE, width:SIZE, depth:SIZE}, scene);
+		character.material = mat;
+		character.checkCollisions = true;
+		character.position = new BABYLON.Vector3(babylonPos.x + SIZE/2, y, babylonPos.z - SIZE/2);
 	};
 
+	var checkCollisions = function(){
+		if (character.intersectsMesh(player, false)) {
+			console.log("HIT");
+		}
+	};
+	
 	var addWalls = function(quads){
 		var y = -SIZE*1.5;
 		var topLeft = {"x":0, "z":SIZE_I * SIZE};
@@ -145,7 +163,9 @@ require(["MeshUtils", "MeshCache", "GreedyMesh", "Materials", "GamePad"], functi
 	var greedy = GreedyMesh.getBest(img);
 	MeshCache.setForDims(scene, greedy.dims, SIZE, "brick");
 	addWalls(greedy.quads);
-	addPlayer(MeshUtils.getEmptyLocation(img));
+	var empty = MeshUtils.getEmptyLocations(img);
+	addPlayer(empty[0]);
+	addCharacter(empty[1]);
 	addGround();
 	addSky();
 	birdsEye();
@@ -165,6 +185,7 @@ require(["MeshUtils", "MeshCache", "GreedyMesh", "Materials", "GamePad"], functi
 				ang_speed = 0;
 			}
 		}
+		checkCollisions();
 		scene.render();
 	});
 	window.addEventListener("resize", function () {
@@ -180,6 +201,18 @@ require(["MeshUtils", "MeshCache", "GreedyMesh", "Materials", "GamePad"], functi
 		else if(e.which === 40){
 			// fd
 			speed = -SPEED;
+			_mode = "on";
+		}
+		else if(e.which === 37){
+			// fd
+			speed = 0;
+			ang_speed = ROT_SPEED;
+			_mode = "on";
+		}
+		else if(e.which === 39){
+			// fd
+			speed = 0;
+			ang_speed = ROT_SPEED;
 			_mode = "on";
 		}
 	};
