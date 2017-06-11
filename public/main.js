@@ -6,7 +6,7 @@ require(["MeshUtils", "MeshCache", "GreedyMesh", "Materials", "GamePad"], functi
 	var FRICTION = 0.4;
 	var ROT_SPEED = 0.03, SPEED = 0.5;
 	
-	var canvas, scene, engine, player, character, angle = 0, speed = 0, ang_speed = 0, angle = 0, _mode = "off";
+	var container, canvas, scene, engine, player, character, angle = 0, speed = 0, ang_speed = 0, angle = 0, _mode = "off";
 	
 	var BIRDSEYE = 0;
 
@@ -141,6 +141,9 @@ require(["MeshUtils", "MeshCache", "GreedyMesh", "Materials", "GamePad"], functi
 		if (character.intersectsMesh(player, false)) {
 			console.log("HIT");
 		}
+		if(character.intersectsMesh(container, false)){
+			console.log("HIT CHAR");
+		}
 	};
 
 	var addBill = function(pos){
@@ -148,14 +151,20 @@ require(["MeshUtils", "MeshCache", "GreedyMesh", "Materials", "GamePad"], functi
 		var babylonPos = ijToBabylon(pos[0], pos[1]);
 		var plane = BABYLON.Mesh.CreatePlane("", 2, scene);
 		var mat = new BABYLON.StandardMaterial("keyMaterial", scene);
+		var cMat = new BABYLON.StandardMaterial("keyMaterial", scene);
+		container = BABYLON.MeshBuilder.CreateBox("character", {height: SIZE, width:SIZE, depth:SIZE}, scene);
+		container.checkCollisions = true;
+		container.material = cMat;
+		cMat.diffuseColor = BABYLON.Color3.Red();
+		cMat.alpha = 0.2;
+		container.position = new BABYLON.Vector3(babylonPos.x + SIZE/2, y, babylonPos.z - SIZE/2);
 		mat.diffuseTexture = new BABYLON.Texture("assets/key.png", scene);
 		mat.diffuseTexture.hasAlpha = true;
 		mat.backFaceCulling = false
 		mat.freeze();
-		plane.position = new BABYLON.Vector3(babylonPos.x + SIZE/2, y, babylonPos.z - SIZE/2);
+		plane.parent = container;
 		plane.billboardMode = BABYLON.Mesh.BILLBOARDMODE_ALL;
 		plane.material = mat;
-		plane.checkCollisions = true;
 	};
 
 	var addWalls = function(quads){
@@ -177,7 +186,7 @@ require(["MeshUtils", "MeshCache", "GreedyMesh", "Materials", "GamePad"], functi
 		camera.rotation = new BABYLON.Vector3(Math.PI/2, 0 , 0);
 	};
 	engine = new BABYLON.Engine(canvas, false, null, false);
-	var img = MeshUtils.makeRnd(SIZE_I, SIZE_J, {rnd:0.025});
+	var img = MeshUtils.makeRnd(SIZE_I, SIZE_J, {rnd:0.005});
 	makeScene();
 	addControls();
 	Materials.makeMaterials(scene);
@@ -194,7 +203,7 @@ require(["MeshUtils", "MeshCache", "GreedyMesh", "Materials", "GamePad"], functi
 		birdsEye();
 	}
 
-	//scene.debugLayer.show();
+	scene.debugLayer.show();
 	engine.runRenderLoop(function () {
 		if(_mode !== "off"){
 			movePlayer();
@@ -252,4 +261,13 @@ require(["MeshUtils", "MeshCache", "GreedyMesh", "Materials", "GamePad"], functi
 	
 });
 
+
+/*
+
+sphere.physicsImpostor.registerOnPhysicsCollide(ground.physicsImpostor, function(main, collided) {
+	    main.object.material.diffuseColor = new BABYLON.Color3(Math.random(), Math.random(), Math.random());
+	});
+
+
+*/
 
