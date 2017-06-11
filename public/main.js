@@ -4,10 +4,12 @@ require(["MeshUtils", "MeshCache", "GreedyMesh", "Materials", "GamePad"], functi
 	var SIZE_J = 32;
 	var SIZE = 5;
 	var FRICTION = 0.4;
-	var ROT_SPEED = 0.03, SPEED = 0.6;
+	var ROT_SPEED = 0.03, SPEED = 0.5;
 	
 	var canvas, scene, engine, player, character, angle = 0, speed = 0, ang_speed = 0, angle = 0, _mode = "off";
 	
+	var BIRDSEYE = 0;
+
 	canvas = document.querySelector("#renderCanvas");
 	
 	var addControls = function(){
@@ -23,18 +25,21 @@ require(["MeshUtils", "MeshCache", "GreedyMesh", "Materials", "GamePad"], functi
 				}
 				else{
 					_mode = "on";
-					if(obj.d < 0.1){
+					if(obj.d < 0.25){
 						// not moved it much
 						return;
 					}
-					if(obj.a < 30 || obj.a > 330){
-						ang_speed = ROT_SPEED;
+					var ROT_ANGLE = 50;
+					var sf = (obj.d - 0.25) / 0.75;
+					sf = Math.sqrt(sf);
+					if(obj.a < ROT_ANGLE|| obj.a > 360 - ROT_ANGLE){
+						ang_speed = ROT_SPEED * sf;
 					}
-					else if(obj.a > 150 && obj.a < 210){
-						ang_speed = -ROT_SPEED;
+					else if(obj.a > 180 - ROT_ANGLE && obj.a < 180 + ROT_ANGLE){
+						ang_speed = -ROT_SPEED * sf;
 					}
 					else{
-						speed = obj.d * Math.sin(obj.a*Math.PI/180) * SPEED;
+						speed = sf * Math.sin(obj.a*Math.PI/180) * SPEED;
 						ang_speed = 0;
 					}
 				}
@@ -80,18 +85,21 @@ require(["MeshUtils", "MeshCache", "GreedyMesh", "Materials", "GamePad"], functi
 
 	var movePlayer = function(){
 		var dx, dz, scaleFactor = (60/engine.getFps());
-		angle += ang_speed;
+		angle += ang_speed * scaleFactor;
 		player.rotationQuaternion = BABYLON.Quaternion.RotationAxis(new BABYLON.Vector3(0, 1, 0), angle);
 		dx = speed*Math.sin(angle) * scaleFactor;
 		dz = speed*Math.cos(angle) * scaleFactor;
 		player.checkCollisions = true;
-		//player.isVisible = false;
+		if(!BIRDSEYE){
+			player.isVisible = false;
+		}
 		player.moveWithCollisions(new BABYLON.Vector3(dx, 0, dz));
 	}
 	
 	var matchPlayer = function(){
-		// camera.position = player.position.clone();
-		// camera.rotationQuaternion = BABYLON.Quaternion.RotationAxis(new BABYLON.Vector3(0, 1, 0), angle);
+		camera.position = player.position.clone();
+		camera.rotationQuaternion = BABYLON.Quaternion.RotationAxis(new BABYLON.Vector3(0, 1, 0), angle);
+		console.log();
 	};
 
 	var ijToBabylon = function(i, j){
@@ -134,7 +142,22 @@ require(["MeshUtils", "MeshCache", "GreedyMesh", "Materials", "GamePad"], functi
 			console.log("HIT");
 		}
 	};
-	
+
+	var addBill = function(pos){
+		var y = -SIZE*1.5;
+		var babylonPos = ijToBabylon(pos[0], pos[1]);
+		var plane = BABYLON.Mesh.CreatePlane("", 2, scene);
+		var mat = new BABYLON.StandardMaterial("keyMaterial", scene);
+		mat.diffuseTexture = new BABYLON.Texture("assets/key.png", scene);
+		mat.diffuseTexture.hasAlpha = true;
+		mat.backFaceCulling = false
+		mat.freeze();
+		plane.position = new BABYLON.Vector3(babylonPos.x + SIZE/2, y, babylonPos.z - SIZE/2);
+		plane.billboardMode = BABYLON.Mesh.BILLBOARDMODE_ALL;
+		plane.material = mat;
+		plane.checkCollisions = true;
+	};
+
 	var addWalls = function(quads){
 		var y = -SIZE*1.5, arr = [];
 		var topLeft = {"x":0, "z":SIZE_I * SIZE};
@@ -148,15 +171,13 @@ require(["MeshUtils", "MeshCache", "GreedyMesh", "Materials", "GamePad"], functi
 			wall.position.z = topLeft.z - (quad[0] + quad[3]/2)*SIZE;
 			wall.position.y = y;
 			wall.freezeWorldMatrix();
-			arr.push(wall);
-			wall.opacity = 0.5;
 		});
 	};
 	var birdsEye = function(){
 		camera.rotation = new BABYLON.Vector3(Math.PI/2, 0 , 0);
 	};
 	engine = new BABYLON.Engine(canvas, false, null, false);
-	var img = MeshUtils.makeRnd(SIZE_I, SIZE_J, {rnd:0.1});
+	var img = MeshUtils.makeRnd(SIZE_I, SIZE_J, {rnd:0.025});
 	makeScene();
 	addControls();
 	Materials.makeMaterials(scene);
@@ -168,12 +189,18 @@ require(["MeshUtils", "MeshCache", "GreedyMesh", "Materials", "GamePad"], functi
 	addCharacter(empty[1]);
 	addGround();
 	addSky();
-	//birdsEye();
+	addBill(empty[2]);
+	if(BIRDSEYE){
+		birdsEye();
+	}
 
-	scene.debugLayer.show();
+	//scene.debugLayer.show();
 	engine.runRenderLoop(function () {
 		if(_mode !== "off"){
 			movePlayer();
+			if(!BIRDSEYE){
+				matchPlayer();
+			}
 		}
 		if(_mode === "off"){
 			ang_speed *= FRICTION;
