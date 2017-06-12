@@ -25,6 +25,38 @@
     <body>
         <canvas width='90%' height='90%' id="renderCanvas"></canvas>
 		<div id="zone_joystick"></div>
+
+
+
+
+         <script type="application/vertexShader" id="vertexShaderCode">
+                precision highp float;
+                attribute vec3 position;
+                attribute vec2 uv;
+                attribute vec3 normal;
+                uniform mat4 worldViewProjection;
+                varying vec2 vUV;
+                void main(void) {
+                    gl_Position = worldViewProjection * vec4(position, 1.0);
+                    vUV = vec2(uv.x*5.0, uv.y + 0.3);
+                }
+            </script>
+
+            <script type="application/fragmentShader" id="fragmentShaderCode">
+                precision highp float;
+                varying vec2 vUV;
+                uniform sampler2D textureSampler;
+                void main(void) {
+                    gl_FragColor = texture2D(textureSampler, vUV);
+                }
+            </script>
+
+
+
+
+
+
+
 		<script data-main="main" src="lib/require.js"></script>
     </body>
 </html>

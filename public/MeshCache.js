@@ -32,7 +32,9 @@ define(["MeshUtils", "Materials"], function(MeshUtils, Materials){
 		var cached, box, key = materialName + "_" + size[0] + "_" + size[1];
 		cached = cache[key];
 		cacheI++;
-		box = cached.createInstance("_" + cacheI);
+		box = cached.clone("index: " + Math.random());
+ 		box.material = cached.material;
+		//box = cached.createInstance("_" + cacheI);
 		box.checkCollisions = true;
 		box.setPhysicsState(BABYLON.PhysicsEngine.BoxImpostor, {mass:10, restitution:0.5, friction:0.5});
 		return box;

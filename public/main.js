@@ -192,19 +192,18 @@ require(["MeshUtils", "MeshCache", "GreedyMesh", "Materials", "GamePad", "lib/en
 		  var options = {
 		    width: 10*SIZE,
 		    height: SIZE,
-		    depth: SIZE,
-		    faceUV: faceUV,
+		    depth: SIZE
 		  };
 
 
-		BABYLONX.ShaderBuilder.InitializeEngine();
+		//BABYLONX.ShaderBuilder.InitializeEngine();
 
 			var box = BABYLON.MeshBuilder.CreateBox('box', options, scene);
 			var verticesCount = box.getTotalVertices();
 		  box.position = new BABYLON.Vector3(babylonPos.x + SIZE/2, -SIZE*1.5, babylonPos.z - SIZE/2);
 
-		  box.subMeshes.push(new BABYLON.SubMesh(0, 0, verticesCount, 0, 3, box));
-		  box.subMeshes.push(new BABYLON.SubMesh(0, 0, verticesCount, 4, 6, box));
+		  //box.subMeshes.push(new BABYLON.SubMesh(0, 0, verticesCount, 0, 3, box));
+		  //box.subMeshes.push(new BABYLON.SubMesh(0, 0, verticesCount, 4, 6, box));
 
 		  /*var mat_ = new BABYLONX.ShaderBuilder()
 		  		.InLine('if(nrm.z > 0.5 ){')
@@ -212,10 +211,37 @@ require(["MeshUtils", "MeshCache", "GreedyMesh", "Materials", "GamePad", "lib/en
 				.InLine('}')
 				.BuildMaterial(scene);*/
 
-		var multimat = new BABYLON.MultiMaterial("multi", scene);
-    	multimat.subMaterials.push(Materials.brickMaterial);
-    	multimat.subMaterials.push(Materials.steelMaterial);
-    	box.material = multimat;
+		//var multimat = new BABYLON.MultiMaterial("multi", scene);
+    	//multimat.subMaterials.push(Materials.brickMaterial);
+    	//multimat.subMaterials.push(Materials.steelMaterial);
+    	//box.material = multimat;
+
+
+
+
+
+
+    		var shaderMaterial = new BABYLON.ShaderMaterial("shaderMaterial", scene, {
+            vertexElement: "vertexShaderCode",
+            fragmentElement: "fragmentShaderCode",
+        },
+        {
+            attributes: ["position", "uv", "normal"],
+            uniforms: ["worldViewProjection"]
+        });
+        shaderMaterial.setTexture("textureSampler", new BABYLON.Texture("assets/brick.jpg", scene));
+
+        box.material = shaderMaterial;
+
+
+
+        var box2 = box.createInstance("_NEW_");
+ 		box2.position = new BABYLON.Vector3(babylonPos.x + SIZE/2, 2, babylonPos.z + SIZE/2);
+
+ 		var box3 = box.clone("index: " + 1);
+ 		box3.position = new BABYLON.Vector3(babylonPos.x + SIZE/2, 4, babylonPos.z + SIZE/2);
+ 		box3.material = shaderMaterial;
+
 
 
 	};
@@ -262,7 +288,7 @@ require(["MeshUtils", "MeshCache", "GreedyMesh", "Materials", "GamePad", "lib/en
 		camera.rotation = new BABYLON.Vector3(Math.PI/2, 0 , 0);
 	};
 	engine = new BABYLON.Engine(canvas, false, null, false);
-	var img = MeshUtils.makeRnd(SIZE_I, SIZE_J, {rnd:0.000});
+	var img = MeshUtils.makeRnd(SIZE_I, SIZE_J, {rnd:0.300});
 	makeScene();
 	addControls();
 	
