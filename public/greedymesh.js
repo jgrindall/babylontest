@@ -18,7 +18,7 @@ define(["MeshUtils"], function(MeshUtils){
 		var shouldVisitCell, quads = [], SIZE_I, SIZE_J, visited = [], isInside, moveToNext, rectIsFullAndNotVisited, mark, buildQuad;
 		options = _.defaults(options || {}, {
 			"dir":"horiz",
-			"minSize":Infinity
+			"maxSize":100
 		});
 		SIZE_I = a.length;
 		SIZE_J = a[0].length;
@@ -67,14 +67,14 @@ define(["MeshUtils"], function(MeshUtils){
 			}
 		};
 		buildHoriz = function(w, h){
-			while(w <= SIZE_J - j && w <= options.minSize && rectIsFullAndNotVisited(i, j, w, h) ){
+			while(w <= SIZE_J - j && w <= options.maxSize && rectIsFullAndNotVisited(i, j, w, h) ){
 				w++;
 			}
 			w--;
 			return w;
 		};
 		buildVertic = function(w, h){
-			while(h <= SIZE_I - i && h <= options.minSize && rectIsFullAndNotVisited(i, j, w, h) ){
+			while(h <= SIZE_I - i && h <= options.maxSize && rectIsFullAndNotVisited(i, j, w, h) ){
 				h++;
 			}
 			h--;
@@ -106,7 +106,7 @@ define(["MeshUtils"], function(MeshUtils){
 				return (a[0] === needle[0] && a[1] === needle[1]);
 			});
 			return (found.length >= 1);
-		}; 
+		};
 		_.each(quads, function(quad){
 			var dim = (quad[2] >= quad[3]) ? [quad[2], quad[3]] : [quad[3], quad[2]]; // long and thin only
 			if(!_contains(dims, dim)){
@@ -125,12 +125,12 @@ define(["MeshUtils"], function(MeshUtils){
 		// best one please
 		return (dimsH.length <= dimsV.length) ? {"quads":quadsH, "dims":dimsH} : {"quads":quadsV, "dims":dimsV};
 	};
-	
-	
+
+
 	return {
 		"getBest":getBestGreedyMesh
 	}
-	
+
 });
 
 

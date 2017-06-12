@@ -1,7 +1,7 @@
 require(["MeshUtils", "MeshCache", "GreedyMesh", "Materials", "GamePad", "lib/entity-manager"], function(MeshUtils, MeshCache, GreedyMesh, Materials, GamePad, EntityManager) {
 
-	var SIZE_I = 24;
-	var SIZE_J = 32;
+	var SIZE_I = 18;
+	var SIZE_J = 24;
 	var SIZE = 5;
 	var FRICTION = 0.4;
 	var ROT_SPEED = 0.03, SPEED = 0.5;
@@ -120,7 +120,7 @@ require(["MeshUtils", "MeshCache", "GreedyMesh", "Materials", "GamePad", "lib/en
 	var addPlayer = function(pos){
 		console.log("add player at ", pos);
 		var y = -SIZE*1.5;
-		pos = [1, 1];
+		//pos = [1, 1];
 		var mat = new BABYLON.StandardMaterial("Mat", scene);
 		mat.diffuseTexture = new BABYLON.Texture("assets/skybox_nx.jpg", scene);
 		mat.backFaceCulling = false;
@@ -147,15 +147,36 @@ require(["MeshUtils", "MeshCache", "GreedyMesh", "Materials", "GamePad", "lib/en
 	};
 
 	var checkCollisions = function(){
-		if (character.intersectsMesh(player, false)) {
+		/*if (character.intersectsMesh(player, false)) {
 			console.log("HIT");
 		}
 		if(player.intersectsMesh(container, false)){
 			console.log("HIT CHAR");
-		}
+		}*/
 	};
 
 	var addExtra = function(){
+		var multimat = new BABYLON.MultiMaterial("multi", scene);
+		var material0 = new BABYLON.StandardMaterial("mat0", scene);
+    	material0.diffuseTexture = new BABYLON.Texture("assets/brick.jpg", scene);
+    	var material1 = new BABYLON.StandardMaterial("mat1", scene);
+	    material1.diffuseTexture = new BABYLON.Texture("assets/brick.jpg", scene);
+	    var material2 = new BABYLON.StandardMaterial("mat2", scene);
+	    material2.diffuseTexture = new BABYLON.Texture("assets/brick.jpg", scene);
+		var box = BABYLON.MeshBuilder.CreateBox("xtra", {height: SIZE, width:SIZE, depth:SIZE}, scene);
+	    multimat.subMaterials = [
+	    	material0, material1, material2
+	    ];
+		box.subMeshes = [];
+		var verticesCount = box.getTotalVertices();
+		box.subMeshes.push(new BABYLON.SubMesh(0, 0, verticesCount, 0, 3, box));
+		box.subMeshes.push(new BABYLON.SubMesh(1, 0, verticesCount, 3, 6, box));
+		//box.subMeshes.push(new BABYLON.SubMesh(2, 0, verticesCount, 8, 12, box));
+		box.position = new BABYLON.Vector3(5, -SIZE*1.5, 5);
+		box.material = multimat;
+	};
+
+	var addExtra2 = function(){
 		var babylonPos = ijToBabylon(10, 10);
 		/*var mat = Materials.getMultiMaterial(scene, "assets/brick.jpg", "assets/brick_rot.jpg");
 		var babylonPos = ijToBabylon(10, 10);
@@ -187,18 +208,11 @@ require(["MeshUtils", "MeshCache", "GreedyMesh", "Materials", "GamePad", "lib/en
 		  var _width = 12;
 
 
-		  var faceUV = [
-		  	new BABYLON.Vector4(0, 1, _width, 0.5),  //ok
-		  	new BABYLON.Vector4(0, 0.5, _width, 1),  //ok
-		  	new BABYLON.Vector4(0, 1.5, 1, 1),   //ok
-		  	new BABYLON.Vector4(0, 0, 1, 2),     //ok
-		  ];
 
 		  var options = {
 		    width: _width*SIZE,
 		    height: SIZE,
-		    depth: _depth*SIZE,
-		    faceUV:faceUV
+		    depth: _depth*SIZE
 		  };
 
 
@@ -283,57 +297,86 @@ require(["MeshUtils", "MeshCache", "GreedyMesh", "Materials", "GamePad", "lib/en
 	};
 
 	var addWalls = function(quads){
+		console.log(quads);
 		var y = -SIZE*1.5, arr = [];
 		var topLeft = {"x":0, "z":SIZE_I * SIZE};
 		_.each(quads, function(quad){
 			var size = (quad[2] >= quad[3]) ? [quad[2], quad[3]] : [quad[3], quad[2]];
-			var wall = MeshCache.getFromCache(size, "brick");
+			var wall = MeshCache.getBoxFromCache(size, "brick");
 			if(quad[2] < quad[3]){
-				//wall.rotation = new BABYLON.Vector3(0, Math.PI/2, 0);
+				wall.rotation = new BABYLON.Vector3(0, Math.PI/2, 0);
 			}
-			wall.position.x = topLeft.x + (quad[1] + quad[2]/2)*SIZE;
-			wall.position.z = topLeft.z - (quad[0] + quad[3]/2)*SIZE;
+			wall.isVisible = false;
+			var x = topLeft.x + (quad[1] + quad[2]/2)*SIZE;
+			var z = topLeft.z - (quad[0] + quad[3]/2)*SIZE;
+			wall.position.x = x;
+			wall.position.z = z;
 			wall.position.y = y;
 			wall.freezeWorldMatrix();
+			//wall.opacity = 0.5;
+
+
+			var plane0 = MeshCache.getPlaneFromCache(quad[2], "brick");
+			plane0.position.x = x;
+			plane0.position.z = z + SIZE * quad[3]/2;
+			plane0.position.y = y;
+			plane0.rotation = new BABYLON.Vector3(0, Math.PI, 0);
+			plane0.freezeWorldMatrix();
+
+			var plane1 = MeshCache.getPlaneFromCache(quad[2], "brick");
+			plane1.position.x = x;
+			plane1.position.z = z - SIZE * quad[3]/2;
+			plane1.position.y = y;
+			plane1.freezeWorldMatrix();
+
+
+			var plane2 = MeshCache.getPlaneFromCache(quad[3], "brick");
+			plane2.position.x = x - SIZE * quad[2]/2;
+			plane2.position.z = z;
+			plane2.position.y = y;
+			plane2.rotation = new BABYLON.Vector3(0, Math.PI/2, 0);
+			plane2.freezeWorldMatrix();
+
+			var plane3 = MeshCache.getPlaneFromCache(quad[3], "brick");
+			plane3.position.x = x + SIZE * quad[2]/2;
+			plane3.position.z = z;
+			plane3.position.y = y;
+			plane3.rotation = new BABYLON.Vector3(0, -Math.PI/2, 0);
+			plane3.freezeWorldMatrix();
+
+
 		});
 	};
 	var birdsEye = function(){
 		camera.rotation = new BABYLON.Vector3(Math.PI/2, 0 , 0);
 	};
 	engine = new BABYLON.Engine(canvas, false, null, false);
-	var img = MeshUtils.makeRnd(SIZE_I, SIZE_J, {rnd:0.0});
+	var img = MeshUtils.makeRnd(SIZE_I, SIZE_J, {rnd:0.125});
+	console.log(img);
 	makeScene();
 	addControls();
-	
 
+	Materials.makeTextures(scene);
 	Materials.makeMaterials(scene);
-
 
 	var greedy = GreedyMesh.getBest(img);
 	MeshCache.setForDims(scene, greedy.dims, SIZE, "brick");
 	addWalls(greedy.quads);
+	console.log(greedy.quads);
 	var empty = _.shuffle(MeshUtils.getMatchingLocations(img, 0));
 	addPlayer(empty[0]);
-	addCharacter(empty[1]);
+	//addCharacter(empty[1]);
 	addGround();
-	addSky();
-	addBill(empty[2]);
+	//addSky();
+	//addBill(empty[2]);
 
 	addExtra();
 
-	container.physicsImpostor.registerOnPhysicsCollide(player.physicsImpostor, function(main, collided) {
-		console.log("BANG1");
-	});
-
-
-	character.physicsImpostor.registerOnPhysicsCollide(player.physicsImpostor, function(main, collided) {
-		console.log("BANG2");
-	});
 	if(BIRDSEYE){
 		birdsEye();
 	}
 
-	//scene.debugLayer.show();
+	scene.debugLayer.show();
 	engine.runRenderLoop(function () {
 		if(_mode !== "off"){
 			movePlayer();

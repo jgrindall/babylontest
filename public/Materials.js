@@ -2,22 +2,26 @@ define([], function(){
 
 	var Materials = {};
 
-	Materials.makeMaterials = function(scene){
-		Materials.brickMaterial = new BABYLON.StandardMaterial("brickMaterial", scene);
-		Materials.brickMaterial.diffuseTexture = new BABYLON.Texture("assets/brick.jpg", scene);
-		Materials.brickMaterial.backFaceCulling = false
-		Materials.brickMaterial.freeze();
-		Materials.steelMaterial = new BABYLON.StandardMaterial("steelMaterial", scene);
-		Materials.steelMaterial.diffuseTexture = new BABYLON.Texture("assets/steel.jpg", scene);
-		Materials.steelMaterial.backFaceCulling = false
-		Materials.steelMaterial.freeze();
-		//myMaterial.diffuseTexture.uScale = 5.0;
-		//myMaterial.diffuseTexture.vScale = 5.0;
-		Materials.bricksMaterial = new BABYLON.StandardMaterial("bricksMaterial", scene);
-		Materials.bricksMaterial.diffuseTexture = new BABYLON.Texture("assets/bricks.png", scene);
-		Materials.bricksMaterial.backFaceCulling = false
-		Materials.bricksMaterial.freeze();
+	var Textures = {};
 
+	Materials.getTexture = function(materialName){
+		return Textures[materialName];
+	};
+
+	Materials.makeTextures = function(scene){
+		//Textures["brick"] = new BABYLON.Texture("assets/brick.jpg", scene);
+		Textures["steel"] = new BABYLON.Texture("assets/steel.jpg", scene);
+	};
+
+	Materials.makeMaterials = function(scene){
+		//Materials.brickMaterial = new BABYLON.StandardMaterial("brickMaterial", scene);
+		//Materials.brickMaterial.diffuseTexture = Materials.getTexture("brick");
+		//Materials.brickMaterial.backFaceCulling = false
+		//Materials.brickMaterial.freeze();
+		Materials.steelMaterial = new BABYLON.StandardMaterial("steelMaterial", scene);
+		Materials.steelMaterial.diffuseTexture = Materials.getTexture("steel");
+		//Materials.steelMaterial.backFaceCulling = false
+		Materials.steelMaterial.freeze();
 	};
 
 	Materials.getTextureFromCanvas = function(rect, color){
