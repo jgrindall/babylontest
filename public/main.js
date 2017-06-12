@@ -119,7 +119,8 @@ require(["MeshUtils", "MeshCache", "GreedyMesh", "Materials", "GamePad", "lib/en
 
 	var addPlayer = function(pos){
 		console.log("add player at ", pos);
-		var y = -SIZE*1.5
+		var y = -SIZE*1.5;
+		pos = [1, 1];
 		var mat = new BABYLON.StandardMaterial("Mat", scene);
 		mat.diffuseTexture = new BABYLON.Texture("assets/skybox_nx.jpg", scene);
 		mat.backFaceCulling = false;
@@ -180,28 +181,31 @@ require(["MeshUtils", "MeshCache", "GreedyMesh", "Materials", "GamePad", "lib/en
 		  //var texture = new BABYLON.Texture("assets/bricks.png", scene);
 		  //mat.diffuseTexture = texture;
 		  var faceUV = [
-		  	new BABYLON.Vector4(0, 1, 0.2, 0),
-		  	new BABYLON.Vector4(0, 0, 0.2, 1),
-		  	new BABYLON.Vector4(0.5, 0, 1, 1),
-		  	new BABYLON.Vector4(0.5, 0, 1, 1),
-		  	new BABYLON.Vector4(),
-		  	new BABYLON.Vector4()
+		  	new BABYLON.Vector4(0, 1, 10, 0.5),
+		  	new BABYLON.Vector4(0, 0, 1, 0.3),
+		  	new BABYLON.Vector4(0, 1, 1, 0.8),
+		  	new BABYLON.Vector4(0, 0, 1, 0.5),
+		  	new BABYLON.Vector4(0, 0, 2, 0.5),
+		  	new BABYLON.Vector4(0, 0, 2, 0.5)
 		  ];
 
 
 		  var options = {
 		    width: 10*SIZE,
 		    height: SIZE,
-		    depth: SIZE
+		    depth: SIZE,
+		    faceUV:faceUV
 		  };
 
 
 		//BABYLONX.ShaderBuilder.InitializeEngine();
 
 			var box = BABYLON.MeshBuilder.CreateBox('box', options, scene);
-			var verticesCount = box.getTotalVertices();
-		  box.position = new BABYLON.Vector3(babylonPos.x + SIZE/2, -SIZE*1.5, babylonPos.z - SIZE/2);
+			//var verticesCount = box.getTotalVertices();
+			box.material = Materials.bricksMaterial;
+			box.position = new BABYLON.Vector3(babylonPos.x + SIZE/2, -SIZE*1.5, babylonPos.z - SIZE/2);
 
+			//box.setVerticesData("stuff", _.map(_.range(verticesCount), function(){return 6;}), false, 1);
 		  //box.subMeshes.push(new BABYLON.SubMesh(0, 0, verticesCount, 0, 3, box));
 		  //box.subMeshes.push(new BABYLON.SubMesh(0, 0, verticesCount, 4, 6, box));
 
@@ -221,26 +225,30 @@ require(["MeshUtils", "MeshCache", "GreedyMesh", "Materials", "GamePad", "lib/en
 
 
 
-    		var shaderMaterial = new BABYLON.ShaderMaterial("shaderMaterial", scene, {
+    		/*var shaderMaterial = new BABYLON.ShaderMaterial("shaderMaterial", scene, {
             vertexElement: "vertexShaderCode",
-            fragmentElement: "fragmentShaderCode",
+            fragmentElement: "fragmentShaderCode"
         },
         {
-            attributes: ["position", "uv", "normal"],
+            attributes: ["position", "uv", "normal", "stuff"],
             uniforms: ["worldViewProjection"]
         });
+
+
         shaderMaterial.setTexture("textureSampler", new BABYLON.Texture("assets/brick.jpg", scene));
 
         box.material = shaderMaterial;
+        */
 
 
 
-        var box2 = box.createInstance("_NEW_");
- 		box2.position = new BABYLON.Vector3(babylonPos.x + SIZE/2, 2, babylonPos.z + SIZE/2);
+        //var box2 = box.createInstance("_NEW_");
+ 		//box2.position = new BABYLON.Vector3(babylonPos.x + SIZE/2, 2, babylonPos.z + SIZE/2);
 
- 		var box3 = box.clone("index: " + 1);
- 		box3.position = new BABYLON.Vector3(babylonPos.x + SIZE/2, 4, babylonPos.z + SIZE/2);
- 		box3.material = shaderMaterial;
+ 		//var box3 = box.clone("index: " + 1);
+ 	//	box3.position = new BABYLON.Vector3(babylonPos.x + SIZE/2, 4, babylonPos.z + SIZE/2);
+ 		//box3.material = shaderMaterial;
+ 		//box3.rotation = new BABYLON.Vector3(0, 0.5 , 0);
 
 
 
@@ -288,7 +296,7 @@ require(["MeshUtils", "MeshCache", "GreedyMesh", "Materials", "GamePad", "lib/en
 		camera.rotation = new BABYLON.Vector3(Math.PI/2, 0 , 0);
 	};
 	engine = new BABYLON.Engine(canvas, false, null, false);
-	var img = MeshUtils.makeRnd(SIZE_I, SIZE_J, {rnd:0.300});
+	var img = MeshUtils.makeRnd(SIZE_I, SIZE_J, {rnd:0.0});
 	makeScene();
 	addControls();
 	

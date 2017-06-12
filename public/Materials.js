@@ -13,6 +13,10 @@ define([], function(){
 		Materials.steelMaterial.freeze();
 		//myMaterial.diffuseTexture.uScale = 5.0;
 		//myMaterial.diffuseTexture.vScale = 5.0;
+		Materials.bricksMaterial = new BABYLON.StandardMaterial("bricksMaterial", scene);
+		Materials.bricksMaterial.diffuseTexture = new BABYLON.Texture("assets/bricks.png", scene);
+		Materials.bricksMaterial.backFaceCulling = false
+		Materials.bricksMaterial.freeze();
 
 	};
 

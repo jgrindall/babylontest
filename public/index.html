@@ -33,12 +33,27 @@
                 precision highp float;
                 attribute vec3 position;
                 attribute vec2 uv;
+                attribute float stuff;
                 attribute vec3 normal;
                 uniform mat4 worldViewProjection;
                 varying vec2 vUV;
                 void main(void) {
                     gl_Position = worldViewProjection * vec4(position, 1.0);
-                    vUV = vec2(uv.x*5.0, uv.y + 0.3);
+                    if(normal.x > 0.5){
+                        vUV = vec2(uv.x * 1.0 * stuff, uv.y + 0.3);
+                    }
+                    else if(normal.z > 0.5){
+                        vUV = vec2(uv.y, uv.x);
+                    }
+                    else if(normal.x < -0.5){
+                        vUV = vec2(uv.y + 1.0, uv.x);
+                    }
+                    else if(normal.z < -0.5){
+                        vUV = vec2(uv.x*5.0, uv.y);
+                    }
+                    else{
+                        vUV = vec2(uv.x * 1.1, uv.y);
+                    }
                 }
             </script>
 
