@@ -183,17 +183,15 @@ require(["MeshUtils", "MeshCache", "GreedyMesh", "Materials", "GamePad", "lib/en
 		  var faceUV = [
 		  	new BABYLON.Vector4(0, 1, 10, 0.5),  //ok
 		  	new BABYLON.Vector4(0, 0.5, 10, 1),  //ok
-		  	new BABYLON.Vector4(0, 1.5, 1, 1),
-		  	new BABYLON.Vector4(0, 0, 1, 0.5),    // ok
-		  	new BABYLON.Vector4(0, 0, 2, 0.5),
-		  	new BABYLON.Vector4(0, 0.5, 9, 0.5)
+		  	new BABYLON.Vector4(0, 1.5, 1, 1),   //ok
+		  	new BABYLON.Vector4(0, 0, 1, 2),     //ok
 		  ];
 
 
 		  var options = {
 		    width: 10*SIZE,
 		    height: SIZE,
-		    depth: SIZE,
+		    depth: 2*SIZE,
 		    faceUV:faceUV
 		  };
 
@@ -201,15 +199,15 @@ require(["MeshUtils", "MeshCache", "GreedyMesh", "Materials", "GamePad", "lib/en
 		//BABYLONX.ShaderBuilder.InitializeEngine();
 
 			var box = BABYLON.MeshBuilder.CreateBox('box', options, scene);
-			//var verticesCount = box.getTotalVertices();
-			box.material = Materials.bricksMaterial;
+			var verticesCount = box.getTotalVertices();
+			//box.material = Materials.bricksMaterial;
 			box.position = new BABYLON.Vector3(babylonPos.x + SIZE/2, -SIZE*1.5, babylonPos.z - SIZE/2);
 
-			//box.setVerticesData("stuff", _.map(_.range(verticesCount), function(){return 6;}), false, 1);
+			box.setVerticesData("stuff", _.map(_.range(verticesCount), function(){return 10;}), false, 1);
 		  //box.subMeshes.push(new BABYLON.SubMesh(0, 0, verticesCount, 0, 3, box));
 		  //box.subMeshes.push(new BABYLON.SubMesh(0, 0, verticesCount, 4, 6, box));
 
-		  /*var mat_ = new BABYLONX.ShaderBuilder()
+		  /*ar mat_ = new BABYLONX.ShaderBuilder()
 		  		.InLine('if(nrm.z > 0.5 ){')
 				.Map({ path: 'brickMaterial', uv: 'vec2(pos.xy)' })
 				.InLine('}')
@@ -225,30 +223,30 @@ require(["MeshUtils", "MeshCache", "GreedyMesh", "Materials", "GamePad", "lib/en
 
 
 
-    		/*var shaderMaterial = new BABYLON.ShaderMaterial("shaderMaterial", scene, {
-            vertexElement: "vertexShaderCode",
-            fragmentElement: "fragmentShaderCode"
-        },
-        {
-            attributes: ["position", "uv", "normal", "stuff"],
-            uniforms: ["worldViewProjection"]
-        });
+    		var shaderMaterial = new BABYLON.ShaderMaterial("shaderMaterial", scene, {
+	            vertexElement: "vertexShaderCode",
+	            fragmentElement: "fragmentShaderCode"
+	        },
+	        {
+	            attributes: ["position", "uv", "normal", "stuff"],
+	            uniforms: ["worldViewProjection", "worldViewProjectionInverse"]
+	        });
 
 
         shaderMaterial.setTexture("textureSampler", new BABYLON.Texture("assets/brick.jpg", scene));
 
         box.material = shaderMaterial;
-        */
+
 
 
 
         //var box2 = box.createInstance("_NEW_");
  		//box2.position = new BABYLON.Vector3(babylonPos.x + SIZE/2, 2, babylonPos.z + SIZE/2);
 
- 		//var box3 = box.clone("index: " + 1);
- 	//	box3.position = new BABYLON.Vector3(babylonPos.x + SIZE/2, 4, babylonPos.z + SIZE/2);
- 		//box3.material = shaderMaterial;
- 		//box3.rotation = new BABYLON.Vector3(0, 0.5 , 0);
+ 		var box3 = box.clone("index: " + 1);
+ 		box3.position = new BABYLON.Vector3(babylonPos.x + SIZE/2, 4, babylonPos.z + SIZE/2);
+ 		box3.material = shaderMaterial;
+ 		box3.rotation = new BABYLON.Vector3(0, 0.5 , 0);
 
 
 

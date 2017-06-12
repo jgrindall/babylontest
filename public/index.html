@@ -36,24 +36,21 @@
                 attribute float stuff;
                 attribute vec3 normal;
                 uniform mat4 worldViewProjection;
+                uniform mat4 worldViewProjectionInverse;
                 varying vec2 vUV;
                 void main(void) {
+                    vec4 normalInverse = worldViewProjectionInverse * vec4(normal, 1.0);
                     gl_Position = worldViewProjection * vec4(position, 1.0);
-                    if(normal.x > 0.5){
-                        vUV = vec2(uv.x * 1.0 * stuff, uv.y + 0.3);
+                    if(position.x == 5.0){
+                        vUV = vec2(uv.y * 2.0, uv.x);
                     }
-                    else if(normal.z > 0.5){
-                        vUV = vec2(uv.y, uv.x);
-                    }
-                    else if(normal.x < -0.5){
-                        vUV = vec2(uv.y + 1.0, uv.x);
-                    }
-                    else if(normal.z < -0.5){
-                        vUV = vec2(uv.x*5.0, uv.y);
+                    else if(position.x < 0.0){
+                        vUV = vec2(uv.y * 1.0, uv.x);
                     }
                     else{
-                        vUV = vec2(uv.x * 1.1, uv.y);
+                        vUV = vec2(uv.x * 1.0, uv.y);
                     }
+                    vUV = vec2(uv.x * 100.0, uv.y * 50.0);
                 }
             </script>
 
