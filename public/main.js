@@ -123,9 +123,9 @@ require(["MeshUtils", "MeshCache", "GreedyMesh", "Materials", "GamePad", "lib/en
 		//pos = [1, 1];
 		var mat = new BABYLON.StandardMaterial("Mat", scene);
 		mat.diffuseTexture = new BABYLON.Texture("assets/skybox_nx.jpg", scene);
-		mat.backFaceCulling = false;
+		//mat.backFaceCulling = false;
 		var babylonPos = ijToBabylon(pos[0], pos[1]);
-		player = BABYLON.MeshBuilder.CreateBox("player", {height: SIZE, width:SIZE, depth:SIZE}, scene);
+		player = BABYLON.MeshBuilder.CreateBox("player", {height: SIZE*0.75, width:SIZE*0.75, depth:SIZE*0.75}, scene);
 		player.material = mat;
 		player.checkCollisions = true;
 		player.position = new BABYLON.Vector3(babylonPos.x + SIZE/2, y, babylonPos.z - SIZE/2);
@@ -351,7 +351,7 @@ require(["MeshUtils", "MeshCache", "GreedyMesh", "Materials", "GamePad", "lib/en
 		camera.rotation = new BABYLON.Vector3(Math.PI/2, 0 , 0);
 	};
 	engine = new BABYLON.Engine(canvas, false, null, false);
-	var img = MeshUtils.makeRnd(SIZE_I, SIZE_J, {rnd:0.125});
+	var img = MeshUtils.makeRnd(SIZE_I, SIZE_J, {rnd:0.075});
 	console.log(img);
 	makeScene();
 	addControls();
@@ -370,7 +370,7 @@ require(["MeshUtils", "MeshCache", "GreedyMesh", "Materials", "GamePad", "lib/en
 	//addSky();
 	//addBill(empty[2]);
 
-	addExtra();
+	//addExtra();
 
 	if(BIRDSEYE){
 		birdsEye();

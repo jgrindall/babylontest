@@ -14,6 +14,7 @@ define(["MeshUtils", "Materials"], function(MeshUtils, Materials){
 		key = "brick_" + size[0] + "_" + size[1];
 		if(!cache[key]){
 			box = BABYLON.MeshBuilder.CreateBox(key, {height: SIZE, width:SIZE*size[0], depth:SIZE*size[1]}, scene);
+			box.convertToUnIndexedMesh();
 			//box.material = Materials.brickMaterial;
 			//box.material.alpha = 0;
 			cache[key] = box;
@@ -23,6 +24,7 @@ define(["MeshUtils", "Materials"], function(MeshUtils, Materials){
 		if(!cache[key_plane0]){
 			var plane0 = BABYLON.MeshBuilder.CreatePlane(key_plane0, {height: SIZE, width:SIZE*size[0]}, scene);
 			cache[key_plane0] = plane0;
+			plane0.convertToUnIndexedMesh();
 			plane0.material = Materials.steelMaterial;
 			MeshUtils.setUVScale(plane0, size[0], 1);
 			scene.meshes.pop();
@@ -30,6 +32,7 @@ define(["MeshUtils", "Materials"], function(MeshUtils, Materials){
 		if(!cache[key_plane1]){
 			var plane1 = BABYLON.MeshBuilder.CreatePlane(key_plane1, {height: SIZE, width:SIZE*size[1]}, scene);
 			cache[key_plane1] = plane1;
+			plane1.convertToUnIndexedMesh();
 			plane1.material = Materials.steelMaterial;
 			MeshUtils.setUVScale(plane1, size[1], 1);
 			scene.meshes.pop();
@@ -42,7 +45,7 @@ define(["MeshUtils", "Materials"], function(MeshUtils, Materials){
 		box = BABYLON.MeshBuilder.CreateBox(key, {height: SIZE, width:SIZE*size[0], depth:SIZE*size[1]}, scene);
 		box.setVerticesData("_width", _.map(_.range(VERT_COUNT), function(){return size[0];}), false, 1);
 		box.setVerticesData("_depth", _.map(_.range(VERT_COUNT), function(){return size[1];}), false, 1);
-		//box.convertToUnIndexedMesh();
+		box.convertToUnIndexedMesh();
 		var code = {
 	        vertexElement: "vertexShaderCode",
 	        fragmentElement: "fragmentShaderCode"
@@ -54,7 +57,6 @@ define(["MeshUtils", "Materials"], function(MeshUtils, Materials){
 		var shaderMaterial = new BABYLON.ShaderMaterial("shaderMaterial", scene, code, vars);
         shaderMaterial.setTexture("textureSampler", Materials.getTexture("brick"), scene);
         box.material = shaderMaterial;
-		//MeshUtils.setUVScale(box, size[0], size[1]);
 		cache[key] = box;
 		scene.meshes.pop();
 	};
@@ -71,7 +73,6 @@ define(["MeshUtils", "Materials"], function(MeshUtils, Materials){
 		cached = cache[key];
 		cacheI++;
 		box = cached.createInstance("index: " + cacheI);
- 		//box.material = cached.material;
 		box.checkCollisions = true;
 		box.setPhysicsState(BABYLON.PhysicsEngine.BoxImpostor, {mass:10, restitution:0.5, friction:0.5});
 		return box;
