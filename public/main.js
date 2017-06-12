@@ -180,18 +180,24 @@ require(["MeshUtils", "MeshCache", "GreedyMesh", "Materials", "GamePad", "lib/en
 			//var mat = new BABYLON.StandardMaterial("mat1", scene);
 		  //var texture = new BABYLON.Texture("assets/bricks.png", scene);
 		  //mat.diffuseTexture = texture;
+
+
+
+		  var _depth = 8;
+		  var _width = 12;
+
+
 		  var faceUV = [
-		  	new BABYLON.Vector4(0, 1, 10, 0.5),  //ok
-		  	new BABYLON.Vector4(0, 0.5, 10, 1),  //ok
+		  	new BABYLON.Vector4(0, 1, _width, 0.5),  //ok
+		  	new BABYLON.Vector4(0, 0.5, _width, 1),  //ok
 		  	new BABYLON.Vector4(0, 1.5, 1, 1),   //ok
 		  	new BABYLON.Vector4(0, 0, 1, 2),     //ok
 		  ];
 
-
 		  var options = {
-		    width: 10*SIZE,
+		    width: _width*SIZE,
 		    height: SIZE,
-		    depth: 2*SIZE,
+		    depth: _depth*SIZE,
 		    faceUV:faceUV
 		  };
 
@@ -203,7 +209,8 @@ require(["MeshUtils", "MeshCache", "GreedyMesh", "Materials", "GamePad", "lib/en
 			//box.material = Materials.bricksMaterial;
 			box.position = new BABYLON.Vector3(babylonPos.x + SIZE/2, -SIZE*1.5, babylonPos.z - SIZE/2);
 
-			box.setVerticesData("stuff", _.map(_.range(verticesCount), function(){return 10;}), false, 1);
+			box.setVerticesData("_width", _.map(_.range(verticesCount), function(){return _width;}), false, 1);
+			box.setVerticesData("_depth", _.map(_.range(verticesCount), function(){return _depth;}), false, 1);
 		  //box.subMeshes.push(new BABYLON.SubMesh(0, 0, verticesCount, 0, 3, box));
 		  //box.subMeshes.push(new BABYLON.SubMesh(0, 0, verticesCount, 4, 6, box));
 
@@ -228,7 +235,7 @@ require(["MeshUtils", "MeshCache", "GreedyMesh", "Materials", "GamePad", "lib/en
 	            fragmentElement: "fragmentShaderCode"
 	        },
 	        {
-	            attributes: ["position", "uv", "normal", "stuff"],
+	            attributes: ["position", "uv", "normal", "_depth", "_width"],
 	            uniforms: ["worldViewProjection", "worldViewProjectionInverse"]
 	        });
 
