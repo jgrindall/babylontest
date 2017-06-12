@@ -181,12 +181,12 @@ require(["MeshUtils", "MeshCache", "GreedyMesh", "Materials", "GamePad", "lib/en
 		  //var texture = new BABYLON.Texture("assets/bricks.png", scene);
 		  //mat.diffuseTexture = texture;
 		  var faceUV = [
-		  	new BABYLON.Vector4(0, 1, 10, 0.5),
-		  	new BABYLON.Vector4(0, 0, 1, 0.3),
-		  	new BABYLON.Vector4(0, 1, 1, 0.8),
-		  	new BABYLON.Vector4(0, 0, 1, 0.5),
+		  	new BABYLON.Vector4(0, 1, 10, 0.5),  //ok
+		  	new BABYLON.Vector4(0, 0.5, 10, 1),  //ok
+		  	new BABYLON.Vector4(0, 1.5, 1, 1),
+		  	new BABYLON.Vector4(0, 0, 1, 0.5),    // ok
 		  	new BABYLON.Vector4(0, 0, 2, 0.5),
-		  	new BABYLON.Vector4(0, 0, 2, 0.5)
+		  	new BABYLON.Vector4(0, 0.5, 9, 0.5)
 		  ];
 
 
