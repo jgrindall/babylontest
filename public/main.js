@@ -180,19 +180,29 @@ require(["MeshUtils", "MeshCache", "GreedyMesh", "Materials", "GamePad", "lib/en
 		  var texture = new BABYLON.Texture("assets/bricks.png", scene);
 		  mat.diffuseTexture = texture;
 		  var faceUV = [
-		  	new BABYLON.Vector4(0/2, 0/2, 1/2, 1/2),
-		  	new BABYLON.Vector4(1/2, 1/2, 2/2, 2/2),
-		  	new BABYLON.Vector4(2/2, 2/2, 3/2, 3/2),
-		  	new BABYLON.Vector4(3/2, 3/2, 4/2, 4/2),
-		  	new BABYLON.Vector4(4/2, 4/2, 5/2, 5/2),
-		  	new BABYLON.Vector4(5/2, 5/2, 6/2, 6/2)
+		  	new BABYLON.Vector4(0, 1, 0.5, 0),
+		  	new BABYLON.Vector4(0, 0, 0.5, 1),
+		  	new BABYLON.Vector4(0.5, 0, 1, 1),
+		  	new BABYLON.Vector4(0.5, 0, 1, 1),
+		  	new BABYLON.Vector4(),
+		  	new BABYLON.Vector4()
 		  ];
 
+
+		    var faceColors = [
+		    	new BABYLON.Color4(1,0,0,1),
+		    	new BABYLON.Color4(1,1,1,0),
+		    	new BABYLON.Color4(1,1,0,1),
+		    	new BABYLON.Color4(1,0,1,1),
+		    	new BABYLON.Color4(1,0,0,1),
+		    	new BABYLON.Color4(1,1,0,1)
+		   ];
 		  var options = {
 		    width: SIZE,
 		    height: SIZE,
 		    depth: SIZE,
-		    faceUV: faceUV
+		    faceUV: faceUV,
+		    faceColors:faceColors
 		  };
 		  var box = BABYLON.MeshBuilder.CreateBox('box', options, scene);
 		  box.material = mat;
