@@ -176,12 +176,12 @@ require(["MeshUtils", "MeshCache", "GreedyMesh", "Materials", "GamePad", "lib/en
 		extraBox.position = new BABYLON.Vector3(babylonPos.x + SIZE/2, -SIZE*1.5, babylonPos.z - SIZE/2);
 		*/
 
-			var mat = new BABYLON.StandardMaterial("mat1", scene);
-		  var texture = new BABYLON.Texture("assets/bricks.png", scene);
-		  mat.diffuseTexture = texture;
+			//var mat = new BABYLON.StandardMaterial("mat1", scene);
+		  //var texture = new BABYLON.Texture("assets/bricks.png", scene);
+		  //mat.diffuseTexture = texture;
 		  var faceUV = [
-		  	new BABYLON.Vector4(0, 1, 0.5, 0),
-		  	new BABYLON.Vector4(0, 0, 0.5, 1),
+		  	new BABYLON.Vector4(0, 1, 0.2, 0),
+		  	new BABYLON.Vector4(0, 0, 0.2, 1),
 		  	new BABYLON.Vector4(0.5, 0, 1, 1),
 		  	new BABYLON.Vector4(0.5, 0, 1, 1),
 		  	new BABYLON.Vector4(),
@@ -189,24 +189,34 @@ require(["MeshUtils", "MeshCache", "GreedyMesh", "Materials", "GamePad", "lib/en
 		  ];
 
 
-		    var faceColors = [
-		    	new BABYLON.Color4(1,0,0,1),
-		    	new BABYLON.Color4(1,1,1,0),
-		    	new BABYLON.Color4(1,1,0,1),
-		    	new BABYLON.Color4(1,0,1,1),
-		    	new BABYLON.Color4(1,0,0,1),
-		    	new BABYLON.Color4(1,1,0,1)
-		   ];
 		  var options = {
-		    width: SIZE,
+		    width: 10*SIZE,
 		    height: SIZE,
 		    depth: SIZE,
 		    faceUV: faceUV,
-		    faceColors:faceColors
 		  };
-		  var box = BABYLON.MeshBuilder.CreateBox('box', options, scene);
-		  box.material = mat;
+
+
+		BABYLONX.ShaderBuilder.InitializeEngine();
+
+			var box = BABYLON.MeshBuilder.CreateBox('box', options, scene);
+			var verticesCount = box.getTotalVertices();
 		  box.position = new BABYLON.Vector3(babylonPos.x + SIZE/2, -SIZE*1.5, babylonPos.z - SIZE/2);
+
+		  box.subMeshes.push(new BABYLON.SubMesh(0, 0, verticesCount, 0, 3, box));
+		  box.subMeshes.push(new BABYLON.SubMesh(0, 0, verticesCount, 4, 6, box));
+
+		  /*var mat_ = new BABYLONX.ShaderBuilder()
+		  		.InLine('if(nrm.z > 0.5 ){')
+				.Map({ path: 'brickMaterial', uv: 'vec2(pos.xy)' })
+				.InLine('}')
+				.BuildMaterial(scene);*/
+
+		var multimat = new BABYLON.MultiMaterial("multi", scene);
+    	multimat.subMaterials.push(Materials.brickMaterial);
+    	multimat.subMaterials.push(Materials.steelMaterial);
+    	box.material = multimat;
+
 
 	};
 
