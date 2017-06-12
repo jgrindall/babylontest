@@ -1,8 +1,8 @@
 define([], function(){
 	/* helper functions */
-	
+
 	var MeshUtils = {};
-	
+
 	MeshUtils.makeEmpty = function(SIZE_I, SIZE_J){
 		var a = [], _i, _j;
 		for(_i = 0; _i < SIZE_I; _i++){
@@ -53,7 +53,7 @@ define([], function(){
 		}
 		return a;
 	};
-	
+
 	MeshUtils.setUVScale = function(mesh, uScale, vScale) {
 		var i, UVs = mesh.getVerticesData(BABYLON.VertexBuffer.UVKind), len = UVs.length;
 		if (uScale !== 1) {

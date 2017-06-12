@@ -1,17 +1,17 @@
-require(["MeshUtils", "MeshCache", "GreedyMesh", "Materials", "GamePad"], function(MeshUtils, MeshCache, GreedyMesh, Materials, GamePad) {
-	
+require(["MeshUtils", "MeshCache", "GreedyMesh", "Materials", "GamePad", "lib/entity-manager"], function(MeshUtils, MeshCache, GreedyMesh, Materials, GamePad, EntityManager) {
+
 	var SIZE_I = 24;
 	var SIZE_J = 32;
 	var SIZE = 5;
 	var FRICTION = 0.4;
 	var ROT_SPEED = 0.03, SPEED = 0.5;
-	
+
 	var container, canvas, scene, engine, player, character, angle = 0, speed = 0, ang_speed = 0, angle = 0, _mode = "off";
-	
+
 	var BIRDSEYE = 0;
 
 	canvas = document.querySelector("#renderCanvas");
-	
+
 	var addControls = function(){
 		this.gamePad = new GamePad("zone_joystick");
 		this.gamePad.update.add({
@@ -52,6 +52,14 @@ require(["MeshUtils", "MeshCache", "GreedyMesh", "Materials", "GamePad"], functi
 		scene.enablePhysics();
 		var light0 = new BABYLON.DirectionalLight("Omni", new BABYLON.Vector3(-2, -5, 2), scene);
 		var light1 = new BABYLON.PointLight("Omni", new BABYLON.Vector3(2, -5, -2), scene);
+
+		var light2 = new BABYLON.DirectionalLight("Dir0", new BABYLON.Vector3(0, -1, 0), scene);
+		light2.position = new BABYLON.Vector3(0, 20, 0);
+		light2.diffuse = new BABYLON.Color3(1, 0, 0);
+		light2.specular = new BABYLON.Color3(1, 1, 1);
+
+		var light3 = new BABYLON.DirectionalLight("Omni", new BABYLON.Vector3(2, 5, -2), scene);
+
 		camera = new BABYLON.FreeCamera("FreeCamera", new BABYLON.Vector3(SIZE_I*SIZE/2, 250, SIZE_J*SIZE/2), scene);
 		scene.gravity = new BABYLON.Vector3(0, 0, 0);
 		scene.collisionsEnabled = true;
@@ -69,7 +77,6 @@ require(["MeshUtils", "MeshCache", "GreedyMesh", "Materials", "GamePad"], functi
 		skyboxMaterial.diffuseColor = new BABYLON.Color3(0, 0, 0);
 		skyboxMaterial.specularColor = new BABYLON.Color3(0, 0, 0);
 		skybox.material = skyboxMaterial;
-			
 	};
 
 	var addGround = function(){
@@ -95,7 +102,7 @@ require(["MeshUtils", "MeshCache", "GreedyMesh", "Materials", "GamePad"], functi
 		}
 		player.moveWithCollisions(new BABYLON.Vector3(dx, 0, dz));
 	}
-	
+
 	var matchPlayer = function(){
 		camera.position = player.position.clone();
 		camera.rotationQuaternion = BABYLON.Quaternion.RotationAxis(new BABYLON.Vector3(0, 1, 0), angle);
@@ -124,7 +131,7 @@ require(["MeshUtils", "MeshCache", "GreedyMesh", "Materials", "GamePad"], functi
 		player.ellipsoid = new BABYLON.Vector3(SIZE/3, SIZE/3, SIZE/3);
 		player.setPhysicsState(BABYLON.PhysicsEngine.SphereImpostor, { mass: 0, restitution:0.5, friction:0.5 });
 	};
-	
+
 	var addCharacter = function(pos){
 		var y = -SIZE*1.5
 		var mat = new BABYLON.StandardMaterial("Mat", scene);
@@ -132,6 +139,7 @@ require(["MeshUtils", "MeshCache", "GreedyMesh", "Materials", "GamePad"], functi
 		mat.backFaceCulling = false;
 		var babylonPos = ijToBabylon(pos[0], pos[1]);
 		character = BABYLON.MeshBuilder.CreateBox("character", {height: SIZE, width:SIZE, depth:SIZE}, scene);
+		character.setPhysicsState(BABYLON.PhysicsEngine.BoxImpostor, { mass: 0, restitution:0.5, friction:0.5 });
 		character.material = mat;
 		character.checkCollisions = true;
 		character.position = new BABYLON.Vector3(babylonPos.x + SIZE/2, y, babylonPos.z - SIZE/2);
@@ -141,9 +149,55 @@ require(["MeshUtils", "MeshCache", "GreedyMesh", "Materials", "GamePad"], functi
 		if (character.intersectsMesh(player, false)) {
 			console.log("HIT");
 		}
-		if(character.intersectsMesh(container, false)){
+		if(player.intersectsMesh(container, false)){
 			console.log("HIT CHAR");
 		}
+	};
+
+	var addExtra = function(){
+		var babylonPos = ijToBabylon(10, 10);
+		/*var mat = Materials.getMultiMaterial(scene, "assets/brick.jpg", "assets/brick_rot.jpg");
+		var babylonPos = ijToBabylon(10, 10);
+		var uv = [
+			new BABYLON.Vector4(0, 0, 1, 1),
+			new BABYLON.Vector4(0, 0, 1, 1),
+			new BABYLON.Vector4(0, 0, 1, 1),
+			new BABYLON.Vector4(0, 0, 1, 1),
+			new BABYLON.Vector4(0, 0, 1, 1),
+			new BABYLON.Vector4(0, 0, 1, 1),
+			new BABYLON.Vector4(0, 0, 1, 1)
+		];
+		var extraBox = BABYLON.MeshBuilder.CreateBox("player", {height: SIZE, width:SIZE, depth:SIZE, faceUV:uv}, scene);
+		extraBox.material = mat;
+		var verticesCount = extraBox.getTotalVertices();
+		new BABYLON.SubMesh(0, 0, verticesCount, 0, 3, extraBox);
+		new BABYLON.SubMesh(1, 0, verticesCount, 3, 6, extraBox);
+		new BABYLON.SubMesh(2, 0, verticesCount, 6, 9, extraBox);
+		extraBox.position = new BABYLON.Vector3(babylonPos.x + SIZE/2, -SIZE*1.5, babylonPos.z - SIZE/2);
+		*/
+
+			var mat = new BABYLON.StandardMaterial("mat1", scene);
+		  var texture = new BABYLON.Texture("assets/bricks.png", scene);
+		  mat.diffuseTexture = texture;
+		  var faceUV = [
+		  	new BABYLON.Vector4(0/2, 0/2, 1/2, 1/2),
+		  	new BABYLON.Vector4(1/2, 1/2, 2/2, 2/2),
+		  	new BABYLON.Vector4(2/2, 2/2, 3/2, 3/2),
+		  	new BABYLON.Vector4(3/2, 3/2, 4/2, 4/2),
+		  	new BABYLON.Vector4(4/2, 4/2, 5/2, 5/2),
+		  	new BABYLON.Vector4(5/2, 5/2, 6/2, 6/2)
+		  ];
+
+		  var options = {
+		    width: SIZE,
+		    height: SIZE,
+		    depth: SIZE,
+		    faceUV: faceUV
+		  };
+		  var box = BABYLON.MeshBuilder.CreateBox('box', options, scene);
+		  box.material = mat;
+		  box.position = new BABYLON.Vector3(babylonPos.x + SIZE/2, -SIZE*1.5, babylonPos.z - SIZE/2);
+
 	};
 
 	var addBill = function(pos){
@@ -163,8 +217,10 @@ require(["MeshUtils", "MeshCache", "GreedyMesh", "Materials", "GamePad"], functi
 		mat.backFaceCulling = false
 		mat.freeze();
 		plane.parent = container;
-		plane.billboardMode = BABYLON.Mesh.BILLBOARDMODE_ALL;
+			plane.billboardMode = BABYLON.Mesh.BILLBOARDMODE_ALL;
 		plane.material = mat;
+		container.setPhysicsState(BABYLON.PhysicsEngine.BoxImpostor, { mass: 0, restitution:0.5, friction:0.5 });
+		console.log(container, player);
 	};
 
 	var addWalls = function(quads){
@@ -174,7 +230,7 @@ require(["MeshUtils", "MeshCache", "GreedyMesh", "Materials", "GamePad"], functi
 			var size = (quad[2] >= quad[3]) ? [quad[2], quad[3]] : [quad[3], quad[2]];
 			var wall = MeshCache.getFromCache(size, "brick");
 			if(quad[2] < quad[3]){
-				wall.rotation = new BABYLON.Vector3(0, Math.PI/2, 0);
+				//wall.rotation = new BABYLON.Vector3(0, Math.PI/2, 0);
 			}
 			wall.position.x = topLeft.x + (quad[1] + quad[2]/2)*SIZE;
 			wall.position.z = topLeft.z - (quad[0] + quad[3]/2)*SIZE;
@@ -186,10 +242,14 @@ require(["MeshUtils", "MeshCache", "GreedyMesh", "Materials", "GamePad"], functi
 		camera.rotation = new BABYLON.Vector3(Math.PI/2, 0 , 0);
 	};
 	engine = new BABYLON.Engine(canvas, false, null, false);
-	var img = MeshUtils.makeRnd(SIZE_I, SIZE_J, {rnd:0.005});
+	var img = MeshUtils.makeRnd(SIZE_I, SIZE_J, {rnd:0.000});
 	makeScene();
 	addControls();
+	
+
 	Materials.makeMaterials(scene);
+
+
 	var greedy = GreedyMesh.getBest(img);
 	MeshCache.setForDims(scene, greedy.dims, SIZE, "brick");
 	addWalls(greedy.quads);
@@ -199,11 +259,22 @@ require(["MeshUtils", "MeshCache", "GreedyMesh", "Materials", "GamePad"], functi
 	addGround();
 	addSky();
 	addBill(empty[2]);
+
+	addExtra();
+
+	container.physicsImpostor.registerOnPhysicsCollide(player.physicsImpostor, function(main, collided) {
+		console.log("BANG1");
+	});
+
+
+	character.physicsImpostor.registerOnPhysicsCollide(player.physicsImpostor, function(main, collided) {
+		console.log("BANG2");
+	});
 	if(BIRDSEYE){
 		birdsEye();
 	}
 
-	scene.debugLayer.show();
+	//scene.debugLayer.show();
 	engine.runRenderLoop(function () {
 		if(_mode !== "off"){
 			movePlayer();
@@ -227,7 +298,7 @@ require(["MeshUtils", "MeshCache", "GreedyMesh", "Materials", "GamePad"], functi
 	window.addEventListener("resize", function () {
 	   engine.resize();
 	});
-	
+
 	document.onkeydown = function(e){
 		if(e.which === 38){
 			// fd
@@ -252,22 +323,53 @@ require(["MeshUtils", "MeshCache", "GreedyMesh", "Materials", "GamePad"], functi
 			_mode = "on";
 		}
 	};
-	
+
 	document.onkeyup = function(){
 		speed = 0;
 		_mode = "off";
 	};
 
-	
+
+	var manager = new EntityManager();
+
+
+	var PlayerComponent = {
+	    name: 'Player',
+	    description: "The player's state",
+	    state: {
+	        life: 100,
+	        strength: 18,
+	        charisma: 3,
+	    }
+	};
+
+	var MessageComponent = {
+	    name: 'Message',
+	    description: "The message",
+	    state: {
+	        text:"HELLO THERE!!"
+	    }
+	};
+
+	var PossessionsComponent = {
+		name: 'Possessions',
+	    description: "The Possessions",
+	    state: {
+	        objects:[]
+	    }
+	};
+
+	console.log(manager);
+	manager.addComponent(PlayerComponent.name, PlayerComponent);
+	manager.addComponent(MessageComponent.name, MessageComponent);
+	manager.addComponent(PossessionsComponent.name, PossessionsComponent);
+	var playerId = manager.createEntity(['Player', 'Message', 'Possessions']);
+	var playerData = manager.getComponentDataForEntity('Player', playerId);
+	playerData.life = 80;
+	console.log(playerData);
+
+
+	var playerData2 = manager.getComponentDataForEntity('Possessions', playerId);
+	console.log(playerData2);
 });
-
-
-/*
-
-sphere.physicsImpostor.registerOnPhysicsCollide(ground.physicsImpostor, function(main, collided) {
-	    main.object.material.diffuseColor = new BABYLON.Color3(Math.random(), Math.random(), Math.random());
-	});
-
-
-*/
 
