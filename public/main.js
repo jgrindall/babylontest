@@ -365,10 +365,10 @@ require(["MeshUtils", "MeshCache", "GreedyMesh", "Materials", "GamePad", "lib/en
 	console.log(greedy.quads);
 	var empty = _.shuffle(MeshUtils.getMatchingLocations(img, 0));
 	addPlayer(empty[0]);
-	//addCharacter(empty[1]);
+	addCharacter(empty[1]);
 	addGround();
-	//addSky();
-	//addBill(empty[2]);
+	addSky();
+	addBill(empty[2]);
 
 	//addExtra();
 
