@@ -12,31 +12,38 @@ define(["MeshUtils", "Materials"], function(MeshUtils, Materials){
 		cacheI = 0;
 	};
 
-	MeshCache.addToCache = function(scene, size, SIZE, materialName){
+	MeshCache.addToCache = function(scene, size, SIZE, materialName, options){
 		var key_box, box, key_plane0, key_plane1, plane0, plane1;
-		console.log("cache", size, materialName);
 		key_box = "box" + "_" + size[0] + "_" + size[1];
-		if(!cache[key_box]){
-			box = BABYLON.MeshBuilder.CreateBox(key_box, {height: SIZE, width:SIZE*size[0], depth:SIZE*size[1]}, scene);
-			box.convertToUnIndexedMesh();
-			cache[key_box] = box;
-			scene.meshes.pop();
-		}
 		key_plane0 = materialName + "_" + size[0], key_plane1 = materialName + "_" + size[1];
+		if(options.BOXES){
+			if(!cache[key_box]){
+				console.log("cache", key_box);
+				box = BABYLON.MeshBuilder.CreateBox(key_box, {height: SIZE, width:SIZE*size[0], depth:SIZE*size[1]}, scene);
+				box.convertToUnIndexedMesh();
+				box.setEnabled(false);
+				cache[key_box] = box;
+				scene.meshes.pop();
+			}
+		}
 		if(!cache[key_plane0]){
+			console.log("cache", key_plane0);
 			plane0 = BABYLON.MeshBuilder.CreatePlane(key_plane0, {height: SIZE, width:SIZE*size[0]}, scene);
 			cache[key_plane0] = plane0;
 			plane0.convertToUnIndexedMesh();
 			plane0.material = (materialName === "brick" ? Materials.brickMaterial : Materials.steelMaterial);
 			MeshUtils.setUVScale(plane0, size[0], 1);
+			plane0.setEnabled(false);
 			scene.meshes.pop();
 		}
 		if(!cache[key_plane1]){
+			console.log("cache", key_plane1);
 			plane1 = BABYLON.MeshBuilder.CreatePlane(key_plane1, {height: SIZE, width:SIZE*size[1]}, scene);
 			cache[key_plane1] = plane1;
 			plane1.convertToUnIndexedMesh();
 			plane1.material = (materialName === "brick" ? Materials.brickMaterial : Materials.steelMaterial);
 			MeshUtils.setUVScale(plane1, size[1], 1);
+			plane1.setEnabled(false);
 			scene.meshes.pop();
 		}
 	};
@@ -63,9 +70,9 @@ define(["MeshUtils", "Materials"], function(MeshUtils, Materials){
 		scene.meshes.pop();
 	};
 
-	MeshCache.setForDims = function(scene, dims, SIZE, materialName){
+	MeshCache.setForDims = function(scene, dims, SIZE, materialName, options){
 		_.each(dims, function(size){
-			MeshCache.addToCache(scene, size, SIZE, materialName);
+			MeshCache.addToCache(scene, size, SIZE, materialName, options);
 		});
 	};
 

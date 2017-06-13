@@ -1,14 +1,14 @@
 require(["MeshUtils", "MeshCache", "GreedyMesh", "Materials", "GamePad", "lib/entity-manager"], function(MeshUtils, MeshCache, GreedyMesh, Materials, GamePad, EntityManager) {
 
-	var SIZE_I = 16;
-	var SIZE_J = 16;
+	var SIZE_I = 24;
+	var SIZE_J = 24;
 	var SIZE = 5;
 	var FRICTION = 0.4;
 	var ROT_SPEED = 0.03, SPEED = 0.5;
 
 	var container, canvas, scene, engine, player, character, angle = 0, speed = 0, ang_speed = 0, angle = 0, _mode = "off";
 
-	var BIRDSEYE = 0;
+	var BIRDSEYE = 0, BOXES = true;
 
 	canvas = document.querySelector("#renderCanvas");
 
@@ -303,23 +303,19 @@ require(["MeshUtils", "MeshCache", "GreedyMesh", "Materials", "GamePad", "lib/en
 		var topLeft = {"x":0, "z":SIZE_I * SIZE};
 		_.each(quads, function(quad){
 			var size = (quad[2] >= quad[3]) ? [quad[2], quad[3]] : [quad[3], quad[2]];
-var x = topLeft.x + (quad[1] + quad[2]/2)*SIZE;
+			var x = topLeft.x + (quad[1] + quad[2]/2)*SIZE;
 			var z = topLeft.z - (quad[0] + quad[3]/2)*SIZE;
-			/*
-			var wall = MeshCache.getBoxFromCache(size, materialName);
-			if(quad[2] < quad[3]){
-				wall.rotation = new BABYLON.Vector3(0, Math.PI/2, 0);
+			if(BOXES){
+				var wall = MeshCache.getBoxFromCache(size, materialName);
+				if(quad[2] < quad[3]){
+					wall.rotation = new BABYLON.Vector3(0, Math.PI/2, 0);
+				}
+				wall.isVisible = false;
+				wall.position.x = x;
+				wall.position.z = z;
+				wall.position.y = y;
+				wall.freezeWorldMatrix();
 			}
-			wall.isVisible = false;
-			
-			wall.position.x = x;
-			wall.position.z = z;
-			wall.position.y = y;
-			wall.freezeWorldMatrix();
-			//wall.opacity = 0.5;
-			*/
-
-
 			var plane0 = MeshCache.getPlaneFromCache(quad[2], materialName);
 			plane0.position.x = x;
 			plane0.position.z = z + SIZE * quad[3]/2;
@@ -348,15 +344,16 @@ var x = topLeft.x + (quad[1] + quad[2]/2)*SIZE;
 			plane3.rotation = new BABYLON.Vector3(0, -Math.PI/2, 0);
 			plane3.freezeWorldMatrix();
 
-
-			plane0.checkCollisions = true;
-			plane1.checkCollisions = true;
-			plane2.checkCollisions = true;
-			plane3.checkCollisions = true;
-			plane0.setPhysicsState(BABYLON.PhysicsEngine.BoxImpostor, { mass: 0, restitution:0.5, friction:0.5 });
-			plane1.setPhysicsState(BABYLON.PhysicsEngine.BoxImpostor, { mass: 0, restitution:0.5, friction:0.5 });
-			plane2.setPhysicsState(BABYLON.PhysicsEngine.BoxImpostor, { mass: 0, restitution:0.5, friction:0.5 });
-			plane3.setPhysicsState(BABYLON.PhysicsEngine.BoxImpostor, { mass: 0, restitution:0.5, friction:0.5 });
+			if(!BOXES){
+				plane0.checkCollisions = true;
+				plane1.checkCollisions = true;
+				plane2.checkCollisions = true;
+				plane3.checkCollisions = true;
+				plane0.setPhysicsState(BABYLON.PhysicsEngine.BoxImpostor, { mass: 0, restitution:0.5, friction:0.5 });
+				plane1.setPhysicsState(BABYLON.PhysicsEngine.BoxImpostor, { mass: 0, restitution:0.5, friction:0.5 });
+				plane2.setPhysicsState(BABYLON.PhysicsEngine.BoxImpostor, { mass: 0, restitution:0.5, friction:0.5 });
+				plane3.setPhysicsState(BABYLON.PhysicsEngine.BoxImpostor, { mass: 0, restitution:0.5, friction:0.5 });
+			}
 
 
 		});
@@ -384,7 +381,21 @@ var x = topLeft.x + (quad[1] + quad[2]/2)*SIZE;
 		camera.rotation = new BABYLON.Vector3(Math.PI/2, 0 , 0);
 	};
 	engine = new BABYLON.Engine(canvas, false, null, false);
-	var img = MeshUtils.makeRnd(SIZE_I, SIZE_J, {rnd:0.1, values:[0, 1, 2]});
+
+
+var MyLoadingScreen  = function(text) {
+  	this.loadingUIText = text;
+}
+MyLoadingScreen.prototype.displayLoadingUI = function() {
+  alert(this.loadingUIText);
+};
+MyLoadingScreen.prototype.hideLoadingUI = function() {
+  alert("Loaded!");
+};
+
+	engine.loadingScreen = new MyLoadingScreen("I'm loading!!");
+	var img = MeshUtils.makeRnd(SIZE_I, SIZE_J, {rnd:0.15, values:[0, 1, 2]});
+	alert(MeshUtils.getSolid(img));
 	console.log(img);
 	makeScene();
 	addControls();
@@ -397,7 +408,7 @@ var x = topLeft.x + (quad[1] + quad[2]/2)*SIZE;
 	var materialNames = ["void", "brick", "steel"];
 	MeshCache.clear();
 	_.each(greedy, function(val, key){
-		MeshCache.setForDims(scene, val.dims, SIZE, materialNames[key]);
+		MeshCache.setForDims(scene, val.dims, SIZE, materialNames[key], {BOXES:BOXES});
 	});
 	_.each(greedy, function(val, key){
 		addWalls(key, val.quads);
@@ -408,8 +419,8 @@ var x = topLeft.x + (quad[1] + quad[2]/2)*SIZE;
 	addPlayer(empty[0]);
 	//addCharacter(empty[1]);
 	addGround();
-	//addSky();
-	//addBill(empty[2]);
+	addSky();
+	addBill(empty[2]);
 
 	//addExtra();
 
@@ -420,6 +431,10 @@ var x = topLeft.x + (quad[1] + quad[2]/2)*SIZE;
 	}
 
 	scene.debugLayer.show();
+
+	 engine.setHardwareScalingLevel(1);
+
+	
 	engine.runRenderLoop(function () {
 		if(_mode !== "off"){
 			movePlayer();

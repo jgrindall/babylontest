@@ -4,6 +4,9 @@ define([], function(){
 
 	var Textures = {};
 
+	var RED = new BABYLON.Color3(1.0, 0.2, 0.7);
+	var GREEN = new BABYLON.Color3(0.5, 0.6, 0.3);
+
 	Materials.getTexture = function(materialName){
 		return Textures[materialName];
 	};
@@ -15,11 +18,17 @@ define([], function(){
 
 	Materials.makeMaterials = function(scene){
 		Materials.brickMaterial = new BABYLON.StandardMaterial("brickMaterial", scene);
+		Materials.brickMaterial_low = new BABYLON.StandardMaterial("brickMaterial_low", scene);
 		Materials.steelMaterial = new BABYLON.StandardMaterial("steelMaterial", scene);
+		Materials.steelMaterial_low = new BABYLON.StandardMaterial("steelMaterial_low", scene);
 		Materials.brickMaterial.diffuseTexture = Materials.getTexture("brick");
 		Materials.steelMaterial.diffuseTexture = Materials.getTexture("steel");
+		Materials.brickMaterial_low.diffuseColor = RED;
+		Materials.steelMaterial_low.diffuseColor = GREEN;
 		Materials.brickMaterial.freeze();
 		Materials.steelMaterial.freeze();
+		Materials.brickMaterial_low.freeze();
+		Materials.steelMaterial_low.freeze();
 	};
 
 	Materials.getTextureFromCanvas = function(rect, color){
