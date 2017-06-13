@@ -25,6 +25,13 @@ define([], function(){
 		}
 	};
 
+	MeshUtils.logGrouped = function(grouped){
+		_.each(grouped, function(group, key){
+			console.log("key: ", key);
+			MeshUtils.log(group);
+		});
+	};
+
 	MeshUtils.getMatchingLocations = function(a, val){
 		var _i, _j, SIZE_I = a.length, SIZE_J = a[0].length, matching = [];
 		for(_i = 0; _i < SIZE_I; _i++){
@@ -38,8 +45,13 @@ define([], function(){
 	};
 
 	MeshUtils.makeRnd = function(SIZE_I, SIZE_J, options){
-		var _i, _j, a = [];
-		options = _.defaults(options || {}, {"rnd":0.5});
+		var _i, _j, a = [], getVal;
+		options = _.defaults(options || {}, {"rnd":0.5, "values":[0, 1]});
+		getVal = function(){
+			console.log("get", options.values);
+			var n = options.values.length - 1;
+			return options.values[Math.floor(Math.random()*n) + 1];
+		};
 		for(_i = 0; _i < SIZE_I; _i++){
 			a[_i] = [];
 			for(_j = 0; _j < SIZE_J; _j++){
@@ -47,7 +59,7 @@ define([], function(){
 					a[_i][_j] = 1;
 				}
 				else{
-					a[_i][_j] = (Math.random() > options.rnd) ? 0 : 1;
+					a[_i][_j] = (Math.random() > options.rnd) ? 0 : getVal();
 				}
 			}
 		}

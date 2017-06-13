@@ -9,18 +9,16 @@ define([], function(){
 	};
 
 	Materials.makeTextures = function(scene){
-		//Textures["brick"] = new BABYLON.Texture("assets/brick.jpg", scene);
+		Textures["brick"] = new BABYLON.Texture("assets/brick.jpg", scene);
 		Textures["steel"] = new BABYLON.Texture("assets/steel.jpg", scene);
 	};
 
 	Materials.makeMaterials = function(scene){
-		//Materials.brickMaterial = new BABYLON.StandardMaterial("brickMaterial", scene);
-		//Materials.brickMaterial.diffuseTexture = Materials.getTexture("brick");
-		//Materials.brickMaterial.backFaceCulling = false
-		//Materials.brickMaterial.freeze();
+		Materials.brickMaterial = new BABYLON.StandardMaterial("brickMaterial", scene);
 		Materials.steelMaterial = new BABYLON.StandardMaterial("steelMaterial", scene);
+		Materials.brickMaterial.diffuseTexture = Materials.getTexture("brick");
 		Materials.steelMaterial.diffuseTexture = Materials.getTexture("steel");
-		//Materials.steelMaterial.backFaceCulling = false
+		Materials.brickMaterial.freeze();
 		Materials.steelMaterial.freeze();
 	};
 

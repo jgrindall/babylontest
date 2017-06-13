@@ -116,6 +116,43 @@ define(["MeshUtils"], function(MeshUtils){
 		return dims;
 	};
 
+	var getNonZeroVals = function(a){
+		var _i, _j, SIZE_I, SIZE_J, vals = [];
+		SIZE_I = a.length;
+		SIZE_J = a[0].length;
+		for(_i = 0; _i < SIZE_I; _i++){
+			for(_j = 0; _j < SIZE_J; _j++){
+				if(a[_i][_j] > 0){
+					vals.push(a[_i][_j]);
+				}
+			}
+		}
+		return vals;
+	};
+
+	var getGridForVal = function(a, val){
+		var _i, _j, SIZE_I, SIZE_J, group;
+		SIZE_I = a.length;
+		SIZE_J = a[0].length;
+		group = MeshUtils.makeEmpty(SIZE_I, SIZE_J);
+		for(_i = 0; _i < SIZE_I; _i++){
+			for(_j = 0; _j < SIZE_J; _j++){
+				if(a[_i][_j] === val){
+					group[_i][_j] = 1;
+				}
+			}
+		}
+		return group;
+	};
+
+	var getGrouped = function(a){
+		var vals = getNonZeroVals(a), grouped = {};
+		_.each(vals, function(val){
+			grouped[val] = getGridForVal(a, val);
+		});
+		return grouped;
+	};
+
 	var getBestGreedyMesh = function(img){
 		var quadsH, quadsV, dimsV, dimsH;
 		quadsH = greedyMesh(img, {dir:"horiz"});
@@ -126,9 +163,20 @@ define(["MeshUtils"], function(MeshUtils){
 		return (dimsH.length <= dimsV.length) ? {"quads":quadsH, "dims":dimsH} : {"quads":quadsV, "dims":dimsV};
 	};
 
+	var getBestGrouped = function(img){
+		console.log("get mesh data for grouped:", grouped);
+		var groups = {}, grouped = getGrouped(img);
+		_.each(grouped, function(group, key){
+			console.log("get mesh data for group", group);
+			groups[key] = getBestGreedyMesh(group);
+		});
+		return groups;
+	};
+
 
 	return {
-		"getBest":getBestGreedyMesh
+		"getBest":getBestGreedyMesh,
+		"getBestGrouped":getBestGrouped
 	}
 
 });
