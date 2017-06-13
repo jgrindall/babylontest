@@ -190,8 +190,7 @@ define(["MeshUtils"], function(MeshUtils){
 
 
 	return {
-		"getBest":getBestGreedyMesh,
-		"getBestGrouped":getBestGrouped
+		"getBest":getBestGreedyMesh
 	}
 
 });

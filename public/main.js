@@ -1,7 +1,7 @@
 require(["MeshUtils", "MeshCache", "GreedyMesh", "Materials", "GamePad", "lib/entity-manager"], function(MeshUtils, MeshCache, GreedyMesh, Materials, GamePad, EntityManager) {
 
-	var SIZE_I = 15;
-	var SIZE_J = 15;
+	var SIZE_I = 5;
+	var SIZE_J = 5;
 	var SIZE = 5;
 	var FRICTION = 0.4;
 	var ROT_SPEED = 0.03, SPEED = 0.5;
@@ -403,7 +403,11 @@ MyLoadingScreen.prototype.hideLoadingUI = function() {
 
 	var img = MeshUtils.makeRnd(SIZE_I, SIZE_J, {rnd:0.15, values:[0, 1, 2]});
 	MeshUtils.log(img);
+
 	console.log(img);
+
+	console.log(MeshUtils.getFaces(img));
+
 	makeScene();
 	addControls();
 
