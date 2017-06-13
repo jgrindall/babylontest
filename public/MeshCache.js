@@ -19,6 +19,8 @@ define(["MeshUtils", "Materials"], function(MeshUtils, Materials){
 			console.log("cache ", key);
 			box = BABYLON.MeshBuilder.CreateBox(key, {height: SIZE, width:SIZE*size[0], depth:SIZE*size[1]}, scene);
 			box.convertToUnIndexedMesh();
+			box.checkCollisions = true;
+			//box.setPhysicsState(BABYLON.PhysicsEngine.BoxImpostor, {mass:10, restitution:0.5, friction:0.5});
 			box.setEnabled(false);
 			cache[key] = box;
 			scene.meshes.pop();
@@ -117,7 +119,7 @@ define(["MeshUtils", "Materials"], function(MeshUtils, Materials){
 			box = cached.createInstance("box index: " + cacheI);
 			cacheI++;
 			box.checkCollisions = true;
-			box.setPhysicsState(BABYLON.PhysicsEngine.BoxImpostor, {mass:10, restitution:0.5, friction:0.5});
+			//box.setPhysicsState(BABYLON.PhysicsEngine.BoxImpostor, {mass:10, restitution:0.5, friction:0.5});
 			return box;
 		}
 		else{
@@ -128,10 +130,15 @@ define(["MeshUtils", "Materials"], function(MeshUtils, Materials){
 	MeshCache.getPlaneFromCache = function(size, key){
 		var cached, plane, key = "plane_" + key + "_" + size;
 		cached = cache[key];
-		cacheI++;
-		plane = cached.createInstance("index: " + cacheI);
- 		plane.material = cached.material;
-		return plane;
+		if(cached){
+			cacheI++;
+			plane = cached.createInstance("index: " + cacheI);
+	 		plane.material = cached.material;
+			return plane;
+		}
+		else{
+			throw new Error("not found " + key);
+		}
 	};
 
 	return MeshCache;

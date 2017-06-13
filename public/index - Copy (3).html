@@ -23,7 +23,7 @@
         </style>
     </head>
     <body>
-	
+
         <canvas width='90%' height='90%' id="renderCanvas"></canvas>
 		<p id="speed"></p>
 		<div id="zone_joystick"></div>
@@ -35,10 +35,10 @@
 			var SIZE_I = 24;
 			var SIZE_J = 32;
 			var SIZE = 5;
-			
-			
+
+
             var speed = 0, ang_speed = 0, angle = 0, friction = 0.4;
-			
+
 			var makeMaterials = function(){
                 brickMaterial = new BABYLON.StandardMaterial("brickMaterial", scene);
                 brickMaterial.diffuseTexture = new BABYLON.Texture("brick.jpg", scene);
@@ -49,7 +49,7 @@
                 steelMaterial.backFaceCulling = false
                 steelMaterial.freeze();
             };
-			
+
 			var setUVScale = function(mesh, uScale, vScale) {
 				var i, UVs = mesh.getVerticesData(BABYLON.VertexBuffer.UVKind), len = UVs.length;
 				if (uScale !== 1) {
@@ -64,9 +64,9 @@
 				}
 				mesh.setVerticesData(BABYLON.VertexBuffer.UVKind, UVs);
 			};
-			
+
 			var cache = {};
-			
+
 			var makeCache = function(size){
 				var key = "brick_" + size[0] + "_" + size[1];
 				var box = BABYLON.MeshBuilder.CreateBox(key, {height: SIZE, width:SIZE*size[0], depth:SIZE*size[1]}, scene);
@@ -86,7 +86,7 @@
 				box.checkCollisions = true;
 				return box;
 			};
-			
+
 			var addControls = function(){
 				var ROT_SPEED = 0.03, SPEED = 0.6;
 				var manager = nipplejs.create({
@@ -99,7 +99,7 @@
 					},
 					color: 'red'
 				});
-				
+
 				manager.on("move", function(e, data){
 					var d = (data.distance / 40);// from 0 to 1
 					var a = data.angle.degree;
@@ -141,8 +141,8 @@
 				camera.applyGravity = true;
 				camera.ellipsoid = new BABYLON.Vector3(5, 1, 5);
             }
-			
-			
+
+
 			var addSky = function(){
 				var skybox = BABYLON.MeshBuilder.CreateBox("skyBox", {size:1024}, scene);
 				var skyboxMaterial = new BABYLON.StandardMaterial("skyBox", scene);
@@ -152,7 +152,7 @@
 				skyboxMaterial.diffuseColor = new BABYLON.Color3(0, 0, 0);
 				skyboxMaterial.specularColor = new BABYLON.Color3(0, 0, 0);
 				skybox.material = skyboxMaterial;
-					
+
 			};
 
 			var addGround = function(){
@@ -165,7 +165,7 @@
 				ground.checkCollisions = true;
 			};
 
-			
+
 			var movePlayer = function(){
                 var dx, dz, scaleFactor = (60/engine.getFps());
                 angle += ang_speed;
@@ -180,7 +180,7 @@
                 camera.position.z = player.position.z;
 				camera.rotationQuaternion = BABYLON.Quaternion.RotationAxis(new BABYLON.Vector3(0, 1, 0), angle);
             }
-			
+
 			var ijToBabylon = function(i, j){
 				var topLeft = {"x":0, "z":SIZE_I * SIZE};
 				return {
@@ -188,7 +188,7 @@
 					z:topLeft.z - i*SIZE
 				};
 			};
-			
+
 			var addPlayer = function(pos){
                 var mat = new BABYLON.StandardMaterial("Mat", scene);
 				mat.diffuseTexture = new BABYLON.Texture("img/skybox_nx.jpg", scene);
@@ -200,9 +200,9 @@
                 player.checkCollisions = true;
                 player.position = new BABYLON.Vector3(babylonPos.x + SIZE/2, -7, babylonPos.z + SIZE/2);
                 player.ellipsoid = new BABYLON.Vector3(SIZE/3, SIZE/3, SIZE/3);
-                player.setPhysicsState(BABYLON.PhysicsEngine.SphereImpostor, { mass: 0 });
+                //player.setPhysicsState(BABYLON.PhysicsEngine.SphereImpostor, { mass: 0 });
             };
-			
+
 			var addWalls = function(quads){
 				var y = -SIZE*1.5;
 				var topLeft = {"x":0, "z":SIZE_I * SIZE};
@@ -220,30 +220,30 @@
 					wall.freezeWorldMatrix();
 				});
 			};
-			
+
 			var birdsEye = function(){
 				//camera.rotation = new BABYLON.Vector3(Math.PI/2, 0 , 0);
 			};
-			
+
 			engine = new BABYLON.Engine(canvas, false, null, false);
 			makeScene();
 			addControls();
 			makeMaterials();
-			
+
 			var img = makeRnd({rnd:0.1});
 			var greedy = getBestGreedyMesh(img);
 			_.each(greedy.dims, function(size){
 				makeCache(size);
 			});
-			
+
 			addWalls(greedy.quads);
 			var empty = getEmpty(img);
 			addPlayer(empty);
 			addGround();
 			addSky();
 			birdsEye();
-			
-			
+
+
 			scene.debugLayer.show();
             engine.runRenderLoop(function () {
 				if(_mode !== "off"){
@@ -265,9 +265,9 @@
                engine.resize();
             });
         </script>
-		
+
 		<script data-main="main" src="require.js"></script>
-		
-		
+
+
     </body>
 </html>

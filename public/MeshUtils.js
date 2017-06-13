@@ -126,24 +126,24 @@ define([], function(){
 		var f, val;
 		for(_i = 0; _i < SIZE_I; _i++){
 			for(_j = 0; _j < SIZE_J; _j++){
-				val = a[_i][_j];
-				if(val >= 1){
+				key = a[_i][_j];
+				if(key >= 1){
 					f = faces[_i][_j];
-					if(!lengthsNeeded[val]){
-						lengthsNeeded[val] = [];
+					if(!lengthsNeeded[key]){
+						lengthsNeeded[key] = [];
 					}
 					_.each(["n", "s", "w", "e"], function(dir){
 						if(f[dir] >= 1){
-							L.push({"start":[_i, _j], "dir":dir, "val":val, "len":f[dir]});
-							lengthsNeeded[val].push(f["n"]);
+							L.push({"start":[_i, _j], "dir":dir, "key":key, "len":f[dir]});
+							lengthsNeeded[key].push(f["n"]);
 						}
 					});
-					lengthsNeeded[val].push(f["n"]);
-					lengthsNeeded[val].push(f["s"]);
-					lengthsNeeded[val].push(f["w"]);
-					lengthsNeeded[val].push(f["e"]);
-					lengthsNeeded[val] = _.without(lengthsNeeded[val], 0);
-				 	lengthsNeeded[val] = _.uniq(lengthsNeeded[val]);
+					lengthsNeeded[key].push(f["n"]);
+					lengthsNeeded[key].push(f["s"]);
+					lengthsNeeded[key].push(f["w"]);
+					lengthsNeeded[key].push(f["e"]);
+					lengthsNeeded[key] = _.without(lengthsNeeded[key], 0);
+				 	lengthsNeeded[key] = _.uniq(lengthsNeeded[key]);
 				}
 			}
 		}

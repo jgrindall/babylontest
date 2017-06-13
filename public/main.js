@@ -1,8 +1,8 @@
 require(["MeshUtils", "MeshCache", "GreedyMesh", "Materials", "GamePad", "lib/entity-manager"], function(MeshUtils, MeshCache, GreedyMesh, Materials, GamePad, EntityManager) {
 
-	var SIZE_I = 20;
-	var SIZE_J = 20;
-	var SIZE = 5;
+	var SIZE_I = 24;
+	var SIZE_J = 32;
+	var SIZE = 7;
 	var FRICTION = 0.4;
 	var ROT_SPEED = 0.03, SPEED = 0.5;
 
@@ -49,15 +49,15 @@ require(["MeshUtils", "MeshCache", "GreedyMesh", "Materials", "GamePad", "lib/en
 
 	var makeScene = function () {
 		scene = new BABYLON.Scene(engine);
-		scene.enablePhysics();
+		//scene.enablePhysics();
 		//var light0 = new BABYLON.DirectionalLight("Omni", new BABYLON.Vector3(-2, -5, 2), scene);
-		//var light1 = new BABYLON.PointLight("Omni", new BABYLON.Vector3(2, -5, -2), scene);
+		var light1 = new BABYLON.PointLight("Omni", new BABYLON.Vector3(2, 150, -2), scene);
 		//var light2 = new BABYLON.DirectionalLight("Dir0", new BABYLON.Vector3(0, -1, 0), scene);
 		//light2.position = new BABYLON.Vector3(0, 20, 0);
-		//light2.diffuse = new BABYLON.Color3(1, 0, 0);
+		//light2.diffuse = new BABYLON.Color3(1, 1, 1);
 		//light2.specular = new BABYLON.Color3(1, 1, 1);
-		var light3 = new BABYLON.DirectionalLight("Omni", new BABYLON.Vector3(2, 5, -2), scene);
-		camera = new BABYLON.FreeCamera("FreeCamera", new BABYLON.Vector3(SIZE_I*SIZE/2, 250, SIZE_J*SIZE/2), scene);
+		//var light3 = new BABYLON.DirectionalLight("Omni", new BABYLON.Vector3(2, 5, -2), scene);
+		camera = new BABYLON.FreeCamera("FreeCamera", new BABYLON.Vector3(SIZE_I*SIZE/2, 200, SIZE_J*SIZE/2), scene);
 		scene.gravity = new BABYLON.Vector3(0, 0, 0);
 		scene.collisionsEnabled = true;
 		camera.checkCollisions = true;
@@ -75,10 +75,13 @@ require(["MeshUtils", "MeshCache", "GreedyMesh", "Materials", "GamePad", "lib/en
 	};
 
 	var addGround = function(){
-		var ground = BABYLON.Mesh.CreatePlane("ground", SIZE_I*SIZE, scene);
+		var SIZE_MAX = Math.max(SIZE_I, SIZE_J);
+		var ground = BABYLON.Mesh.CreatePlane("ground", SIZE_MAX*SIZE, scene);
 		ground.material = new BABYLON.StandardMaterial("groundMat", scene);
 		ground.material.diffuseTexture = new BABYLON.Texture("assets/groundMat.jpg", scene);
-		ground.position = new BABYLON.Vector3(0, 0, 0);
+		ground.material.backFaceCulling = false;
+		ground.position = new BABYLON.Vector3(SIZE_MAX*SIZE/2, 0, SIZE_MAX*SIZE/2);
+		//ground.position = new BABYLON.Vector3(0, 0, 0);
 		ground.rotation = new BABYLON.Vector3(Math.PI/2, 0, 0);
 		ground.checkCollisions = true;
 	};
@@ -96,6 +99,7 @@ require(["MeshUtils", "MeshCache", "GreedyMesh", "Materials", "GamePad", "lib/en
 	}
 
 	var matchPlayer = function(){
+		console.log(player.position);
 		camera.position = player.position.clone();
 		camera.rotationQuaternion = BABYLON.Quaternion.RotationAxis(new BABYLON.Vector3(0, 1, 0), angle);
 	};
@@ -110,7 +114,7 @@ require(["MeshUtils", "MeshCache", "GreedyMesh", "Materials", "GamePad", "lib/en
 
 	var addPlayer = function(pos){
 		console.log("add player at ", pos);
-		var y = -SIZE/2;
+		var y = SIZE/2;
 		//pos = [1, 1];
 		var mat = new BABYLON.StandardMaterial("Mat", scene);
 		mat.diffuseTexture = new BABYLON.Texture("assets/skybox_nx.jpg", scene);
@@ -120,30 +124,30 @@ require(["MeshUtils", "MeshCache", "GreedyMesh", "Materials", "GamePad", "lib/en
 		player.material = mat;
 		player.checkCollisions = true;
 		player.position = new BABYLON.Vector3(babylonPos.x + SIZE/2, y, babylonPos.z - SIZE/2);
+		//player.setPhysicsState(BABYLON.PhysicsEngine.SphereImpostor, { mass: 0, restitution:0.5, friction:0.5 });
 		player.ellipsoid = new BABYLON.Vector3(SIZE/3, SIZE/3, SIZE/3);
-		player.setPhysicsState(BABYLON.PhysicsEngine.SphereImpostor, { mass: 0, restitution:0.5, friction:0.5 });
 	};
 
 	var addCharacter = function(pos){
-		var y = -SIZE/2;
+		var y = SIZE/2;
 		var mat = new BABYLON.StandardMaterial("Mat", scene);
 		mat.diffuseTexture = new BABYLON.Texture("assets/red.jpg", scene);
 		mat.backFaceCulling = false;
 		var babylonPos = ijToBabylon(pos[0], pos[1]);
 		character = BABYLON.MeshBuilder.CreateBox("character", {height: SIZE, width:SIZE, depth:SIZE}, scene);
-		character.setPhysicsState(BABYLON.PhysicsEngine.BoxImpostor, { mass: 0, restitution:0.5, friction:0.5 });
+		//character.setPhysicsState(BABYLON.PhysicsEngine.BoxImpostor, { mass: 0, restitution:0.5, friction:0.5 });
 		character.material = mat;
 		character.checkCollisions = true;
 		character.position = new BABYLON.Vector3(babylonPos.x + SIZE/2, y, babylonPos.z - SIZE/2);
 	};
 
 	var checkCollisions = function(){
-		/*if (character.intersectsMesh(player, false)) {
+		if (character.intersectsMesh(player, false)) {
 			console.log("HIT");
 		}
 		if(player.intersectsMesh(container, false)){
 			console.log("HIT CHAR");
-		}*/
+		}
 	};
 
 	var addExtra = function(){
@@ -265,7 +269,7 @@ require(["MeshUtils", "MeshCache", "GreedyMesh", "Materials", "GamePad", "lib/en
 	};
 
 	var addBill = function(pos){
-		var y = -SIZE/2;
+		var y = SIZE/2;
 		var babylonPos = ijToBabylon(pos[0], pos[1]);
 		var plane = BABYLON.Mesh.CreatePlane("", 2, scene);
 		var mat = new BABYLON.StandardMaterial("keyMaterial", scene);
@@ -281,17 +285,18 @@ require(["MeshUtils", "MeshCache", "GreedyMesh", "Materials", "GamePad", "lib/en
 		mat.backFaceCulling = false
 		mat.freeze();
 		plane.parent = container;
-			plane.billboardMode = BABYLON.Mesh.BILLBOARDMODE_ALL;
+		plane.billboardMode = BABYLON.Mesh.BILLBOARDMODE_ALL;
 		plane.material = mat;
-		container.setPhysicsState(BABYLON.PhysicsEngine.BoxImpostor, { mass: 0, restitution:0.5, friction:0.5 });
+		//container.setPhysicsState(BABYLON.PhysicsEngine.BoxImpostor, { mass: 0, restitution:0.5, friction:0.5 });
 		console.log(container, player);
 	};
 
 	var addWalls = function(L){
+		//return;
 		var topLeft = {"x":0, "z":SIZE_I * SIZE};
-		var plane, y = -SIZE/2;
+		var plane, y = SIZE/2;
 		_.each(L, function(obj){
-			plane = MeshCache.getPlaneFromCache(obj.len, 1);
+			plane = MeshCache.getPlaneFromCache(obj.len, obj.key);
 			if(obj.dir === "s"){
 				plane.position.x = topLeft.x + (obj.start[1] + obj.len/2)*SIZE;
 				plane.position.z = topLeft.z - (obj.start[0] + 1)*SIZE;
@@ -321,7 +326,7 @@ require(["MeshUtils", "MeshCache", "GreedyMesh", "Materials", "GamePad", "lib/en
 
 
 	var addBoxes = function(quads){
-		var y = -SIZE/2;
+		var y = SIZE/2;
 		var topLeft = {"x":0, "z":SIZE_I * SIZE};
 		_.each(quads, function(quad){
 			var size = (quad[2] >= quad[3]) ? [quad[2], quad[3]] : [quad[3], quad[2]];
@@ -340,7 +345,7 @@ require(["MeshUtils", "MeshCache", "GreedyMesh", "Materials", "GamePad", "lib/en
 	};
 
 	var addExtra4 = function(){
-		var y = -7;
+		var y = -3;
 		var plane = BABYLON.MeshBuilder.CreatePlane("extra4", {height: 20, width:20}, scene);
 		plane.position.x = 0;
 		plane.position.z = 0;
@@ -351,7 +356,12 @@ require(["MeshUtils", "MeshCache", "GreedyMesh", "Materials", "GamePad", "lib/en
 		Materials.brickMaterial.diffuseTexture = new BABYLON.Texture("assets/brick.jpg", scene);
 		plane.material = mat;
 		plane.scaling.z = 5;
-		plane.setPhysicsState(BABYLON.PhysicsEngine.BoxImpostor, { mass: 0, restitution:0.5, friction:0.5 });
+		//plane.setPhysicsState(BABYLON.PhysicsEngine.BoxImpostor, { mass: 0, restitution:0.5, friction:0.5 });
+		console.log(plane.physicsImpostor);
+		plane.physicsImpostor.object.scaling.x = 3;
+		plane.physicsImpostor.object.scaling.y = 3;
+		plane.physicsImpostor.object.scaling.z = 3;
+		console.log(plane.physicsImpostor.object);
 		//plane.freezeWorldMatrix();
 		//plane.rotation = new BABYLON.Vector3(0, 0 , 0);
 		//MeshUtils.setUVScale(plane, 20, 1);
@@ -372,7 +382,7 @@ var start = function(){
 
 	engine = new BABYLON.Engine(canvas, false, null, false);
 
-	var img = MeshUtils.makeRnd(SIZE_I, SIZE_J, {rnd:0.33, values:[0, 1, 2]});
+	var img = MeshUtils.makeRnd(SIZE_I, SIZE_J, {rnd:0.0, values:[0, 1, 2]});
 	console.log("IMG");
 	MeshUtils.log(img);
 	console.log("IMG---------");
@@ -400,9 +410,9 @@ var start = function(){
 	//console.log(greedy);
 	var empty = _.shuffle(MeshUtils.getMatchingLocations(img, 0));
 	addPlayer(empty[0]);
-	//addCharacter(empty[1]);
+	addCharacter(empty[1]);
 	addGround();
-	addSky();
+	//addSky();
 	addBill(empty[2]);
 
 	//addExtra();
@@ -435,7 +445,7 @@ var start = function(){
 				ang_speed = 0;
 			}
 		}
-		//checkCollisions();
+		checkCollisions();
 		console.log("render");
 		scene.render();
 	});
