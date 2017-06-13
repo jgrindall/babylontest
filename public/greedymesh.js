@@ -145,11 +145,28 @@ define(["MeshUtils"], function(MeshUtils){
 		return group;
 	};
 
+	var getGridForAnyVal = function(a){
+		var _i, _j, SIZE_I, SIZE_J, group;
+		SIZE_I = a.length;
+		SIZE_J = a[0].length;
+		group = MeshUtils.makeEmpty(SIZE_I, SIZE_J);
+		for(_i = 0; _i < SIZE_I; _i++){
+			for(_j = 0; _j < SIZE_J; _j++){
+				if(a[_i][_j] > 0){
+					group[_i][_j] = 1;
+				}
+			}
+		}
+		return group;
+	};
+
 	var getGrouped = function(a){
 		var vals = getNonZeroVals(a), grouped = {};
 		_.each(vals, function(val){
 			grouped[val] = getGridForVal(a, val);
 		});
+		grouped["any"] = getGridForAnyVal(a);
+		console.log(JSON.stringify(grouped, null, 2));
 		return grouped;
 	};
 
@@ -164,10 +181,8 @@ define(["MeshUtils"], function(MeshUtils){
 	};
 
 	var getBestGrouped = function(img){
-		console.log("get mesh data for grouped:", grouped);
 		var groups = {}, grouped = getGrouped(img);
 		_.each(grouped, function(group, key){
-			console.log("get mesh data for group", group);
 			groups[key] = getBestGreedyMesh(group);
 		});
 		return groups;
