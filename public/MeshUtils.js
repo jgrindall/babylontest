@@ -56,7 +56,7 @@ define([], function(){
 			a[_i] = [];
 			for(_j = 0; _j < SIZE_J; _j++){
 				if(_i === 0 || _j === 0 || _i === SIZE_I - 1 || _j === SIZE_J - 1){
-					a[_i][_j] = 1;
+					a[_i][_j] = 0;
 				}
 				else{
 					a[_i][_j] = (Math.random() > options.rnd) ? 0 : getVal();

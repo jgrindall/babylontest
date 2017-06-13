@@ -303,18 +303,21 @@ require(["MeshUtils", "MeshCache", "GreedyMesh", "Materials", "GamePad", "lib/en
 		var topLeft = {"x":0, "z":SIZE_I * SIZE};
 		_.each(quads, function(quad){
 			var size = (quad[2] >= quad[3]) ? [quad[2], quad[3]] : [quad[3], quad[2]];
+var x = topLeft.x + (quad[1] + quad[2]/2)*SIZE;
+			var z = topLeft.z - (quad[0] + quad[3]/2)*SIZE;
+			/*
 			var wall = MeshCache.getBoxFromCache(size, materialName);
 			if(quad[2] < quad[3]){
 				wall.rotation = new BABYLON.Vector3(0, Math.PI/2, 0);
 			}
 			wall.isVisible = false;
-			var x = topLeft.x + (quad[1] + quad[2]/2)*SIZE;
-			var z = topLeft.z - (quad[0] + quad[3]/2)*SIZE;
+			
 			wall.position.x = x;
 			wall.position.z = z;
 			wall.position.y = y;
 			wall.freezeWorldMatrix();
 			//wall.opacity = 0.5;
+			*/
 
 
 			var plane0 = MeshCache.getPlaneFromCache(quad[2], materialName);
@@ -346,7 +349,36 @@ require(["MeshUtils", "MeshCache", "GreedyMesh", "Materials", "GamePad", "lib/en
 			plane3.freezeWorldMatrix();
 
 
+			plane0.checkCollisions = true;
+			plane1.checkCollisions = true;
+			plane2.checkCollisions = true;
+			plane3.checkCollisions = true;
+			plane0.setPhysicsState(BABYLON.PhysicsEngine.BoxImpostor, { mass: 0, restitution:0.5, friction:0.5 });
+			plane1.setPhysicsState(BABYLON.PhysicsEngine.BoxImpostor, { mass: 0, restitution:0.5, friction:0.5 });
+			plane2.setPhysicsState(BABYLON.PhysicsEngine.BoxImpostor, { mass: 0, restitution:0.5, friction:0.5 });
+			plane3.setPhysicsState(BABYLON.PhysicsEngine.BoxImpostor, { mass: 0, restitution:0.5, friction:0.5 });
+
+
 		});
+	};
+
+	var addExtra4 = function(){
+		var y = -7;
+		var plane = BABYLON.MeshBuilder.CreatePlane("extra4", {height: 20, width:20}, scene);
+		plane.position.x = 0;
+		plane.position.z = 0;
+		plane.position.y = y;
+		plane.checkCollisions = true;
+		var mat = new BABYLON.StandardMaterial("brickMaterial2", scene);
+		mat.backFaceCulling = false;
+		Materials.brickMaterial.diffuseTexture = new BABYLON.Texture("assets/brick.jpg", scene);
+		plane.material = mat;
+		plane.scaling.z = 5;
+		plane.setPhysicsState(BABYLON.PhysicsEngine.BoxImpostor, { mass: 0, restitution:0.5, friction:0.5 });
+		//plane.freezeWorldMatrix();
+		//plane.rotation = new BABYLON.Vector3(0, 0 , 0);
+		//MeshUtils.setUVScale(plane, 20, 1);
+
 	};
 	var birdsEye = function(){
 		camera.rotation = new BABYLON.Vector3(Math.PI/2, 0 , 0);
@@ -370,7 +402,7 @@ require(["MeshUtils", "MeshCache", "GreedyMesh", "Materials", "GamePad", "lib/en
 	_.each(greedy, function(val, key){
 		addWalls(key, val.quads);
 	});
-	
+
 	//console.log(greedy);
 	var empty = _.shuffle(MeshUtils.getMatchingLocations(img, 0));
 	addPlayer(empty[0]);
@@ -381,11 +413,13 @@ require(["MeshUtils", "MeshCache", "GreedyMesh", "Materials", "GamePad", "lib/en
 
 	//addExtra();
 
+	//addExtra4();
+
 	if(BIRDSEYE){
 		birdsEye();
 	}
 
-	//scene.debugLayer.show();
+	scene.debugLayer.show();
 	engine.runRenderLoop(function () {
 		if(_mode !== "off"){
 			movePlayer();
