@@ -1,7 +1,7 @@
 require(["MeshUtils", "MeshCache", "GreedyMesh", "Materials", "GamePad", "lib/entity-manager"], function(MeshUtils, MeshCache, GreedyMesh, Materials, GamePad, EntityManager) {
 
-	var SIZE_I = 5;
-	var SIZE_J = 5;
+	var SIZE_I = 20;
+	var SIZE_J = 20;
 	var SIZE = 5;
 	var FRICTION = 0.4;
 	var ROT_SPEED = 0.03, SPEED = 0.5;
@@ -50,12 +50,12 @@ require(["MeshUtils", "MeshCache", "GreedyMesh", "Materials", "GamePad", "lib/en
 	var makeScene = function () {
 		scene = new BABYLON.Scene(engine);
 		scene.enablePhysics();
-		var light0 = new BABYLON.DirectionalLight("Omni", new BABYLON.Vector3(-2, -5, 2), scene);
-		var light1 = new BABYLON.PointLight("Omni", new BABYLON.Vector3(2, -5, -2), scene);
-		var light2 = new BABYLON.DirectionalLight("Dir0", new BABYLON.Vector3(0, -1, 0), scene);
-		light2.position = new BABYLON.Vector3(0, 20, 0);
-		light2.diffuse = new BABYLON.Color3(1, 0, 0);
-		light2.specular = new BABYLON.Color3(1, 1, 1);
+		//var light0 = new BABYLON.DirectionalLight("Omni", new BABYLON.Vector3(-2, -5, 2), scene);
+		//var light1 = new BABYLON.PointLight("Omni", new BABYLON.Vector3(2, -5, -2), scene);
+		//var light2 = new BABYLON.DirectionalLight("Dir0", new BABYLON.Vector3(0, -1, 0), scene);
+		//light2.position = new BABYLON.Vector3(0, 20, 0);
+		//light2.diffuse = new BABYLON.Color3(1, 0, 0);
+		//light2.specular = new BABYLON.Color3(1, 1, 1);
 		var light3 = new BABYLON.DirectionalLight("Omni", new BABYLON.Vector3(2, 5, -2), scene);
 		camera = new BABYLON.FreeCamera("FreeCamera", new BABYLON.Vector3(SIZE_I*SIZE/2, 250, SIZE_J*SIZE/2), scene);
 		scene.gravity = new BABYLON.Vector3(0, 0, 0);
@@ -287,63 +287,56 @@ require(["MeshUtils", "MeshCache", "GreedyMesh", "Materials", "GamePad", "lib/en
 		console.log(container, player);
 	};
 
-	var addWalls = function(key, quads){
-		console.log(quads, key);
-		var y = -SIZE/2, arr = [];
+	var addWalls = function(L){
 		var topLeft = {"x":0, "z":SIZE_I * SIZE};
-		if(key === "any"){
-			// add boxes only
-			_.each(quads, function(quad){
-				var size = (quad[2] >= quad[3]) ? [quad[2], quad[3]] : [quad[3], quad[2]];
-				var wall = MeshCache.getBoxFromCache(size);
-				var x = topLeft.x + (quad[1] + quad[2]/2)*SIZE;
-				var z = topLeft.z - (quad[0] + quad[3]/2)*SIZE;
-				if(quad[2] < quad[3]){
-					wall.rotation = new BABYLON.Vector3(0, Math.PI/2, 0);
-				}
-				//wall.isVisible = false;
-				wall.position.x = x;
-				wall.position.z = z;
-				wall.position.y = y;
-				wall.freezeWorldMatrix();
-			});
-		}
-		else{
-			// add planes only
-			_.each(quads, function(quad){
-				return;
-				var materialName = (key == 1) ? "brick" : "steel";
-				var x = topLeft.x + (quad[1] + quad[2]/2)*SIZE;
-				var z = topLeft.z - (quad[0] + quad[3]/2)*SIZE;
-				var plane0 = MeshCache.getPlaneFromCache(quad[2], materialName);
-				plane0.position.x = x;
-				plane0.position.z = z + SIZE * quad[3]/2;
-				plane0.position.y = y;
-				plane0.rotation = new BABYLON.Vector3(0, Math.PI, 0);
-				plane0.freezeWorldMatrix();
-
-				var plane1 = MeshCache.getPlaneFromCache(quad[2], materialName);
-				plane1.position.x = x;
-				plane1.position.z = z - SIZE * quad[3]/2;
-				plane1.position.y = y;
-				plane1.freezeWorldMatrix();
+		var plane, y = -SIZE/2;
+		_.each(L, function(obj){
+			plane = MeshCache.getPlaneFromCache(obj.len, 1);
+			if(obj.dir === "s"){
+				plane.position.x = topLeft.x + (obj.start[1] + obj.len/2)*SIZE;
+				plane.position.z = topLeft.z - (obj.start[0] + 1)*SIZE;
+				plane.position.y = y;
+			}
+			else if(obj.dir === "n"){
+				plane.position.x = topLeft.x + (obj.start[1] + obj.len/2)*SIZE;
+				plane.position.z = topLeft.z - (obj.start[0])*SIZE;
+				plane.position.y = y;
+				plane.rotation = new BABYLON.Vector3(0, Math.PI, 0);
+			}
+			else if(obj.dir === "w"){
+				plane.position.x = topLeft.x + (obj.start[1])*SIZE;
+				plane.position.z = topLeft.z - (obj.start[0] + obj.len/2)*SIZE;
+				plane.position.y = y;
+				plane.rotation = new BABYLON.Vector3(0, Math.PI/2, 0);
+			}
+			else if(obj.dir === "e"){
+				plane.position.x = topLeft.x + (obj.start[1] + 1)*SIZE;
+				plane.position.z = topLeft.z - (obj.start[0] + obj.len/2)*SIZE;
+				plane.position.y = y;
+				plane.rotation = new BABYLON.Vector3(0, -Math.PI/2, 0);
+			}
+			plane.freezeWorldMatrix();
+		});
+	};
 
 
-				var plane2 = MeshCache.getPlaneFromCache(quad[3], materialName);
-				plane2.position.x = x - SIZE * quad[2]/2;
-				plane2.position.z = z;
-				plane2.position.y = y;
-				plane2.rotation = new BABYLON.Vector3(0, Math.PI/2, 0);
-				plane2.freezeWorldMatrix();
-
-				var plane3 = MeshCache.getPlaneFromCache(quad[3], materialName);
-				plane3.position.x = x + SIZE * quad[2]/2;
-				plane3.position.z = z;
-				plane3.position.y = y;
-				plane3.rotation = new BABYLON.Vector3(0, -Math.PI/2, 0);
-				plane3.freezeWorldMatrix();
-			});
-		}
+	var addBoxes = function(quads){
+		var y = -SIZE/2;
+		var topLeft = {"x":0, "z":SIZE_I * SIZE};
+		_.each(quads, function(quad){
+			var size = (quad[2] >= quad[3]) ? [quad[2], quad[3]] : [quad[3], quad[2]];
+			var wall = MeshCache.getBoxFromCache(size);
+			var x = topLeft.x + (quad[1] + quad[2]/2)*SIZE;
+			var z = topLeft.z - (quad[0] + quad[3]/2)*SIZE;
+			if(quad[2] < quad[3]){
+				wall.rotation = new BABYLON.Vector3(0, Math.PI/2, 0);
+			}
+			wall.isVisible = false;
+			wall.position.x = x;
+			wall.position.z = z;
+			wall.position.y = y;
+			wall.freezeWorldMatrix();
+		});
 	};
 
 	var addExtra4 = function(){
@@ -379,34 +372,10 @@ var start = function(){
 
 	engine = new BABYLON.Engine(canvas, false, null, false);
 
-
-var MyLoadingScreen  = function(text) {
-  	this.loadingUIText = text;
-}
-MyLoadingScreen.prototype.displayLoadingUI = function() {
-  //alert(this.loadingUIText);
-};
-MyLoadingScreen.prototype.hideLoadingUI = function() {
-  //alert("Loaded!");
-};
-
-	console.log(engine.loadingScreen);
-	console.log(engine._loadingScreen);
-	console.log(engine._loadingScreen.displayLoadingUI);
-	engine.loadingScreen = new MyLoadingScreen("I'm loading!!");
-
-
-	// animation : progress indicator
-	engine.displayLoadingUI();
-
-
-
-	var img = MeshUtils.makeRnd(SIZE_I, SIZE_J, {rnd:0.15, values:[0, 1, 2]});
+	var img = MeshUtils.makeRnd(SIZE_I, SIZE_J, {rnd:0.33, values:[0, 1, 2]});
+	console.log("IMG");
 	MeshUtils.log(img);
-
-	console.log(img);
-
-	console.log(MeshUtils.getFaces(img));
+	console.log("IMG---------");
 
 	makeScene();
 	addControls();
@@ -414,15 +383,19 @@ MyLoadingScreen.prototype.hideLoadingUI = function() {
 	Materials.makeTextures(scene);
 	Materials.makeMaterials(scene);
 
-	var greedy = GreedyMesh.getBestGrouped(img);
-	console.log("greedy", JSON.stringify(greedy, 2, null));
+	var greedy = GreedyMesh.get(img);
+	var faces = MeshUtils.getFaces(img);
+
 	MeshCache.clear();
-	_.each(greedy, function(val, key){
-		MeshCache.setForDims(scene, val.dims, SIZE, key, {BOXES:BOXES});
+	_.each(greedy.dims, function(size){
+		MeshCache.addBoxToCache(scene, size, SIZE);
 	});
-	_.each(greedy, function(val, key){
-		addWalls(key, val.quads);
+	_.each(faces.lengthsNeeded, function(lengths, key){
+		MeshCache.addPlanesToCache(scene, lengths, key, SIZE);
 	});
+	addBoxes(greedy.quads);
+	addWalls(faces.L);
+
 
 	//console.log(greedy);
 	var empty = _.shuffle(MeshUtils.getMatchingLocations(img, 0));
@@ -444,7 +417,7 @@ MyLoadingScreen.prototype.hideLoadingUI = function() {
 
 	engine.setHardwareScalingLevel(1);
 
-	
+
 	engine.runRenderLoop(function () {
 		if(_mode !== "off"){
 			movePlayer();
@@ -543,4 +516,3 @@ MyLoadingScreen.prototype.hideLoadingUI = function() {
 	var playerData2 = manager.getComponentDataForEntity('Possessions', playerId);
 	console.log(playerData2);
 });
-

@@ -21,7 +21,7 @@ define([], function(){
 			for(_j = 0; _j < a[0].length; _j++){
 				s += a[_i][_j] + " ";
 			}
-			console.log(s);
+			console.log(_i + "\t" + s);
 		}
 	};
 
@@ -45,73 +45,113 @@ define([], function(){
 	};
 
 	MeshUtils.getFaces = function(a){
-		var _i, _j, SIZE_I = a.length, SIZE_J = a[0].length, faces, f, fRight, fDown, temp;
+		var _i, _j, SIZE_I = a.length, SIZE_J = a[0].length, faces, f, fRight, fDown, temp, EMPTY, lengthsNeeded = {}, fillFaceAtDirection;
+		EMPTY = {"n":0, "s":0, "w":0, "e":0};
 		faces = MeshUtils.makeEmpty(SIZE_I, SIZE_J);
+		fillFaceAtDirection = function(_i, _j){
+			var f = _.extend({}, EMPTY);
+			if(a[_i][_j] > 0 && _i > 0 && a[_i - 1][_j] === 0){
+				f["n"] = 1
+			}
+			if(a[_i][_j] > 0 && _i < SIZE_I - 1 && a[_i + 1][_j] === 0){
+				f["s"] = 1
+			}
+			if(a[_i][_j] > 0 && _j > 0 && a[_i][_j - 1] === 0){
+				f["w"] = 1
+			}
+			if(a[_i][_j] > 0 && _j < SIZE_J - 1 && a[_i][_j + 1] === 0){
+				f["e"] = 1
+			}
+			return f;
+		};
 		for(_i = 0; _i < SIZE_I; _i++){
 			for(_j = 0; _j < SIZE_J; _j++){
-				f = {
-					"n":0,
-					"s":0,
-					"w":0,
-					"e":0
-				};
-				if(a[_i][_j] > 0 && _i > 0 && a[_i - 1][_j] === 0){
-					f["n"] = 1
-				}
-				if(a[_i][_j] > 0 && _i < SIZE_I - 1 && a[_i + 1][_j] === 0){
-					f["s"] = 1
-				}
-				if(a[_i][_j] > 0 && _j > 0 && a[_i][_j - 1] === 0){
-					f["w"] = 1
-				}
-				if(a[_i][_j] > 0 && _j < SIZE_J - 1 && a[_i][_j + 1] === 0){
-					f["e"] = 1
-				}
-				faces[_i][_j] = f;
+				faces[_i][_j] = fillFaceAtDirection(_i, _j);
 			}
 		}
 		for(_i = 0; _i < SIZE_I; _i++){
 			for(_j = 0; _j < SIZE_J; _j++){
 				f = faces[_i][_j];
 				if(f["n"] >= 1 && _j < SIZE_J - 1){
-					fRight = faces[_i][_j + 1];
 					for(temp = 1; temp <= SIZE_J - _j - 1; temp++){
-						if(fRight["n"] >= 0){
+						fRight = faces[_i][_j + temp];
+						if(fRight["n"] >= 1 && a[_i][_j] === a[_i][_j + temp]){
 							f["n"]++;
 							fRight["n"]--;
+						}
+						else{
+							break;
 						}
 					}
 				}
 				if(f["s"] >= 1 && _j < SIZE_J - 1){
-					fRight = faces[_i][_j + 1];
 					for(temp = 1; temp <= SIZE_J - _j - 1; temp++){
-						if(fRight["s"] >= 0){
+						fRight = faces[_i][_j + temp];
+						if(fRight["s"] >= 1 && a[_i][_j] === a[_i][_j + temp]){
 							f["s"]++;
 							fRight["s"]--;
+						}
+						else{
+							break;
 						}
 					}
 				}
 				if(f["w"] >= 1 && _i < SIZE_I - 1){
-					fDown = faces[_i + 1][_j];
 					for(temp = 1; temp <= SIZE_I - _i - 1; temp++){
-						if(fDown["w"] >= 0){
+						fDown = faces[_i + temp][_j];
+						if(fDown["w"] >= 1 && a[_i][_j] === a[_i + temp][_j]){
 							f["w"]++;
 							fDown["w"]--;
+						}
+						else{
+							break;
 						}
 					}
 				}
 				if(f["e"] >= 1 && _i < SIZE_I - 1){
-					fDown = faces[_i + 1][_j];
-					for(temp = 1; temp <= SIZE_I - _j - 1; temp++){
-						if(fDown["e"] >= 0){
+					for(temp = 1; temp <= SIZE_I - _i - 1; temp++){
+						fDown = faces[_i + temp][_j];
+						if(fDown["e"] >= 1 && a[_i][_j] === a[_i + temp][_j]){
 							f["e"]++;
 							fDown["e"]--;
+						}
+						else{
+							break;
 						}
 					}
 				}
 			}
 		}
-		return faces;
+		var L = [];
+		var f, val;
+		for(_i = 0; _i < SIZE_I; _i++){
+			for(_j = 0; _j < SIZE_J; _j++){
+				val = a[_i][_j];
+				if(val >= 1){
+					f = faces[_i][_j];
+					if(!lengthsNeeded[val]){
+						lengthsNeeded[val] = [];
+					}
+					_.each(["n", "s", "w", "e"], function(dir){
+						if(f[dir] >= 1){
+							L.push({"start":[_i, _j], "dir":dir, "val":val, "len":f[dir]});
+							lengthsNeeded[val].push(f["n"]);
+						}
+					});
+					lengthsNeeded[val].push(f["n"]);
+					lengthsNeeded[val].push(f["s"]);
+					lengthsNeeded[val].push(f["w"]);
+					lengthsNeeded[val].push(f["e"]);
+					lengthsNeeded[val] = _.without(lengthsNeeded[val], 0);
+				 	lengthsNeeded[val] = _.uniq(lengthsNeeded[val]);
+				}
+			}
+		}
+		return {
+			"L":L,
+			"faces":faces,
+			"lengthsNeeded":lengthsNeeded
+		};
 	};
 
 	MeshUtils.getMatchingLocations = function(a, testFn){
@@ -119,7 +159,7 @@ define([], function(){
 		if(typeof testFn === "number"){
 			_temp = testFn;
 			testFn = function(val){
-				return (val === _test);
+				return (val === _temp);
 			};
 		};
 		for(_i = 0; _i < SIZE_I; _i++){
@@ -171,5 +211,3 @@ define([], function(){
 	return MeshUtils;
 
 });
-
-

@@ -1,6 +1,6 @@
 define(["MeshUtils"], function(MeshUtils){
 	/* helper functions */
-	
+
 	var rectPassesTest = function(i, j, w, h, test){
 		var _i, _j;
 		for(_i = i; _i < i + h; _i++){
@@ -27,7 +27,7 @@ define(["MeshUtils"], function(MeshUtils){
 			return (i < SIZE_I && j < SIZE_J && i >= 0 && j >= 0);
 		};
 		shouldVisitCell = function(){
-			return (isInside() && a[i][j] && !visited[i][j]);
+			return (isInside() && a[i][j] >= 1 && !visited[i][j]);
 		};
 		moveToNext = function(){
 			var step = function(){
@@ -55,7 +55,7 @@ define(["MeshUtils"], function(MeshUtils){
 		};
 		rectIsFullAndNotVisited = function(i, j, w, h){
 			return rectPassesTest(i, j, w, h, function(_i, _j){
-				return (a[_i][_j] && !visited[_i][_j]);
+				return (a[_i][_j] >= 1 && !visited[_i][_j]);
 			});
 		};
 		markVisited = function(i, j, w, h){
@@ -116,60 +116,6 @@ define(["MeshUtils"], function(MeshUtils){
 		return dims;
 	};
 
-	var getNonZeroVals = function(a){
-		var _i, _j, SIZE_I, SIZE_J, vals = [];
-		SIZE_I = a.length;
-		SIZE_J = a[0].length;
-		for(_i = 0; _i < SIZE_I; _i++){
-			for(_j = 0; _j < SIZE_J; _j++){
-				if(a[_i][_j] > 0){
-					vals.push(a[_i][_j]);
-				}
-			}
-		}
-		return vals;
-	};
-
-	var getGridForVal = function(a, val){
-		var _i, _j, SIZE_I, SIZE_J, group;
-		SIZE_I = a.length;
-		SIZE_J = a[0].length;
-		group = MeshUtils.makeEmpty(SIZE_I, SIZE_J);
-		for(_i = 0; _i < SIZE_I; _i++){
-			for(_j = 0; _j < SIZE_J; _j++){
-				if(a[_i][_j] === val){
-					group[_i][_j] = 1;
-				}
-			}
-		}
-		return group;
-	};
-
-	var getGridForAnyVal = function(a){
-		var _i, _j, SIZE_I, SIZE_J, group;
-		SIZE_I = a.length;
-		SIZE_J = a[0].length;
-		group = MeshUtils.makeEmpty(SIZE_I, SIZE_J);
-		for(_i = 0; _i < SIZE_I; _i++){
-			for(_j = 0; _j < SIZE_J; _j++){
-				if(a[_i][_j] > 0){
-					group[_i][_j] = 1;
-				}
-			}
-		}
-		return group;
-	};
-
-	var getGrouped = function(a){
-		var vals = getNonZeroVals(a), grouped = {};
-		_.each(vals, function(val){
-			grouped[val] = getGridForVal(a, val);
-		});
-		grouped["any"] = getGridForAnyVal(a);
-		console.log(JSON.stringify(grouped, null, 2));
-		return grouped;
-	};
-
 	var getBestGreedyMesh = function(img){
 		var quadsH, quadsV, dimsV, dimsH;
 		quadsH = greedyMesh(img, {dir:"horiz"});
@@ -180,19 +126,8 @@ define(["MeshUtils"], function(MeshUtils){
 		return (dimsH.length <= dimsV.length) ? {"quads":quadsH, "dims":dimsH} : {"quads":quadsV, "dims":dimsV};
 	};
 
-	var getBestGrouped = function(img){
-		var groups = {}, grouped = getGrouped(img);
-		_.each(grouped, function(group, key){
-			groups[key] = getBestGreedyMesh(group);
-		});
-		return groups;
-	};
-
-
 	return {
-		"getBest":getBestGreedyMesh
+		"get":getBestGreedyMesh
 	}
 
 });
-
-
