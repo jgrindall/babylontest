@@ -29,13 +29,13 @@ define(["MeshUtils", "Materials"], function(MeshUtils, Materials){
 
 	MeshCache.addPlanesToCache = function(scene, lengths, material, SIZE){
 		_.each(lengths, function(len){
-			var key = "plane_" + material + "_" + len, plane;
+			var key = "plane_" + material + "_" + len, plane, MAT = ["0", Materials.brickMaterial, Materials.steelMaterial, Materials.crateMaterial];
 			if(!cache[key]){
 				console.log("cache ", key);
 				plane = BABYLON.MeshBuilder.CreatePlane(key, {height: SIZE, width:SIZE*len}, scene);
 				cache[key] = plane;
 				plane.convertToUnIndexedMesh();
-				plane.material = (material == 1 ? Materials.brickMaterial : Materials.steelMaterial);
+				plane.material = MAT[material];
 				MeshUtils.setUVScale(plane, len, 1);
 				plane.setEnabled(false);
 				scene.meshes.pop();
@@ -46,12 +46,7 @@ define(["MeshUtils", "Materials"], function(MeshUtils, Materials){
 	MeshCache.addToCache = function(scene, size, SIZE, key, options){
 		var key_box, box, key_plane0, key_plane1, plane0, plane1, materialName;
 		key_box = "box" + "_" + size[0] + "_" + size[1];
-		if(key == 1){
-			materialName = "brick";
-		}
-		else if(key == 2){
-			materialName = "steel";
-		}
+		materialName = ["0", "brick", "steel", "crate"][key];
 		key_plane0 = materialName + "_" + size[0], key_plane1 = materialName + "_" + size[1];
 		if(options.BOXES && key === "any"){
 			if(!cache[key_box]){
@@ -129,6 +124,7 @@ define(["MeshUtils", "Materials"], function(MeshUtils, Materials){
 
 	MeshCache.getPlaneFromCache = function(size, key){
 		var cached, plane, key = "plane_" + key + "_" + size;
+		console.log("getplane", key);
 		cached = cache[key];
 		if(cached){
 			cacheI++;

@@ -14,19 +14,23 @@ define([], function(){
 	Materials.makeTextures = function(scene){
 		Textures["brick"] = new BABYLON.Texture("assets/brick.jpg", scene);
 		Textures["steel"] = new BABYLON.Texture("assets/steel.jpg", scene);
+		Textures["crate"] = new BABYLON.Texture("assets/crate.png", scene);
 	};
 
 	Materials.makeMaterials = function(scene){
 		Materials.brickMaterial = new BABYLON.StandardMaterial("brickMaterial", scene);
+		Materials.crateMaterial = new BABYLON.StandardMaterial("crateMaterial", scene);
 		Materials.brickMaterial_low = new BABYLON.StandardMaterial("brickMaterial_low", scene);
 		Materials.steelMaterial = new BABYLON.StandardMaterial("steelMaterial", scene);
 		Materials.steelMaterial_low = new BABYLON.StandardMaterial("steelMaterial_low", scene);
 		Materials.brickMaterial.diffuseTexture = Materials.getTexture("brick");
 		Materials.steelMaterial.diffuseTexture = Materials.getTexture("steel");
+		Materials.crateMaterial.diffuseTexture = Materials.getTexture("crate");
 		Materials.brickMaterial_low.diffuseColor = RED;
 		Materials.steelMaterial_low.diffuseColor = GREEN;
 		Materials.brickMaterial.freeze();
 		Materials.steelMaterial.freeze();
+		Materials.crateMaterial.freeze();
 		Materials.brickMaterial_low.freeze();
 		Materials.steelMaterial_low.freeze();
 	};

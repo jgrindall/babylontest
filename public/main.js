@@ -1,7 +1,7 @@
 require(["MeshUtils", "MeshCache", "GreedyMesh", "Materials", "GamePad", "lib/entity-manager"], function(MeshUtils, MeshCache, GreedyMesh, Materials, GamePad, EntityManager) {
 
-	var SIZE_I = 24;
-	var SIZE_J = 32;
+	var SIZE_I = 6;
+	var SIZE_J = 6;
 	var SIZE = 7;
 	var FRICTION = 0.4;
 	var ROT_SPEED = 0.03, SPEED = 0.5;
@@ -63,6 +63,15 @@ require(["MeshUtils", "MeshCache", "GreedyMesh", "Materials", "GamePad", "lib/en
 		camera.checkCollisions = true;
 		camera.applyGravity = true;
 		camera.ellipsoid = new BABYLON.Vector3(5, 1, 5);
+		/*
+
+		var light0 = new BABYLON.HemisphericLight("Hemi0", new BABYLON.Vector3(0, 1, 0), scene);
+		light0.diffuse = new BABYLON.Color3(1, 1, 1);
+		light0.specular = new BABYLON.Color3(1, 1, 1);
+		light0.groundColor = new BABYLON.Color3(0, 0, 0);
+
+
+		*/
 	}
 
 	var addSky = function(){
@@ -99,7 +108,7 @@ require(["MeshUtils", "MeshCache", "GreedyMesh", "Materials", "GamePad", "lib/en
 	}
 
 	var matchPlayer = function(){
-		console.log(player.position);
+		//console.log(player.position);
 		camera.position = player.position.clone();
 		camera.rotationQuaternion = BABYLON.Quaternion.RotationAxis(new BABYLON.Vector3(0, 1, 0), angle);
 	};
@@ -382,7 +391,7 @@ var start = function(){
 
 	engine = new BABYLON.Engine(canvas, false, null, false);
 
-	var img = MeshUtils.makeRnd(SIZE_I, SIZE_J, {rnd:0.0, values:[0, 1, 2]});
+	var img = MeshUtils.makeRnd(SIZE_I, SIZE_J, {rnd:0.2, values:[0, 1, 2, 3]});
 	console.log("IMG");
 	MeshUtils.log(img);
 	console.log("IMG---------");
@@ -446,7 +455,7 @@ var start = function(){
 			}
 		}
 		checkCollisions();
-		console.log("render");
+		//console.log("render");
 		scene.render();
 	});
 	window.addEventListener("resize", function () {
