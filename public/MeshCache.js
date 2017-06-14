@@ -36,7 +36,7 @@ define(["MeshUtils", "Materials"], function(MeshUtils, Materials){
 				cache[key] = plane;
 				plane.convertToUnIndexedMesh();
 				plane.material = MAT[material];
-				MeshUtils.setUVScale(plane, len, 1);
+				MeshUtils.setUVScale(plane, len, 1, 0, 0.1);
 				plane.setEnabled(false);
 				scene.meshes.pop();
 			}

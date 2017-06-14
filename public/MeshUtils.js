@@ -193,16 +193,16 @@ define([], function(){
 		return a;
 	};
 
-	MeshUtils.setUVScale = function(mesh, uScale, vScale) {
+	MeshUtils.setUVScale = function(mesh, uScale, vScale, uOffset, vOffset) {
 		var i, UVs = mesh.getVerticesData(BABYLON.VertexBuffer.UVKind), len = UVs.length;
-		if (uScale !== 1) {
+		if (uScale !== 1 || uOffset !== 0) {
 			for (i = 0; i < len; i += 2) {
-				UVs[i] *= uScale;
+				UVs[i] = uOffset + UVs[i]*uScale;
 			}
 		}
-		if (vScale !== 1) {
+		if (vScale !== 1 || vOffset !== 0) {
 			for (i = 1; i < len; i += 2) {
-				UVs[i] *= vScale;
+				UVs[i] = vOffset + UVs[i]*vScale;
 			}
 		}
 		mesh.setVerticesData(BABYLON.VertexBuffer.UVKind, UVs);
