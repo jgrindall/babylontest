@@ -29,7 +29,7 @@ define(["MeshUtils", "Materials"], function(MeshUtils, Materials){
 
 	MeshCache.addPlanesToCache = function(scene, lengths, material, SIZE){
 		_.each(lengths, function(len){
-			var key = "plane_" + material + "_" + len, plane, MAT = ["0", Materials.brickMaterial, Materials.steelMaterial, Materials.crateMaterial];
+			var key = "plane_" + material + "_" + len, plane, MAT = ["0", Materials.base64Material, Materials.brickMaterial, Materials.steelMaterial, Materials.crateMaterial];
 			if(!cache[key]){
 				console.log("cache ", key);
 				plane = BABYLON.MeshBuilder.CreatePlane(key, {height: SIZE, width:SIZE*len}, scene);

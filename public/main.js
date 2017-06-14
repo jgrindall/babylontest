@@ -1,7 +1,7 @@
 require(["MeshUtils", "MeshCache", "GreedyMesh", "Materials", "GamePad", "lib/entity-manager"], function(MeshUtils, MeshCache, GreedyMesh, Materials, GamePad, EntityManager) {
 
-	var SIZE_I = 6;
-	var SIZE_J = 6;
+	var SIZE_I = 16;
+	var SIZE_J = 16;
 	var SIZE = 7;
 	var FRICTION = 0.4;
 	var ROT_SPEED = 0.03, SPEED = 0.5;
@@ -391,73 +391,75 @@ var start = function(){
 
 	engine = new BABYLON.Engine(canvas, false, null, false);
 
-	var img = MeshUtils.makeRnd(SIZE_I, SIZE_J, {rnd:0.2, values:[0, 1, 2, 3]});
-	console.log("IMG");
-	MeshUtils.log(img);
-	console.log("IMG---------");
 
 	makeScene();
 	addControls();
 
+
+
+	var init = function(){
+		var img = MeshUtils.makeRnd(SIZE_I, SIZE_J, {rnd:0.1, values:[0, 1, 2, 3]});
+		var greedy = GreedyMesh.get(img);
+		var faces = MeshUtils.getFaces(img);
+
+		MeshCache.clear();
+		_.each(greedy.dims, function(size){
+			MeshCache.addBoxToCache(scene, size, SIZE);
+		});
+		_.each(faces.lengthsNeeded, function(lengths, key){
+			MeshCache.addPlanesToCache(scene, lengths, key, SIZE);
+		});
+		addBoxes(greedy.quads);
+		addWalls(faces.L);
+
+
+		//console.log(greedy);
+		var empty = _.shuffle(MeshUtils.getMatchingLocations(img, 0));
+		addPlayer(empty[0]);
+		addCharacter(empty[1]);
+		addGround();
+		//addSky();
+		addBill(empty[2]);
+
+		//addExtra();
+
+		//addExtra4();
+
+		if(BIRDSEYE){
+			birdsEye();
+		}
+
+		engine.setHardwareScalingLevel(1);
+
+
+		engine.runRenderLoop(function () {
+			if(_mode !== "off"){
+				movePlayer();
+				if(!BIRDSEYE){
+					matchPlayer();
+				}
+			}
+			if(_mode === "off"){
+				ang_speed *= FRICTION;
+				speed *= FRICTION;
+				if(Math.abs(speed) < 0.1){
+					speed = 0;
+				}
+				if(Math.abs(ang_speed) < 0.1){
+					ang_speed = 0;
+				}
+			}
+			checkCollisions();
+			//console.log("render");
+			scene.render();
+		});
+	};
+
 	Materials.makeTextures(scene);
-	Materials.makeMaterials(scene);
-
-	var greedy = GreedyMesh.get(img);
-	var faces = MeshUtils.getFaces(img);
-
-	MeshCache.clear();
-	_.each(greedy.dims, function(size){
-		MeshCache.addBoxToCache(scene, size, SIZE);
-	});
-	_.each(faces.lengthsNeeded, function(lengths, key){
-		MeshCache.addPlanesToCache(scene, lengths, key, SIZE);
-	});
-	addBoxes(greedy.quads);
-	addWalls(faces.L);
-
-
-	//console.log(greedy);
-	var empty = _.shuffle(MeshUtils.getMatchingLocations(img, 0));
-	addPlayer(empty[0]);
-	addCharacter(empty[1]);
-	addGround();
-	//addSky();
-	addBill(empty[2]);
-
-	//addExtra();
-
-	//addExtra4();
-
-	if(BIRDSEYE){
-		birdsEye();
-	}
-
+	Materials.makeMaterials(scene, init);
 	scene.debugLayer.show();
 
-	engine.setHardwareScalingLevel(1);
 
-
-	engine.runRenderLoop(function () {
-		if(_mode !== "off"){
-			movePlayer();
-			if(!BIRDSEYE){
-				matchPlayer();
-			}
-		}
-		if(_mode === "off"){
-			ang_speed *= FRICTION;
-			speed *= FRICTION;
-			if(Math.abs(speed) < 0.1){
-				speed = 0;
-			}
-			if(Math.abs(ang_speed) < 0.1){
-				ang_speed = 0;
-			}
-		}
-		checkCollisions();
-		//console.log("render");
-		scene.render();
-	});
 	window.addEventListener("resize", function () {
 	   //engine.resize();
 	});
