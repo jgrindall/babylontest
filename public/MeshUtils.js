@@ -25,135 +25,94 @@ define([], function(){
 		}
 	};
 
-	MeshUtils.logGrouped = function(grouped){
-		_.each(grouped, function(group, key){
-			console.log("key: ", key);
-			MeshUtils.log(group);
-		});
-	};
-
-	MeshUtils.getSolid = function(a){
-		var _i, _j, SIZE_I = a.length, SIZE_J = a[0].length, matching = 0;
-		for(_i = 0; _i < SIZE_I; _i++){
-			for(_j = 0; _j < SIZE_J; _j++){
-				if(a[_i][_j] > 0){
-					matching++;
-				}
-			}
-		}
-		return matching;
-	};
-
-	MeshUtils.getFaces = function(a){
-		var _i, _j, SIZE_I = a.length, SIZE_J = a[0].length, faces, f, fRight, fDown, temp, EMPTY, lengthsNeeded = {}, fillFaceAtDirection;
+	MeshUtils.getDirectionsOfWalls = function(a){
+		var _i, _j, SIZE_I = a.length, SIZE_J = a[0].length, walls, EMPTY, fillFaceAt, fillWithDir, isInside;
 		EMPTY = {"n":0, "s":0, "w":0, "e":0};
-		faces = MeshUtils.makeEmpty(SIZE_I, SIZE_J);
-		var fillWith1 = function(f, _i, _j, dir, di, dj){
-			var checkI, checkJ;
-			checkI = _i + di;
-			checkJ = _j + dj;
-			if(a[_i][_j] > 0 && checkI >= 0 && checkJ >= 0 && checkI < SIZE_I && checkJ < SIZE_J && a[checkI][checkJ] === 0){
+		walls = MeshUtils.makeEmpty(SIZE_I, SIZE_J);
+		isInside = function(i, j){
+			return (i >= 0 && j >= 0 && i < SIZE_I && j < SIZE_J);
+		};
+		fillWithDir = function(f, _i, _j, dir, di, dj){
+			var checkI = _i + di, checkJ = _j + dj;
+			if(a[_i][_j] > 0 && isInside(checkI, checkJ) && a[checkI][checkJ] === 0){
 				f[dir] = 1;
 			}
 		};
-		fillFaceAtDirection = function(_i, _j){
-			// fill the array with
+		fillFaceAt = function(_i, _j){
+			// fill the array with n,s,w,e if there is a wall in that direction of the cell
+			// eg. n:1 if there is a wall on my north side
 			var f = _.extend({}, EMPTY);
-			fillWith1(f, _i, _j, "n", -1, 0);
-			fillWith1(f, _i, _j, "s", +1, 0);
-			fillWith1(f, _i, _j, "w", 0, -1);
-			fillWith1(f, _i, _j, "e", 0, +1);
+			fillWithDir(f, _i, _j, "n", -1, 0);
+			fillWithDir(f, _i, _j, "s", +1, 0);
+			fillWithDir(f, _i, _j, "w", 0, -1);
+			fillWithDir(f, _i, _j, "e", 0, +1);
 			return f;
 		};
-		var fillAllFaces = function(){
-			for(_i = 0; _i < SIZE_I; _i++){
-				for(_j = 0; _j < SIZE_J; _j++){
-					faces[_i][_j] = fillFaceAtDirection(_i, _j);
+		for(_i = 0; _i < SIZE_I; _i++){
+			for(_j = 0; _j < SIZE_J; _j++){
+				walls[_i][_j] = fillFaceAt(_i, _j);
+			}
+		}
+		return walls;
+	};
+
+	MeshUtils.extendWalls = function(a, walls){
+		var _i, _j, SIZE_I = a.length, SIZE_J = a[0].length;
+		var addInDir = function(dir, _i, _j, di, dj){
+			var steps = 1, fCheck, f = walls[_i][_j], val = a[_i][_j];
+			if(f[dir] >= 1){
+				while(_j + dj*steps < SIZE_J && _i + di*steps < SIZE_I){
+					fCheck = walls[_i + di][_j + dj];
+					if(fCheck[dir] >= 1 && a[_i][_j] === a[_i + di*steps][_j + dj*steps]){
+						f[dir]++;
+						fCheck[dir]--;
+					}
+					else{
+						break;
+					}
+					steps++;
 				}
 			}
 		};
-		fillAllFaces();
 		for(_i = 0; _i < SIZE_I; _i++){
 			for(_j = 0; _j < SIZE_J; _j++){
-				f = faces[_i][_j];
-				if(f["n"] >= 1 && _j < SIZE_J - 1){
-					for(temp = 1; temp <= SIZE_J - _j - 1; temp++){
-						fRight = faces[_i][_j + temp];
-						if(fRight["n"] >= 1 && a[_i][_j] === a[_i][_j + temp]){
-							f["n"]++;
-							fRight["n"]--;
-						}
-						else{
-							break;
-						}
-					}
-				}
-				if(f["s"] >= 1 && _j < SIZE_J - 1){
-					for(temp = 1; temp <= SIZE_J - _j - 1; temp++){
-						fRight = faces[_i][_j + temp];
-						if(fRight["s"] >= 1 && a[_i][_j] === a[_i][_j + temp]){
-							f["s"]++;
-							fRight["s"]--;
-						}
-						else{
-							break;
-						}
-					}
-				}
-				if(f["w"] >= 1 && _i < SIZE_I - 1){
-					for(temp = 1; temp <= SIZE_I - _i - 1; temp++){
-						fDown = faces[_i + temp][_j];
-						if(fDown["w"] >= 1 && a[_i][_j] === a[_i + temp][_j]){
-							f["w"]++;
-							fDown["w"]--;
-						}
-						else{
-							break;
-						}
-					}
-				}
-				if(f["e"] >= 1 && _i < SIZE_I - 1){
-					for(temp = 1; temp <= SIZE_I - _i - 1; temp++){
-						fDown = faces[_i + temp][_j];
-						if(fDown["e"] >= 1 && a[_i][_j] === a[_i + temp][_j]){
-							f["e"]++;
-							fDown["e"]--;
-						}
-						else{
-							break;
-						}
-					}
-				}
+				f = walls[_i][_j];
+				addInDir("n", _i, _j, 0, 1);
+				addInDir("s", _i, _j, 0, 1);
+				addInDir("w", _i, _j, 1, 0);
+				addInDir("e", _i, _j, 1, 0);
 			}
 		}
-		var L = [];
-		var f, val;
+	};
+
+	MeshUtils.getFaces = function(a){
+		var _i, _j, SIZE_I = a.length, SIZE_J = a[0].length, walls, f, fRight, fDown, temp, EMPTY, lengthsNeeded = {}, fillFaceAtDirection;
+		EMPTY = {"n":0, "s":0, "w":0, "e":0};
+		walls = MeshUtils.getDirectionsOfWalls(a);
+		console.log(walls);
+		MeshUtils.extendWalls(a, walls);
+		console.log(walls);
+		var extendedWalls = [];
+		var wallData, val;
 		for(_i = 0; _i < SIZE_I; _i++){
 			for(_j = 0; _j < SIZE_J; _j++){
-				key = a[_i][_j];
-				if(key >= 1){
-					f = faces[_i][_j];
-					if(!lengthsNeeded[key]){
-						lengthsNeeded[key] = [];
-					}
+				if(a[_i][_j] >= 1){
+					val = a[_i][_j];
+					wallData = walls[_i][_j];
 					_.each(["n", "s", "w", "e"], function(dir){
-						if(f[dir] >= 1){
-							L.push({"start":[_i, _j], "dir":dir, "key":key, "len":f[dir]});
-							lengthsNeeded[key].push(f["n"]);
+						if(wallData[dir] >= 1){
+							extendedWalls.push({"start":[_i, _j], "dir":dir, "key":val, "len":wallData[dir]});
 						}
 					});
-					lengthsNeeded[key].push(f["n"]);
-					lengthsNeeded[key].push(f["s"]);
-					lengthsNeeded[key].push(f["w"]);
-					lengthsNeeded[key].push(f["e"]);
-					lengthsNeeded[key] = _.without(lengthsNeeded[key], 0);
-				 	lengthsNeeded[key] = _.uniq(lengthsNeeded[key]);
+					lengthsNeeded[val] = (lengthsNeeded[val] || []).concat([wallData["n"], wallData["s"], wallData["w"], wallData["e"]]);
+					lengthsNeeded[val] = _.without(lengthsNeeded[val], 0);
+				 	lengthsNeeded[val] = _.uniq(lengthsNeeded[val]);
 				}
 			}
 		}
 		return {
-			"L":L,
-			"faces":faces,
+			"L":extendedWalls,
+			"faces":walls,
 			"lengthsNeeded":lengthsNeeded
 		};
 	};
@@ -198,9 +157,7 @@ define([], function(){
 	};
 
 	MeshUtils.setUVOffsetAndScale = function(mesh, uOffset, vOffset, uScale, vScale) {
-		console.log("set uv,", uScale, vScale, uOffset, vOffset);
 		var i, UVs = mesh.getVerticesData(BABYLON.VertexBuffer.UVKind), len = UVs.length;
-		console.log("UVs " + UVs);
 		if (uScale !== 1 || uOffset !== 0) {
 			for (i = 0; i < len; i += 2) {
 				UVs[i] = uOffset + UVs[i]*uScale;
