@@ -193,7 +193,7 @@ define([], function(){
 		return a;
 	};
 
-	MeshUtils.setUVScale = function(mesh, uScale, vScale, uOffset, vOffset) {
+	MeshUtils.setUVScaleAndOffset = function(mesh, uScale, vScale, uOffset, vOffset) {
 		var i, UVs = mesh.getVerticesData(BABYLON.VertexBuffer.UVKind), len = UVs.length;
 		if (uScale !== 1 || uOffset !== 0) {
 			for (i = 0; i < len; i += 2) {

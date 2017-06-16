@@ -29,14 +29,14 @@ define(["MeshUtils", "Materials"], function(MeshUtils, Materials){
 
 	MeshCache.addPlanesToCache = function(scene, lengths, material, SIZE){
 		_.each(lengths, function(len){
-			var key = "plane_" + material + "_" + len, plane, MAT = ["0", Materials.base64Material, Materials.brickMaterial, Materials.steelMaterial, Materials.crateMaterial];
+			var key = "plane_" + material + "_" + len, plane;
 			if(!cache[key]){
 				console.log("cache ", key);
 				plane = BABYLON.MeshBuilder.CreatePlane(key, {height: SIZE, width:SIZE*len}, scene);
 				cache[key] = plane;
 				plane.convertToUnIndexedMesh();
-				plane.material = MAT[material];
-				MeshUtils.setUVScale(plane, len, 1, 0, 0.1);
+				plane.material = Materials.base64Material;
+				MeshUtils.setUVScaleAndOffset(plane, len, 1, 0, material);
 				plane.setEnabled(false);
 				scene.meshes.pop();
 			}
