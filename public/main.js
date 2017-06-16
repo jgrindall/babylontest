@@ -56,7 +56,7 @@ function(MeshUtils, GridUtils, MeshCache, SceneBuilder, GreedyMesh, Materials, G
 	};
 
 	var addSky = function(){
-		var skybox = BABYLON.MeshBuilder.CreateBox("skyBox", {size:256}, scene);
+		var skybox = BABYLON.MeshBuilder.CreateBox("skyBox", {size:512}, scene);
 		var skyboxMaterial = new BABYLON.StandardMaterial("skyBox", scene);
 		skyboxMaterial.backFaceCulling = false;
 		skyboxMaterial.reflectionTexture = new BABYLON.CubeTexture("assets/skybox", scene);
@@ -95,16 +95,13 @@ function(MeshUtils, GridUtils, MeshCache, SceneBuilder, GreedyMesh, Materials, G
 	var addPlayer = function(pos){
 		console.log("add player at ", pos);
 		var y = SIZE/2;
-		//pos = [1, 1];
 		var mat = new BABYLON.StandardMaterial("Mat", scene);
 		mat.diffuseColor = new BABYLON.Color3(0.7, 0, 0.7); // purple
-		//mat.backFaceCulling = false;
 		var babylonPos = GridUtils.ijToBabylon(pos[0], pos[1]);
 		player = BABYLON.MeshBuilder.CreateBox("player", {height: SIZE*0.75, width:SIZE*0.75, depth:SIZE*0.75}, scene);
 		player.material = mat;
 		player.checkCollisions = true;
 		player.position = new BABYLON.Vector3(babylonPos.x + SIZE/2, y, babylonPos.z - SIZE/2);
-		//player.setPhysicsState(BABYLON.PhysicsEngine.SphereImpostor, { mass: 0, restitution:0.5, friction:0.5 });
 		player.ellipsoid = new BABYLON.Vector3(SIZE/3, SIZE/3, SIZE/3);
 	};
 
@@ -115,7 +112,6 @@ function(MeshUtils, GridUtils, MeshCache, SceneBuilder, GreedyMesh, Materials, G
 		mat.backFaceCulling = false;
 		var babylonPos = GridUtils.ijToBabylon(pos[0], pos[1]);
 		character = BABYLON.MeshBuilder.CreateBox("character", {height: SIZE, width:SIZE, depth:SIZE}, scene);
-		//character.setPhysicsState(BABYLON.PhysicsEngine.BoxImpostor, { mass: 0, restitution:0.5, friction:0.5 });
 		character.material = mat;
 		character.checkCollisions = true;
 		character.position = new BABYLON.Vector3(babylonPos.x + SIZE/2, y, babylonPos.z - SIZE/2);
@@ -149,8 +145,6 @@ function(MeshUtils, GridUtils, MeshCache, SceneBuilder, GreedyMesh, Materials, G
 		plane.parent = container;
 		plane.billboardMode = BABYLON.Mesh.BILLBOARDMODE_ALL;
 		plane.material = mat;
-		//container.setPhysicsState(BABYLON.PhysicsEngine.BoxImpostor, { mass: 0, restitution:0.5, friction:0.5 });
-		console.log(container, player);
 	};
 
 	var birdsEye = function(){
@@ -167,10 +161,10 @@ function(MeshUtils, GridUtils, MeshCache, SceneBuilder, GreedyMesh, Materials, G
 		SceneBuilder.addFromData(scene, data);
 		var empty = _.shuffle(GridUtils.getMatchingLocations(data, 0));
 		addPlayer(empty[0]);
-		//addCharacter(empty[1]);
-		//addGround();
+		addCharacter(empty[1]);
+		addGround();
 		//addSky();
-		//addBill(empty[2]);
+		addBill(empty[2]);
 		if(BIRDSEYE){
 			birdsEye();
 		}
@@ -234,9 +228,7 @@ function(MeshUtils, GridUtils, MeshCache, SceneBuilder, GreedyMesh, Materials, G
 		_mode = "off";
 	};
 
-
 	var manager = new EntityManager();
-
 
 	var PlayerComponent = {
 	    name: 'Player',
