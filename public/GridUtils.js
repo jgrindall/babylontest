@@ -54,6 +54,14 @@ define([], function(){
 		}
 	};
 
+	GridUtils.ijToBabylon = function(i, j){
+		var topLeft = {"x":0, "z":SIZE_I * SIZE};
+		return {
+			x:topLeft.x + j*SIZE,
+			z:topLeft.z - i*SIZE
+		};
+	};
+
 	GridUtils.extendWalls = function(a){
 		var _i, _j, SIZE_I = a.length, SIZE_J = a[0].length;
 		var addInDir = function(dir, _i, _j, di, dj){
