@@ -35,8 +35,7 @@ define(["MeshUtils", "Materials"], function(MeshUtils, Materials){
 				cache[key] = plane;
 				plane.convertToUnIndexedMesh();
 				plane.material = Materials.base64Material;
-				console.log("that plane has uv", len, 0.2, 0, material);
-				MeshUtils.setUVScaleAndOffset(plane, len, 0.2, 0, 64*material);
+				MeshUtils.setUVOffsetAndScale(plane, 0, material/5, len, 1/5);
 				plane.setEnabled(false);
 				scene.meshes.pop();
 			}
