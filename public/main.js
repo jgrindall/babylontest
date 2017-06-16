@@ -1,8 +1,8 @@
 require(["MeshUtils", "MeshCache", "GreedyMesh", "Materials", "GamePad", "lib/entity-manager"], function(MeshUtils, MeshCache, GreedyMesh, Materials, GamePad, EntityManager) {
 
-	var SIZE_I = 16;
-	var SIZE_J = 16;
-	var SIZE = 7;
+	var SIZE_I = 32;
+	var SIZE_J = 32;
+	var SIZE = 13;
 	var FRICTION = 0.4;
 	var ROT_SPEED = 0.03, SPEED = 0.5;
 
@@ -68,7 +68,7 @@ require(["MeshUtils", "MeshCache", "GreedyMesh", "Materials", "GamePad", "lib/en
 		light0.specular = new BABYLON.Color3(1, 1, 1);
 		light0.groundColor = new BABYLON.Color3(1, 1, 1);
 	};
-	
+
 	var addSky = function(){
 		var skybox = BABYLON.MeshBuilder.CreateBox("skyBox", {size:1024}, scene);
 		var skyboxMaterial = new BABYLON.StandardMaterial("skyBox", scene);
@@ -275,7 +275,7 @@ var start = function(){
 
 
 	var init = function(){
-		var img = MeshUtils.makeRnd(SIZE_I, SIZE_J, {rnd:0.1, values:[0, 1, 2, 3]});
+		var img = MeshUtils.makeRnd(SIZE_I, SIZE_J, {rnd:0.1, values:[0, 1, 2, 3, 4]});
 		var greedy = GreedyMesh.get(img);
 		var faces = MeshUtils.getFaces(img);
 
