@@ -194,6 +194,7 @@ define([], function(){
 	};
 
 	MeshUtils.setUVScaleAndOffset = function(mesh, uScale, vScale, uOffset, vOffset) {
+		console.log("set uv,", uScale, vScale, uOffset, vOffset);
 		var i, UVs = mesh.getVerticesData(BABYLON.VertexBuffer.UVKind), len = UVs.length;
 		if (uScale !== 1 || uOffset !== 0) {
 			for (i = 0; i < len; i += 2) {
@@ -205,6 +206,7 @@ define([], function(){
 				UVs[i] = vOffset + UVs[i]*vScale;
 			}
 		}
+		console.log(UVs);
 		mesh.setVerticesData(BABYLON.VertexBuffer.UVKind, UVs);
 	};
 

@@ -63,17 +63,12 @@ require(["MeshUtils", "MeshCache", "GreedyMesh", "Materials", "GamePad", "lib/en
 		camera.checkCollisions = true;
 		camera.applyGravity = true;
 		camera.ellipsoid = new BABYLON.Vector3(5, 1, 5);
-		/*
-
 		var light0 = new BABYLON.HemisphericLight("Hemi0", new BABYLON.Vector3(0, 1, 0), scene);
 		light0.diffuse = new BABYLON.Color3(1, 1, 1);
 		light0.specular = new BABYLON.Color3(1, 1, 1);
-		light0.groundColor = new BABYLON.Color3(0, 0, 0);
-
-
-		*/
-	}
-
+		light0.groundColor = new BABYLON.Color3(1, 1, 1);
+	};
+	
 	var addSky = function(){
 		var skybox = BABYLON.MeshBuilder.CreateBox("skyBox", {size:1024}, scene);
 		var skyboxMaterial = new BABYLON.StandardMaterial("skyBox", scene);
@@ -126,7 +121,7 @@ require(["MeshUtils", "MeshCache", "GreedyMesh", "Materials", "GamePad", "lib/en
 		var y = SIZE/2;
 		//pos = [1, 1];
 		var mat = new BABYLON.StandardMaterial("Mat", scene);
-		mat.diffuseTexture = new BABYLON.Texture("assets/skybox_nx.jpg", scene);
+		mat.diffuseColor = new BABYLON.Color3(0.7, 0, 0.7); // purple
 		//mat.backFaceCulling = false;
 		var babylonPos = ijToBabylon(pos[0], pos[1]);
 		player = BABYLON.MeshBuilder.CreateBox("player", {height: SIZE*0.75, width:SIZE*0.75, depth:SIZE*0.75}, scene);
@@ -151,130 +146,12 @@ require(["MeshUtils", "MeshCache", "GreedyMesh", "Materials", "GamePad", "lib/en
 	};
 
 	var checkCollisions = function(){
-		if (character.intersectsMesh(player, false)) {
+		if (character && player && character.intersectsMesh(player, false)) {
 			console.log("HIT");
 		}
-		if(player.intersectsMesh(container, false)){
+		if(player && container && player.intersectsMesh(container, false)){
 			console.log("HIT CHAR");
 		}
-	};
-
-	var addExtra = function(){
-		var multimat = new BABYLON.MultiMaterial("multi", scene);
-		var material0 = new BABYLON.StandardMaterial("mat0", scene);
-    	material0.diffuseTexture = new BABYLON.Texture("assets/brick.jpg", scene);
-    	var material1 = new BABYLON.StandardMaterial("mat1", scene);
-	    material1.diffuseTexture = new BABYLON.Texture("assets/brick.jpg", scene);
-	    var material2 = new BABYLON.StandardMaterial("mat2", scene);
-	    material2.diffuseTexture = new BABYLON.Texture("assets/brick.jpg", scene);
-		var box = BABYLON.MeshBuilder.CreateBox("xtra", {height: SIZE, width:SIZE, depth:SIZE}, scene);
-	    multimat.subMaterials = [
-	    	material0, material1, material2
-	    ];
-		box.subMeshes = [];
-		var verticesCount = box.getTotalVertices();
-		box.subMeshes.push(new BABYLON.SubMesh(0, 0, verticesCount, 0, 3, box));
-		box.subMeshes.push(new BABYLON.SubMesh(1, 0, verticesCount, 3, 6, box));
-		//box.subMeshes.push(new BABYLON.SubMesh(2, 0, verticesCount, 8, 12, box));
-		box.position = new BABYLON.Vector3(5, -SIZE*1.5, 5);
-		box.material = multimat;
-	};
-
-	var addExtra2 = function(){
-		var babylonPos = ijToBabylon(10, 10);
-		/*var mat = Materials.getMultiMaterial(scene, "assets/brick.jpg", "assets/brick_rot.jpg");
-		var babylonPos = ijToBabylon(10, 10);
-		var uv = [
-			new BABYLON.Vector4(0, 0, 1, 1),
-			new BABYLON.Vector4(0, 0, 1, 1),
-			new BABYLON.Vector4(0, 0, 1, 1),
-			new BABYLON.Vector4(0, 0, 1, 1),
-			new BABYLON.Vector4(0, 0, 1, 1),
-			new BABYLON.Vector4(0, 0, 1, 1),
-			new BABYLON.Vector4(0, 0, 1, 1)
-		];
-		var extraBox = BABYLON.MeshBuilder.CreateBox("player", {height: SIZE, width:SIZE, depth:SIZE, faceUV:uv}, scene);
-		extraBox.material = mat;
-		var verticesCount = extraBox.getTotalVertices();
-		new BABYLON.SubMesh(0, 0, verticesCount, 0, 3, extraBox);
-		new BABYLON.SubMesh(1, 0, verticesCount, 3, 6, extraBox);
-		new BABYLON.SubMesh(2, 0, verticesCount, 6, 9, extraBox);
-		extraBox.position = new BABYLON.Vector3(babylonPos.x + SIZE/2, -SIZE*1.5, babylonPos.z - SIZE/2);
-		*/
-
-			//var mat = new BABYLON.StandardMaterial("mat1", scene);
-		  //var texture = new BABYLON.Texture("assets/bricks.png", scene);
-		  //mat.diffuseTexture = texture;
-
-
-
-		  var _depth = 8;
-		  var _width = 12;
-
-
-
-		  var options = {
-		    width: _width*SIZE,
-		    height: SIZE,
-		    depth: _depth*SIZE
-		  };
-
-
-		//BABYLONX.ShaderBuilder.InitializeEngine();
-
-			var box = BABYLON.MeshBuilder.CreateBox('box', options, scene);
-			var verticesCount = box.getTotalVertices();
-			//box.material = Materials.bricksMaterial;
-			box.position = new BABYLON.Vector3(babylonPos.x + SIZE/2, -SIZE*1.5, babylonPos.z - SIZE/2);
-
-			box.setVerticesData("_width", _.map(_.range(verticesCount), function(){return _width;}), false, 1);
-			box.setVerticesData("_depth", _.map(_.range(verticesCount), function(){return _depth;}), false, 1);
-		  //box.subMeshes.push(new BABYLON.SubMesh(0, 0, verticesCount, 0, 3, box));
-		  //box.subMeshes.push(new BABYLON.SubMesh(0, 0, verticesCount, 4, 6, box));
-
-		  /*ar mat_ = new BABYLONX.ShaderBuilder()
-		  		.InLine('if(nrm.z > 0.5 ){')
-				.Map({ path: 'brickMaterial', uv: 'vec2(pos.xy)' })
-				.InLine('}')
-				.BuildMaterial(scene);*/
-
-		//var multimat = new BABYLON.MultiMaterial("multi", scene);
-    	//multimat.subMaterials.push(Materials.brickMaterial);
-    	//multimat.subMaterials.push(Materials.steelMaterial);
-    	//box.material = multimat;
-
-
-
-
-
-
-    		var shaderMaterial = new BABYLON.ShaderMaterial("shaderMaterial", scene, {
-	            vertexElement: "vertexShaderCode",
-	            fragmentElement: "fragmentShaderCode"
-	        },
-	        {
-	            attributes: ["position", "uv", "normal", "_depth", "_width"],
-	            uniforms: ["worldViewProjection", "worldViewProjectionInverse"]
-	        });
-
-
-        shaderMaterial.setTexture("textureSampler", new BABYLON.Texture("assets/brick.jpg", scene));
-
-        box.material = shaderMaterial;
-
-
-
-
-        //var box2 = box.createInstance("_NEW_");
- 		//box2.position = new BABYLON.Vector3(babylonPos.x + SIZE/2, 2, babylonPos.z + SIZE/2);
-
- 		var box3 = box.clone("index: " + 1);
- 		box3.position = new BABYLON.Vector3(babylonPos.x + SIZE/2, 4, babylonPos.z + SIZE/2);
- 		box3.material = shaderMaterial;
- 		box3.rotation = new BABYLON.Vector3(0, 0.5 , 0);
-
-
-
 	};
 
 	var addBill = function(pos){
@@ -416,14 +293,10 @@ var start = function(){
 		//console.log(greedy);
 		var empty = _.shuffle(MeshUtils.getMatchingLocations(img, 0));
 		addPlayer(empty[0]);
-		addCharacter(empty[1]);
-		addGround();
+		//addCharacter(empty[1]);
+		//addGround();
 		//addSky();
-		addBill(empty[2]);
-
-		//addExtra();
-
-		//addExtra4();
+		//addBill(empty[2]);
 
 		if(BIRDSEYE){
 			birdsEye();
@@ -455,13 +328,11 @@ var start = function(){
 		});
 	};
 
-	Materials.makeTextures(scene);
 	Materials.makeMaterials(scene, init);
 	scene.debugLayer.show();
 
-
 	window.addEventListener("resize", function () {
-	   //engine.resize();
+	   engine.resize();
 	});
 
 	document.onkeydown = function(e){
