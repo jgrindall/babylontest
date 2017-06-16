@@ -48,27 +48,31 @@ define([], function(){
 		var _i, _j, SIZE_I = a.length, SIZE_J = a[0].length, faces, f, fRight, fDown, temp, EMPTY, lengthsNeeded = {}, fillFaceAtDirection;
 		EMPTY = {"n":0, "s":0, "w":0, "e":0};
 		faces = MeshUtils.makeEmpty(SIZE_I, SIZE_J);
+		var fillWith1 = function(f, _i, _j, dir, di, dj){
+			var checkI, checkJ;
+			checkI = _i + di;
+			checkJ = _j + dj;
+			if(a[_i][_j] > 0 && checkI >= 0 && checkJ >= 0 && checkI < SIZE_I && checkJ < SIZE_J && a[checkI][checkJ] === 0){
+				f[dir] = 1;
+			}
+		};
 		fillFaceAtDirection = function(_i, _j){
+			// fill the array with
 			var f = _.extend({}, EMPTY);
-			if(a[_i][_j] > 0 && _i > 0 && a[_i - 1][_j] === 0){
-				f["n"] = 1
-			}
-			if(a[_i][_j] > 0 && _i < SIZE_I - 1 && a[_i + 1][_j] === 0){
-				f["s"] = 1
-			}
-			if(a[_i][_j] > 0 && _j > 0 && a[_i][_j - 1] === 0){
-				f["w"] = 1
-			}
-			if(a[_i][_j] > 0 && _j < SIZE_J - 1 && a[_i][_j + 1] === 0){
-				f["e"] = 1
-			}
+			fillWith1(f, _i, _j, "n", -1, 0);
+			fillWith1(f, _i, _j, "s", +1, 0);
+			fillWith1(f, _i, _j, "w", 0, -1);
+			fillWith1(f, _i, _j, "e", 0, +1);
 			return f;
 		};
-		for(_i = 0; _i < SIZE_I; _i++){
-			for(_j = 0; _j < SIZE_J; _j++){
-				faces[_i][_j] = fillFaceAtDirection(_i, _j);
+		var fillAllFaces = function(){
+			for(_i = 0; _i < SIZE_I; _i++){
+				for(_j = 0; _j < SIZE_J; _j++){
+					faces[_i][_j] = fillFaceAtDirection(_i, _j);
+				}
 			}
-		}
+		};
+		fillAllFaces();
 		for(_i = 0; _i < SIZE_I; _i++){
 			for(_j = 0; _j < SIZE_J; _j++){
 				f = faces[_i][_j];
@@ -183,7 +187,7 @@ define([], function(){
 			a[_i] = [];
 			for(_j = 0; _j < SIZE_J; _j++){
 				if(_i === 0 || _j === 0 || _i === SIZE_I - 1 || _j === SIZE_J - 1){
-					a[_i][_j] = 1;
+					a[_i][_j] = getVal();
 				}
 				else{
 					a[_i][_j] = (Math.random() > options.rnd) ? 0 : getVal();
