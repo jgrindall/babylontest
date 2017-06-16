@@ -1,7 +1,9 @@
-require(["MeshUtils", "MeshCache", "GreedyMesh", "Materials", "GamePad", "lib/entity-manager"], function(MeshUtils, MeshCache, GreedyMesh, Materials, GamePad, EntityManager) {
+require(["MeshUtils", "GridUtils", "MeshCache", "GreedyMesh", "Materials", "GamePad", "lib/entity-manager"],
 
-	var SIZE_I = 32;
-	var SIZE_J = 32;
+function(MeshUtils, GridUtils, MeshCache, GreedyMesh, Materials, GamePad, EntityManager) {
+
+	var SIZE_I = 16;
+	var SIZE_J = 16;
 	var SIZE = 13;
 	var FRICTION = 0.4;
 	var ROT_SPEED = 0.03, SPEED = 0.5;
@@ -177,37 +179,46 @@ require(["MeshUtils", "MeshCache", "GreedyMesh", "Materials", "GamePad", "lib/en
 		console.log(container, player);
 	};
 
-	var addWalls = function(L){
-		//return;
-		var topLeft = {"x":0, "z":SIZE_I * SIZE};
-		var plane, y = SIZE/2;
-		_.each(L, function(obj){
-			plane = MeshCache.getPlaneFromCache(obj.len, obj.key);
-			if(obj.dir === "s"){
-				plane.position.x = topLeft.x + (obj.start[1] + obj.len/2)*SIZE;
-				plane.position.z = topLeft.z - (obj.start[0] + 1)*SIZE;
+	var addWalls = function(a){
+		var _i, _j, SIZE_I = a.length, SIZE_J = a[0].length, addWallAt, TOP_LEFT, plane, y = SIZE/2;
+		TOP_LEFT = {"x":0, "z":SIZE_I * SIZE};
+		addWallAt = function(start, dir, key, len){
+			plane = MeshCache.getPlaneFromCache(len, key);
+			if(dir === "s"){
+				plane.position.x = TOP_LEFT.x + (start[1] + len/2)*SIZE;
+				plane.position.z = TOP_LEFT.z - (start[0] + 1)*SIZE;
 				plane.position.y = y;
 			}
-			else if(obj.dir === "n"){
-				plane.position.x = topLeft.x + (obj.start[1] + obj.len/2)*SIZE;
-				plane.position.z = topLeft.z - (obj.start[0])*SIZE;
+			else if(dir === "n"){
+				plane.position.x = TOP_LEFT.x + (start[1] + len/2)*SIZE;
+				plane.position.z = TOP_LEFT.z - (start[0])*SIZE;
 				plane.position.y = y;
 				plane.rotation = new BABYLON.Vector3(0, Math.PI, 0);
 			}
-			else if(obj.dir === "w"){
-				plane.position.x = topLeft.x + (obj.start[1])*SIZE;
-				plane.position.z = topLeft.z - (obj.start[0] + obj.len/2)*SIZE;
+			else if(dir === "w"){
+				plane.position.x = TOP_LEFT.x + (start[1])*SIZE;
+				plane.position.z = TOP_LEFT.z - (start[0] + len/2)*SIZE;
 				plane.position.y = y;
 				plane.rotation = new BABYLON.Vector3(0, Math.PI/2, 0);
 			}
-			else if(obj.dir === "e"){
-				plane.position.x = topLeft.x + (obj.start[1] + 1)*SIZE;
-				plane.position.z = topLeft.z - (obj.start[0] + obj.len/2)*SIZE;
+			else if(dir === "e"){
+				plane.position.x = TOP_LEFT.x + (start[1] + 1)*SIZE;
+				plane.position.z = TOP_LEFT.z - (start[0] + len/2)*SIZE;
 				plane.position.y = y;
 				plane.rotation = new BABYLON.Vector3(0, -Math.PI/2, 0);
 			}
 			plane.freezeWorldMatrix();
-		});
+		};
+		for(_i = 0; _i < SIZE_I; _i++){
+			for(_j = 0; _j < SIZE_J; _j++){
+				_.each(["n", "s", "w", "e"], function(dir){
+					wallData = a[_i][_j].walls;
+					if(wallData[dir] >= 1){
+						addWallAt([_i, _j], dir, a[_i][_j].val, wallData[dir]);
+					}
+				});
+			}
+		}
 	};
 
 
@@ -230,29 +241,6 @@ require(["MeshUtils", "MeshCache", "GreedyMesh", "Materials", "GamePad", "lib/en
 		});
 	};
 
-	var addExtra4 = function(){
-		var y = -3;
-		var plane = BABYLON.MeshBuilder.CreatePlane("extra4", {height: 20, width:20}, scene);
-		plane.position.x = 0;
-		plane.position.z = 0;
-		plane.position.y = y;
-		plane.checkCollisions = true;
-		var mat = new BABYLON.StandardMaterial("brickMaterial2", scene);
-		mat.backFaceCulling = false;
-		Materials.brickMaterial.diffuseTexture = new BABYLON.Texture("assets/brick.jpg", scene);
-		plane.material = mat;
-		plane.scaling.z = 5;
-		//plane.setPhysicsState(BABYLON.PhysicsEngine.BoxImpostor, { mass: 0, restitution:0.5, friction:0.5 });
-		console.log(plane.physicsImpostor);
-		plane.physicsImpostor.object.scaling.x = 3;
-		plane.physicsImpostor.object.scaling.y = 3;
-		plane.physicsImpostor.object.scaling.z = 3;
-		console.log(plane.physicsImpostor.object);
-		//plane.freezeWorldMatrix();
-		//plane.rotation = new BABYLON.Vector3(0, 0 , 0);
-		//MeshUtils.setUVScale(plane, 20, 1);
-
-	};
 	var birdsEye = function(){
 		camera.rotation = new BABYLON.Vector3(Math.PI/2, 0 , 0);
 	};
@@ -260,9 +248,9 @@ require(["MeshUtils", "MeshCache", "GreedyMesh", "Materials", "GamePad", "lib/en
 
 
 
-var start = function(){
+	var start = function(){
 
-};
+	};
 
 
 
@@ -275,23 +263,25 @@ var start = function(){
 
 
 	var init = function(){
-		var img = MeshUtils.makeRnd(SIZE_I, SIZE_J, {rnd:0.1, values:[0, 1, 2, 3, 4]});
-		var greedy = GreedyMesh.get(img);
-		var faces = MeshUtils.getFaces(img);
-
+		var data = GridUtils.makeRnd(SIZE_I, SIZE_J, {rnd:0.1, values:[0, 1, 2, 3, 4]});
+		var greedy = GreedyMesh.get(data);
+		GridUtils.addFaces(data);
+		var lengthsNeeded = GridUtils.getLengthsNeeded(data);
 		MeshCache.clear();
 		_.each(greedy.dims, function(size){
 			MeshCache.addBoxToCache(scene, size, SIZE);
 		});
-		_.each(faces.lengthsNeeded, function(lengths, key){
+		console.log("lengthsNeeded, ", lengthsNeeded);
+		_.each(lengthsNeeded, function(lengths, key){
+			console.log("planes, ", lengths, key);
 			MeshCache.addPlanesToCache(scene, lengths, key, SIZE);
 		});
 		addBoxes(greedy.quads);
-		addWalls(faces.L);
+		addWalls(data);
 
 
 		//console.log(greedy);
-		var empty = _.shuffle(MeshUtils.getMatchingLocations(img, 0));
+		var empty = _.shuffle(GridUtils.getMatchingLocations(data, 0));
 		addPlayer(empty[0]);
 		//addCharacter(empty[1]);
 		//addGround();

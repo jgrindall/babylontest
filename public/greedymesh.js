@@ -1,4 +1,4 @@
-define(["MeshUtils"], function(MeshUtils){
+define(["GridUtils"], function(GridUtils){
 	/* helper functions */
 
 	var rectPassesTest = function(i, j, w, h, test){
@@ -22,12 +22,12 @@ define(["MeshUtils"], function(MeshUtils){
 		});
 		SIZE_I = a.length;
 		SIZE_J = a[0].length;
-		visited = MeshUtils.makeEmpty(SIZE_I, SIZE_J);
+		visited = GridUtils.makeEmpty(SIZE_I, SIZE_J);
 		isInside = function(){
 			return (i < SIZE_I && j < SIZE_J && i >= 0 && j >= 0);
 		};
 		shouldVisitCell = function(){
-			return (isInside() && a[i][j] >= 1 && !visited[i][j]);
+			return (isInside() && a[i][j].val >= 1 && !visited[i][j]);
 		};
 		moveToNext = function(){
 			var step = function(){
@@ -55,7 +55,7 @@ define(["MeshUtils"], function(MeshUtils){
 		};
 		rectIsFullAndNotVisited = function(i, j, w, h){
 			return rectPassesTest(i, j, w, h, function(_i, _j){
-				return (a[_i][_j] >= 1 && !visited[_i][_j]);
+				return (a[_i][_j].val >= 1 && !visited[_i][_j]);
 			});
 		};
 		markVisited = function(i, j, w, h){
