@@ -132,6 +132,28 @@ define(["GridUtils", "MeshCache", "GreedyMesh", "Materials"],
 		return bill;
 	};
 
+	SceneBuilderaddCharacters = function(posns){
+		_.each(posns, function(pos, i){
+			if(i<= 20){
+				addCharacter(pos, i);
+			}
+		})
+	};
+
+	SceneBuilderaddCharacter = function(pos, i){
+		var y = SIZE/2;
+		var babylonPos = ijToBabylon(pos[0], pos[1]);
+		if(Math.random() < 0.5){
+			character = MeshCache.getBillboard("key");
+		}
+		else{
+			character = MeshCache.getBillboard("baddie");
+		}
+		character.position = new BABYLON.Vector3(babylonPos.x + SIZE/2, y, babylonPos.z - SIZE/2);
+		character.v = new BABYLON.Vector3(Math.random(), 0, Math.random());
+		characters.push(character);
+	};
+
 	SceneBuilder.addPlayer = function(pos, scene){
 		console.log("add player at ", pos);
 		var y = SIZE/2;
