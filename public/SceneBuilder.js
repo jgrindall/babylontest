@@ -132,25 +132,25 @@ define(["GridUtils", "MeshCache", "GreedyMesh", "Materials"],
 		return bill;
 	};
 
-	SceneBuilderaddCharacters = function(posns){
+	SceneBuilder.addCharacters = function(posns, scene){
 		_.each(posns, function(pos, i){
-			if(i<= 20){
-				addCharacter(pos, i);
+			if(i<= 15){
+				SceneBuilder.addCharacter(pos, i, scene);
 			}
 		})
 	};
 
-	SceneBuilderaddCharacter = function(pos, i){
+	SceneBuilder.addCharacter = function(pos, i, scene){
 		var y = SIZE/2;
-		var babylonPos = ijToBabylon(pos[0], pos[1]);
+		var babylonPos = GridUtils.ijToBabylon(pos[0], pos[1]);
 		if(Math.random() < 0.5){
-			character = MeshCache.getBillboard("key");
+			character = MeshCache.getBillboard("key", scene);
 		}
 		else{
-			character = MeshCache.getBillboard("baddie");
+			character = MeshCache.getBillboard("baddie", scene);
 		}
 		character.position = new BABYLON.Vector3(babylonPos.x + SIZE/2, y, babylonPos.z - SIZE/2);
-		character.v = new BABYLON.Vector3(Math.random(), 0, Math.random());
+		character.v = new BABYLON.Vector3(Math.random()-0.5, 0, Math.random()-0.5);
 		characters.push(character);
 	};
 
@@ -166,19 +166,6 @@ define(["GridUtils", "MeshCache", "GreedyMesh", "Materials"],
 		player.position = new BABYLON.Vector3(babylonPos.x + SIZE/2, y, babylonPos.z - SIZE/2);
 		player.ellipsoid = new BABYLON.Vector3(SIZE/3, SIZE/3, SIZE/3);
 		return player;
-	};
-
-	SceneBuilder.addCharacter = function(pos, scene){
-		var y = SIZE/2;
-		var mat = new BABYLON.StandardMaterial("Mat", scene);
-		mat.diffuseTexture = new BABYLON.Texture("assets/red.jpg", scene);
-		mat.backFaceCulling = false;
-		var babylonPos = GridUtils.ijToBabylon(pos[0], pos[1]);
-		var character = BABYLON.MeshBuilder.CreateBox("character", {height: SIZE, width:SIZE, depth:SIZE}, scene);
-		character.material = mat;
-		character.checkCollisions = true;
-		character.position = new BABYLON.Vector3(babylonPos.x + SIZE/2, y, babylonPos.z - SIZE/2);
-		return character;
 	};
 
 	SceneBuilder.addSky = function(scene){
