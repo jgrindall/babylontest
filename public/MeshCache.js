@@ -12,21 +12,44 @@ define(["MeshUtils", "Materials"], function(MeshUtils, Materials){
 		cacheI = 0;
 	};
 	
-	MeshCache.addExtras = function(scene){
+	MeshCache.cacheBillboardContainer = function(scene){
 		var box, plane;
-		if(!cache["container"]){
-			box = BABYLON.MeshBuilder.CreateBox("container", {height: SIZE, width:SIZE, depth:SIZE}, scene);
+		if(!cache["billboard_container"]){
+			box = BABYLON.MeshBuilder.CreateBox("billboard_container", {height: SIZE, width:SIZE, depth:SIZE}, scene);
 			box.convertToUnIndexedMesh();
 			box.setEnabled(false);
-			cache["container"] = box;
+			cache["billboard_container"] = box;
 			box.material = Materials.redMaterial;
 			scene.meshes.pop();
 		}
-		if(!cache["billboard"]){
-			plane = BABYLON.MeshBuilder.CreatePlane("billboard", {height: SIZE*0.75, width:SIZE*0.75}, scene);
+	};
+	
+	MeshCache.cacheBillboardPlane = function(materialName, scene){
+		var key = "billboardplane_" + materialName;
+		var plane = BABYLON.MeshBuilder.CreatePlane(key, {height: SIZE*0.75, width:SIZE*0.75}, scene);
+		if(!cache[key]){
 			plane.billboardMode = BABYLON.Mesh.BILLBOARDMODE_ALL;
 			plane.setEnabled(false);
-			cache["billboard"] = plane;
+			if(materialName === "key"){
+				plane.material = Materials.keyMaterial;
+			}
+			else{
+				plane.material = Materials.baddieMaterial;
+			}
+			cache[key] = plane;
+			scene.meshes.pop();
+		}
+	};
+	
+	MeshCache.cacheBillboard = function(materialName, scene){
+		var key = "billboard_" + materialName, container, plane;
+		if(!cache[key]){
+			MeshCache.cacheBillboardPlane(materialName, scene);
+			container = cache["billboard_container"].clone("container_" + Math.random());
+			plane = cache["billboardplane_" + materialName].clone("plane_" + Math.random());
+			plane.parent = container;
+			cache[key] = container;
+			scene.meshes.pop();
 		}
 	};
 
@@ -34,7 +57,6 @@ define(["MeshUtils", "Materials"], function(MeshUtils, Materials){
 		var key, box;
 		key = "box" + "_" + size[0] + "_" + size[1];
 		if(!cache[key]){
-			console.log("cache ", key);
 			box = BABYLON.MeshBuilder.CreateBox(key, {height: SIZE, width:SIZE*size[0], depth:SIZE*size[1]}, scene);
 			box.convertToUnIndexedMesh();
 			box.checkCollisions = true;
@@ -48,7 +70,6 @@ define(["MeshUtils", "Materials"], function(MeshUtils, Materials){
 		_.each(lengths, function(len){
 			var key = "plane_" + material + "_" + len, plane;
 			if(!cache[key]){
-				console.log("cache ", key);
 				plane = BABYLON.MeshBuilder.CreatePlane(key, {height: SIZE, width:SIZE*len}, scene);
 				cache[key] = plane;
 				plane.convertToUnIndexedMesh();
@@ -76,7 +97,6 @@ define(["MeshUtils", "Materials"], function(MeshUtils, Materials){
 
 	MeshCache.getPlaneFromCache = function(size, key){
 		var cached, plane, key = "plane_" + key + "_" + size;
-		console.log("get plane", key);
 		cached = cache[key];
 		if(cached){
 			cacheI++;
@@ -89,21 +109,18 @@ define(["MeshUtils", "Materials"], function(MeshUtils, Materials){
 		}
 	};
 	
-	MeshCache.getBillboard = function(scene){
-		var container, plane;
-		container = cache["container"].createInstance("box index: " + cacheI);
-		plane = cache["billboard"].clone("box index: " + cacheI);
-		plane.parent = container;
-		plane.billboardMode = BABYLON.Mesh.BILLBOARDMODE_ALL;
-		container.checkCollisions = true;
-		container.material = Materials.redMaterial;
-		if(Math.random() <= 0.5){
-			plane.material = Materials.keyMaterial;
+	MeshCache.getBillboard = function(materialName){
+		var key = "billboard_" + materialName;
+		var cached = cache[key];
+		if(cached){
+			cacheI++;
+			bill = cached.createInstance("index: " + cacheI);
+			bill.checkCollisions = true;
+			return bill;
 		}
 		else{
-			plane.material = Materials.baddieMaterial;
+			throw new Error("not found " + key);
 		}
-		return container;
 	};
 
 	return MeshCache;

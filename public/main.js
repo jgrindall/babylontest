@@ -144,8 +144,12 @@ require(["MeshUtils", "MeshCache", "GreedyMesh", "Materials", "GamePad", "lib/en
 	var addCharacter = function(pos, i){
 		var y = SIZE/2;
 		var babylonPos = ijToBabylon(pos[0], pos[1]);
-		character = MeshCache.getBillboard();
-		character.checkCollisions = true;
+		if(Math.random() < 0.5){
+			character = MeshCache.getBillboard("key");
+		}
+		else{
+			character = MeshCache.getBillboard("baddie");
+		}
 		character.position = new BABYLON.Vector3(babylonPos.x + SIZE/2, y, babylonPos.z - SIZE/2);
 		character.v = new BABYLON.Vector3(Math.random(), 0, Math.random());
 		characters.push(character);
@@ -163,9 +167,10 @@ require(["MeshUtils", "MeshCache", "GreedyMesh", "Materials", "GamePad", "lib/en
 	};
 
 	var addBill = function(pos){
-		container = MeshCache.getBillboard(scene);
+		var y = SIZE/2;
+		container = MeshCache.getBillboard("key");
 		var babylonPos = ijToBabylon(pos[0], pos[1]);
-		container.position = new BABYLON.Vector3(babylonPos.x + SIZE/2, SIZE/2, babylonPos.z - SIZE/2);
+		container.position = new BABYLON.Vector3(babylonPos.x + SIZE/2, y, babylonPos.z - SIZE/2);
 	};
 
 	var addWalls = function(L){
@@ -291,9 +296,23 @@ var start = function(){
 			}
 		}
 	};
+	
+	var addBB = function(pos){
+		var y = SIZE/2;
+		var babylonPos = ijToBabylon(pos[0], pos[1]);
+		var plane = BABYLON.MeshBuilder.CreatePlane("bb", {height: SIZE*0.75, width:SIZE*0.75}, scene);
+		plane.billboardMode = BABYLON.Mesh.BILLBOARDMODE_ALL;
+		//plane.setPhysicsState(BABYLON.PhysicsEngine.BoxImpostor, { mass: 0, restitution:0.5, friction:0.5 });
+	    var baddieMaterial = new BABYLON.StandardMaterial("baddieMaterial", scene);
+		baddieMaterial.diffuseTexture = new BABYLON.Texture("assets/baddie.png", scene);
+		baddieMaterial.freeze();
+		plane.material = baddieMaterial;
+		plane.checkCollisions = true;
+		plane.position = new BABYLON.Vector3(babylonPos.x + SIZE/2, y, babylonPos.z - SIZE/2);
+	};
 
 	var init = function(){
-		var img = MeshUtils.makeRnd(SIZE_I, SIZE_J, {rnd:0.005, values:[0, 1, 2, 3]});
+		var img = MeshUtils.makeRnd(SIZE_I, SIZE_J, {rnd:0.000, values:[0, 1, 2, 3]});
 		var greedy = GreedyMesh.get(img);
 		var faces = MeshUtils.getFaces(img);
 
@@ -304,7 +323,9 @@ var start = function(){
 		_.each(faces.lengthsNeeded, function(lengths, key){
 			MeshCache.addPlanesToCache(scene, lengths, key, SIZE);
 		});
-		MeshCache.addExtras(scene);
+		//MeshCache.cacheBillboardContainer(scene);
+		//MeshCache.cacheBillboard("key", scene);
+		//MeshCache.cacheBillboard("baddie", scene);
 		addBoxes(greedy.quads);
 		addWalls(faces.L);
 
@@ -312,12 +333,13 @@ var start = function(){
 		//console.log(greedy);
 		var empty = _.shuffle(MeshUtils.getMatchingLocations(img, 0));
 		addPlayer(empty[0]);
-		empty.shift();
-		addBill(empty[1]);
-		empty.shift();
-		addCharacters(empty);
+		//empty.shift();
+		//addBill(empty[1]);
+		//empty.shift();
+		//addCharacters(empty);
 		//addGround();
 		//addSky();
+		addBB(empty[1]);
 
 		if(BIRDSEYE){
 			birdsEye();
