@@ -1,12 +1,13 @@
 require(["MeshUtils", "MeshCache", "GreedyMesh", "Materials", "GamePad", "lib/entity-manager"], function(MeshUtils, MeshCache, GreedyMesh, Materials, GamePad, EntityManager) {
 
-	var SIZE_I = 16;
-	var SIZE_J = 16;
+	var SIZE_I = 24;
+	var SIZE_J = 24;
 	var SIZE = 7;
+	window.SIZE = 7;
 	var FRICTION = 0.4;
 	var ROT_SPEED = 0.03, SPEED = 0.5;
 
-	var container, canvas, scene, engine, player, character, angle = 0, speed = 0, ang_speed = 0, angle = 0, _mode = "off";
+	var container, canvas, scene, engine, player, characters = [], angle = 0, speed = 0, ang_speed = 0, angle = 0, _mode = "off";
 
 	var BIRDSEYE = 0, BOXES = true;
 
@@ -131,54 +132,43 @@ require(["MeshUtils", "MeshCache", "GreedyMesh", "Materials", "GamePad", "lib/en
 		//player.setPhysicsState(BABYLON.PhysicsEngine.SphereImpostor, { mass: 0, restitution:0.5, friction:0.5 });
 		player.ellipsoid = new BABYLON.Vector3(SIZE/3, SIZE/3, SIZE/3);
 	};
+	
+	var addCharacters = function(posns){
+		_.each(posns, function(pos, i){
+			if(i<= 20){
+				addCharacter(pos, i);
+			}
+		})
+	};
 
-	var addCharacter = function(pos){
+	var addCharacter = function(pos, i){
 		var y = SIZE/2;
-		var mat = new BABYLON.StandardMaterial("Mat", scene);
-		mat.diffuseTexture = new BABYLON.Texture("assets/red.jpg", scene);
-		mat.backFaceCulling = false;
 		var babylonPos = ijToBabylon(pos[0], pos[1]);
-		character = BABYLON.MeshBuilder.CreateBox("character", {height: SIZE, width:SIZE, depth:SIZE}, scene);
-		//character.setPhysicsState(BABYLON.PhysicsEngine.BoxImpostor, { mass: 0, restitution:0.5, friction:0.5 });
-		character.material = mat;
+		character = MeshCache.getBillboard();
 		character.checkCollisions = true;
 		character.position = new BABYLON.Vector3(babylonPos.x + SIZE/2, y, babylonPos.z - SIZE/2);
+		character.v = new BABYLON.Vector3(Math.random(), 0, Math.random());
+		characters.push(character);
 	};
 
 	var checkCollisions = function(){
-		if (character && player && character.intersectsMesh(player, false)) {
-			console.log("HIT");
-		}
+		_.each(characters, function(character){
+			if (character && player && character.intersectsMesh(player, false)) {
+				console.log("HIT " + character);
+			}
+		})
 		if(player && container && player.intersectsMesh(container, false)){
 			console.log("HIT CHAR");
 		}
 	};
 
 	var addBill = function(pos){
-		var y = SIZE/2;
+		container = MeshCache.getBillboard(scene);
 		var babylonPos = ijToBabylon(pos[0], pos[1]);
-		var plane = BABYLON.Mesh.CreatePlane("", 2, scene);
-		var mat = new BABYLON.StandardMaterial("keyMaterial", scene);
-		var cMat = new BABYLON.StandardMaterial("keyMaterial", scene);
-		container = BABYLON.MeshBuilder.CreateBox("character", {height: SIZE, width:SIZE, depth:SIZE}, scene);
-		container.checkCollisions = true;
-		container.material = cMat;
-		cMat.diffuseColor = BABYLON.Color3.Red();
-		cMat.alpha = 0.2;
-		container.position = new BABYLON.Vector3(babylonPos.x + SIZE/2, y, babylonPos.z - SIZE/2);
-		mat.diffuseTexture = new BABYLON.Texture("assets/key.png", scene);
-		mat.diffuseTexture.hasAlpha = true;
-		mat.backFaceCulling = false
-		mat.freeze();
-		plane.parent = container;
-		plane.billboardMode = BABYLON.Mesh.BILLBOARDMODE_ALL;
-		plane.material = mat;
-		//container.setPhysicsState(BABYLON.PhysicsEngine.BoxImpostor, { mass: 0, restitution:0.5, friction:0.5 });
-		console.log(container, player);
+		container.position = new BABYLON.Vector3(babylonPos.x + SIZE/2, SIZE/2, babylonPos.z - SIZE/2);
 	};
 
 	var addWalls = function(L){
-		//return;
 		var topLeft = {"x":0, "z":SIZE_I * SIZE};
 		var plane, y = SIZE/2;
 		_.each(L, function(obj){
@@ -271,11 +261,39 @@ var start = function(){
 
 	makeScene();
 	addControls();
-
-
+	
+	
+	var moveBaddies = function(){
+		_.each(characters, function(c){
+			c.moveWithCollisions(new BABYLON.Vector3(c.v.x/20, 0, c.v.z/20));
+			if(Math.random() < 0.2){
+				c.v = new BABYLON.Vector3(Math.random(), 0, Math.random());
+			}
+		});
+	};
+	
+	var moveAll = function(){
+		moveBaddies();
+		if(_mode !== "off"){
+			movePlayer();
+			if(!BIRDSEYE){
+				matchPlayer();
+			}
+		}
+		if(_mode === "off"){
+			ang_speed *= FRICTION;
+			speed *= FRICTION;
+			if(Math.abs(speed) < 0.1){
+				speed = 0;
+			}
+			if(Math.abs(ang_speed) < 0.1){
+				ang_speed = 0;
+			}
+		}
+	};
 
 	var init = function(){
-		var img = MeshUtils.makeRnd(SIZE_I, SIZE_J, {rnd:0.1, values:[0, 1, 2, 3]});
+		var img = MeshUtils.makeRnd(SIZE_I, SIZE_J, {rnd:0.005, values:[0, 1, 2, 3]});
 		var greedy = GreedyMesh.get(img);
 		var faces = MeshUtils.getFaces(img);
 
@@ -286,6 +304,7 @@ var start = function(){
 		_.each(faces.lengthsNeeded, function(lengths, key){
 			MeshCache.addPlanesToCache(scene, lengths, key, SIZE);
 		});
+		MeshCache.addExtras(scene);
 		addBoxes(greedy.quads);
 		addWalls(faces.L);
 
@@ -293,35 +312,23 @@ var start = function(){
 		//console.log(greedy);
 		var empty = _.shuffle(MeshUtils.getMatchingLocations(img, 0));
 		addPlayer(empty[0]);
-		//addCharacter(empty[1]);
+		empty.shift();
+		addBill(empty[1]);
+		empty.shift();
+		addCharacters(empty);
 		//addGround();
 		//addSky();
-		//addBill(empty[2]);
 
 		if(BIRDSEYE){
 			birdsEye();
 		}
 
 		engine.setHardwareScalingLevel(1);
-
+		
+		
 
 		engine.runRenderLoop(function () {
-			if(_mode !== "off"){
-				movePlayer();
-				if(!BIRDSEYE){
-					matchPlayer();
-				}
-			}
-			if(_mode === "off"){
-				ang_speed *= FRICTION;
-				speed *= FRICTION;
-				if(Math.abs(speed) < 0.1){
-					speed = 0;
-				}
-				if(Math.abs(ang_speed) < 0.1){
-					ang_speed = 0;
-				}
-			}
+			moveAll();
 			checkCollisions();
 			//console.log("render");
 			scene.render();
@@ -403,7 +410,6 @@ var start = function(){
 	var playerData = manager.getComponentDataForEntity('Player', playerId);
 	playerData.life = 80;
 	console.log(playerData);
-
 
 	var playerData2 = manager.getComponentDataForEntity('Possessions', playerId);
 	console.log(playerData2);

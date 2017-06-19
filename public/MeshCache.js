@@ -11,6 +11,24 @@ define(["MeshUtils", "Materials"], function(MeshUtils, Materials){
 		cache = {};
 		cacheI = 0;
 	};
+	
+	MeshCache.addExtras = function(scene){
+		var box, plane;
+		if(!cache["container"]){
+			box = BABYLON.MeshBuilder.CreateBox("container", {height: SIZE, width:SIZE, depth:SIZE}, scene);
+			box.convertToUnIndexedMesh();
+			box.setEnabled(false);
+			cache["container"] = box;
+			box.material = Materials.redMaterial;
+			scene.meshes.pop();
+		}
+		if(!cache["billboard"]){
+			plane = BABYLON.MeshBuilder.CreatePlane("billboard", {height: SIZE*0.75, width:SIZE*0.75}, scene);
+			plane.billboardMode = BABYLON.Mesh.BILLBOARDMODE_ALL;
+			plane.setEnabled(false);
+			cache["billboard"] = plane;
+		}
+	};
 
 	MeshCache.addBoxToCache = function(scene, size, SIZE){
 		var key, box;
@@ -69,6 +87,23 @@ define(["MeshUtils", "Materials"], function(MeshUtils, Materials){
 		else{
 			throw new Error("not found " + key);
 		}
+	};
+	
+	MeshCache.getBillboard = function(scene){
+		var container, plane;
+		container = cache["container"].createInstance("box index: " + cacheI);
+		plane = cache["billboard"].clone("box index: " + cacheI);
+		plane.parent = container;
+		plane.billboardMode = BABYLON.Mesh.BILLBOARDMODE_ALL;
+		container.checkCollisions = true;
+		container.material = Materials.redMaterial;
+		if(Math.random() <= 0.5){
+			plane.material = Materials.keyMaterial;
+		}
+		else{
+			plane.material = Materials.baddieMaterial;
+		}
+		return container;
 	};
 
 	return MeshCache;
