@@ -1,14 +1,13 @@
 require(["MeshUtils", "GridUtils", "MeshCache", "SceneBuilder", "GreedyMesh", "Materials", "GamePad", "lib/entity-manager"],
 
-function(MeshUtils, GridUtils, MeshCache, SceneBuilder, GreedyMesh, Materials, GamePad, EntityManager) {
-
-	window.SIZE_I = 13;
-	window.SIZE_J = 16;
-	window.SIZE = 13;
+	window.SIZE_I = 24;
+	window.SIZE_J = 24;
+	window.SIZE = 7;
+	window.SIZE = 7;
 	var FRICTION = 0.4;
 	var ROT_SPEED = 0.03, SPEED = 0.5;
 
-	var bill, canvas, scene, engine, player, character, angle = 0, speed = 0, ang_speed = 0, angle = 0, _mode = "off";
+	var container, canvas, scene, engine, player, characters = [], angle = 0, speed = 0, ang_speed = 0, angle = 0, _mode = "off";
 
 	var BIRDSEYE = 0, BOXES = true;
 
@@ -73,12 +72,21 @@ function(MeshUtils, GridUtils, MeshCache, SceneBuilder, GreedyMesh, Materials, G
 	};
 
 	var checkCollisions = function(){
-		if (character && player && character.intersectsMesh(player, false)) {
-			console.log("HIT");
-		}
-		if(player && bill && player.intersectsMesh(bill, false)){
+		_.each(characters, function(character){
+			if (character && player && character.intersectsMesh(player, false)) {
+				console.log("HIT " + character);
+			}
+		})
+		if(player && container && player.intersectsMesh(container, false)){
 			console.log("HIT CHAR");
 		}
+	};
+
+	var addBill = function(pos){
+		var y = SIZE/2;
+		container = MeshCache.getBillboard("key");
+		var babylonPos = ijToBabylon(pos[0], pos[1]);
+		container.position = new BABYLON.Vector3(babylonPos.x + SIZE/2, y, babylonPos.z - SIZE/2);
 	};
 
 	var birdsEye = function(){
@@ -102,28 +110,45 @@ function(MeshUtils, GridUtils, MeshCache, SceneBuilder, GreedyMesh, Materials, G
 		character = SceneBuilder.addCharacter(empty[1], scene);
 		SceneBuilder.addGround(scene);
 		SceneBuilder.addSky(scene);
-		bill = SceneBuilder.addBill(empty[2], scene);
+		//bill = SceneBuilder.addBill(empty[2], scene);
 		if(BIRDSEYE){
 			birdsEye();
 		}
 		engine.setHardwareScalingLevel(1);
-		engine.runRenderLoop(function () {
-			if(_mode !== "off"){
-				movePlayer();
-				if(!BIRDSEYE){
-					matchPlayer();
-				}
+	};
+
+	var moveBaddies = function(){
+		_.each(characters, function(c){
+			c.moveWithCollisions(new BABYLON.Vector3(c.v.x/20, 0, c.v.z/20));
+			if(Math.random() < 0.2){
+				c.v = new BABYLON.Vector3(Math.random(), 0, Math.random());
 			}
-			if(_mode === "off"){
-				ang_speed *= FRICTION;
-				speed *= FRICTION;
-				if(Math.abs(speed) < 0.1){
-					speed = 0;
-				}
-				if(Math.abs(ang_speed) < 0.1){
-					ang_speed = 0;
-				}
+		});
+	};
+
+	var moveAll = function(){
+		moveBaddies();
+		if(_mode !== "off"){
+			movePlayer();
+			if(!BIRDSEYE){
+				matchPlayer();
 			}
+		}
+		if(_mode === "off"){
+			ang_speed *= FRICTION;
+			speed *= FRICTION;
+			if(Math.abs(speed) < 0.1){
+				speed = 0;
+			}
+			if(Math.abs(ang_speed) < 0.1){
+				ang_speed = 0;
+			}
+		}
+	};
+
+
+	engine.runRenderLoop(function () {
+			moveAll();
 			checkCollisions();
 			scene.render();
 		});
@@ -212,7 +237,6 @@ function(MeshUtils, GridUtils, MeshCache, SceneBuilder, GreedyMesh, Materials, G
 	var playerData = manager.getComponentDataForEntity('Player', playerId);
 	playerData.life = 80;
 	console.log(playerData);
-
 
 	var playerData2 = manager.getComponentDataForEntity('Possessions', playerId);
 	console.log(playerData2);
