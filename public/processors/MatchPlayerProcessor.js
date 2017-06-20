@@ -1,21 +1,20 @@
 define([], function(){
 	
-	var FRICTION = 0.7;
-	
-	var MovementProcessor = function(manager, engine){
+	var MatchPlayerProcessor = function(manager, engine, playerId, cameraId){
 		this.manager = manager;
 		this.engine = engine;
+		this.playerId = playerId;
+		this.cameraId = cameraId;
 		this.init();
 	};
 	
-	MovementProcessor.prototype.init = function(){
+	MatchPlayerProcessor.prototype.init = function(){
 		//
 	};
 	
-	MovementProcessor.prototype.update = function () {
-		var speedData, sf, ids, manager = this.manager;
+	MatchPlayerProcessor.prototype.update = function () {
+		var playerData, sf, ids, manager = this.manager;
 		speedData = manager.getComponentsData('SpeedComponent');
-		sf = (60/this.engine.getFps());  // a sort of correction factor to take into account slow fps - move the objects more
 		ids = Object.keys(speedData);
 		_.each(ids, function(id, i){
 			var dx, dz, mesh, data;
@@ -37,9 +36,8 @@ define([], function(){
 				}
 			}
 		});
-		//matchPlayer();
 	};
 
-	return MovementProcessor;
+	return MatchPlayerProcessor;
 	
 });

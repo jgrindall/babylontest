@@ -1,10 +1,10 @@
 define([], function(){
 	
-	var GamePadutils = {
+	var GamePadUtils = {
 		
 	};
 	
-	GamePadUtils.linkGamePadToId = function(manager, gamepad, id){
+	GamePadUtils.linkGamePadToId = function(manager, gamePad, id){
 		var ROT_ANGLE = 50, ROT_SPEED = 0.03, SPEED = 0.5, MIN_DIST = 0.25;;
 		gamePad.update.add({
 			update : function(name, obj){
@@ -20,7 +20,7 @@ define([], function(){
 						// not moved it much
 						return;
 					}
-					sf = (obj.d - MIN_DIST) / (1 - MIN_DIST));
+					sf = (obj.d - MIN_DIST) / (1 - MIN_DIST);
 					sf = Math.sqrt(sf);
 					if(obj.a < ROT_ANGLE || obj.a > 360 - ROT_ANGLE){
 						data.ang_speed = ROT_SPEED * sf;

@@ -107,7 +107,8 @@ define([], function(){
 		return lengthsNeeded;
 	};
 
-	GridUtils.addFaces = function(a){
+	GridUtils.addFacesInfoToGrid = function(a){
+		// start off with just a list of cells and add info describing where the walls are
 		GridUtils.addDirectionsOfWalls(a);
 		GridUtils.extendWalls(a);
 	};

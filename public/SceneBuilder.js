@@ -8,21 +8,20 @@ define(["GridUtils", "MeshCache", "GreedyMesh", "Materials"],
 
 	SceneBuilder.makeScene = function(engine){
 		var scene = new BABYLON.Scene(engine);
-		var light1 = new BABYLON.PointLight("Omni", new BABYLON.Vector3(2, 150, -2), scene);
-		var camera = new BABYLON.FreeCamera("FreeCamera", new BABYLON.Vector3(SIZE_I*SIZE/2, 200, SIZE_J*SIZE/2), scene);
 		scene.gravity = new BABYLON.Vector3(0, 0, 0);
 		scene.collisionsEnabled = true;
-		camera.checkCollisions = true;
-		camera.applyGravity = true;
-		camera.ellipsoid = new BABYLON.Vector3(5, 1, 5);
 		var light0 = new BABYLON.HemisphericLight("Hemi0", new BABYLON.Vector3(0, 1, 0), scene);
+		var light1 = new BABYLON.PointLight("Omni", new BABYLON.Vector3(2, 150, -2), scene);
 		light0.diffuse = new BABYLON.Color3(1, 1, 1);
 		light0.specular = new BABYLON.Color3(1, 1, 1);
 		light0.groundColor = new BABYLON.Color3(1, 1, 1);
-		return {
-			"scene":scene,
-			"camera":camera
-		};
+		return scene;
+	};
+	
+	SceneBuilder.makeCamera = function(scene){
+		var camera = new BABYLON.FreeCamera("FreeCamera", new BABYLON.Vector3(SIZE_I*SIZE/2, 200, SIZE_J*SIZE/2), scene);
+		camera.checkCollisions = false;
+		return camera;
 	};
 
 	SceneBuilder.addWalls = function(a){
@@ -101,13 +100,13 @@ define(["GridUtils", "MeshCache", "GreedyMesh", "Materials"],
 		});
 	};
 
-	SceneBuilder.addFromData = function(scene, data){
-		var greedy, boxes, walls;
-		greedy = GreedyMesh.get(data);
-		GridUtils.addFaces(data);
-		SceneBuilder.cache(scene, data, greedy);
-		boxes = SceneBuilder.addBoxes(greedy.quads);
-		walls = SceneBuilder.addWalls(data);
+	SceneBuilder.addFromData = function(scene, grid){
+		var greedy;
+		greedy = GreedyMesh.get(grid);
+		GridUtils.addFacesInfoToGrid(grid);
+		SceneBuilder.cache(scene, grid, greedy);
+		SceneBuilder.addBoxes(greedy.quads);
+		SceneBuilder.addWalls(grid);
 	};
 
 	SceneBuilder.addBill = function(pos, scene){
