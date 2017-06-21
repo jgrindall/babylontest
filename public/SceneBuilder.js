@@ -17,7 +17,7 @@ define(["GridUtils", "MeshCache", "GreedyMesh", "Materials"],
 		light0.groundColor = new BABYLON.Color3(1, 1, 1);
 		return scene;
 	};
-	
+
 	SceneBuilder.makeCamera = function(scene){
 		var camera = new BABYLON.FreeCamera("FreeCamera", new BABYLON.Vector3(SIZE_I*SIZE/2, 200, SIZE_J*SIZE/2), scene);
 		camera.checkCollisions = false;
@@ -98,6 +98,8 @@ define(["GridUtils", "MeshCache", "GreedyMesh", "Materials"],
 		_.each(lengthsNeeded, function(lengths, key){
 			MeshCache.addPlanesToCache(scene, lengths, key, SIZE);
 		});
+		MeshCache.addBillboardBoxToCache(scene, [1, 1], SIZE);
+		MeshCache.addBillboardPlanesToCache(scene, [1], 1, SIZE);
 	};
 
 	SceneBuilder.addFromData = function(scene, grid){
@@ -109,52 +111,18 @@ define(["GridUtils", "MeshCache", "GreedyMesh", "Materials"],
 		SceneBuilder.addWalls(grid);
 	};
 
-	SceneBuilder.addBill = function(pos, scene){
-		var y = SIZE/2;
-		var babylonPos = GridUtils.ijToBabylon(pos[0], pos[1]);
-		var plane = BABYLON.Mesh.CreatePlane("", 2, scene);
-		var mat = new BABYLON.StandardMaterial("keyMaterial", scene);
-		var cMat = new BABYLON.StandardMaterial("keyMaterial", scene);
-		var bill = BABYLON.MeshBuilder.CreateBox("character", {height: SIZE, width:SIZE, depth:SIZE}, scene);
-		bill.checkCollisions = true;
-		bill.material = cMat;
-		cMat.diffuseColor = BABYLON.Color3.Red();
-		cMat.alpha = 0.2;
-		bill.position = new BABYLON.Vector3(babylonPos.x + SIZE/2, y, babylonPos.z - SIZE/2);
-		mat.diffuseTexture = new BABYLON.Texture("assets/key.png", scene);
-		mat.diffuseTexture.hasAlpha = true;
-		mat.backFaceCulling = false
-		mat.freeze();
-		plane.parent = bill;
-		plane.billboardMode = BABYLON.Mesh.BILLBOARDMODE_ALL;
-		plane.material = mat;
-		return bill;
-	};
-
-	SceneBuilder.addCharacters = function(posns, scene){
-		_.each(posns, function(pos, i){
-			if(i<= 15){
-				SceneBuilder.addCharacter(pos, i, scene);
-			}
-		})
-	};
-
-	SceneBuilder.addCharacter = function(pos, i, scene){
-		var y = SIZE/2;
-		var babylonPos = GridUtils.ijToBabylon(pos[0], pos[1]);
-		if(Math.random() < 0.5){
-			character = MeshCache.getBillboard("key", scene);
-		}
-		else{
-			character = MeshCache.getBillboard("baddie", scene);
-		}
-		character.position = new BABYLON.Vector3(babylonPos.x + SIZE/2, y, babylonPos.z - SIZE/2);
-		character.v = new BABYLON.Vector3(Math.random()-0.5, 0, Math.random()-0.5);
-		characters.push(character);
+	SceneBuilder.addBaddie = function(pos, i, scene){
+		var y = SIZE/2, container, billboard, babylonPos;
+		babylonPos = GridUtils.ijToBabylon(pos[0], pos[1]);
+		container = MeshCache.getBillboardBoxFromCache([1, 1]);
+		billboard = MeshCache.getBillboardPlaneFromCache(1, 1);
+		container.isVisible = false;
+		container.position = new BABYLON.Vector3(babylonPos.x + SIZE/2, y, babylonPos.z - SIZE/2);
+		billboard.position = new BABYLON.Vector3(babylonPos.x + SIZE/2, y, babylonPos.z - SIZE/2);
+		return [container, billboard];
 	};
 
 	SceneBuilder.addPlayer = function(pos, scene){
-		console.log("add player at ", pos);
 		var y = SIZE/2;
 		var mat = new BABYLON.StandardMaterial("Mat", scene);
 		mat.diffuseColor = new BABYLON.Color3(0.7, 0, 0.7); // purple

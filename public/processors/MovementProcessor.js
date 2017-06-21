@@ -2,9 +2,10 @@ define([], function(){
 
 	var FRICTION = 0.7;
 
-	var MovementProcessor = function(manager, engine){
+	var MovementProcessor = function(manager, engine, playerId){
 		this.manager = manager;
 		this.engine = engine;
+		this.playerId = playerId;
 		this.init();
 	};
 
@@ -37,7 +38,6 @@ define([], function(){
 				}
 			}
 		}
-		//matchPlayer();
 	};
 
 	return MovementProcessor;

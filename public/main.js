@@ -1,20 +1,20 @@
 require(["MeshUtils", "GridUtils", "MeshCache", "SceneBuilder", "GreedyMesh", "Materials", "GamePad", "GamePadUtils", "lib/entity-manager",
 
-"components/HealthComponent", "components/SpeedComponent", "components/MessageComponent", "components/MeshComponent",
+"components/HealthComponent", "components/SpeedComponent", "components/MessageComponent", "components/MeshComponent", "components/VComponent",
 
-"components/CameraComponent", "components/PossessionsComponent", "processors/MatchPlayerProcessor", "processors/MovementProcessor"],
+"components/CameraComponent", "components/PossessionsComponent", "processors/MatchPlayerProcessor", "processors/MovementProcessor", "processors/MovementProcessorB"],
 
 	function(MeshUtils, GridUtils, MeshCache, SceneBuilder, GreedyMesh, Materials, GamePad, GamePadUtils, EntityManager,
 
-	HealthComponent, SpeedComponent, MessageComponent, MeshComponent,
+	HealthComponent, SpeedComponent, MessageComponent, MeshComponent, VComponent,
 
-	CameraComponent, PossessionsComponent, MatchPlayerProcessor, MovementProcessor) {
+	CameraComponent, PossessionsComponent, MatchPlayerProcessor, MovementProcessor, MovementProcessorB) {
 
 		window.SIZE_I = 24;
 		window.SIZE_J = 24;
 		window.SIZE = 7;
 		window.SIZE = 7;
-		var grid, scene, cameraId, playerId, gamePad, manager, canvas;
+		var grid, empty, scene, cameraId, playerId, gamePad, manager, canvas, baddieIds = [];
 
 		canvas = document.querySelector("#renderCanvas");
 
@@ -30,34 +30,13 @@ require(["MeshUtils", "GridUtils", "MeshCache", "SceneBuilder", "GreedyMesh", "M
 		var makeCamera = function () {
 			var comp;
 			cameraId = manager.createEntity(['CameraComponent']);
-			console.log("cameraId", cameraId);
 			comp = manager.getComponentDataForEntity('CameraComponent', cameraId);
 			comp.camera = SceneBuilder.makeCamera(scene);
-			console.log("camera", comp.camera);
-		};
-
-		var matchPlayer = function(){
-			//camera.position = player.position.clone();
-			//camera.rotationQuaternion = BABYLON.Quaternion.RotationAxis(new BABYLON.Vector3(0, 1, 0), angle);
-		};
-
-		var addBill = function(pos){
-			var y = SIZE/2, babylonPos;
-			container = MeshCache.getBillboard("key", scene);
-			babylonPos = GridUtils.ijToBabylon(pos[0], pos[1]);
-			container.position = new BABYLON.Vector3(babylonPos.x + SIZE/2, y, babylonPos.z - SIZE/2);
 		};
 
 		var makeGrid = function(){
-			grid = GridUtils.makeRnd(SIZE_I, SIZE_J, {rnd:0.0, values:[0, 1, 2, 3, 4]});
-		};
-
-		var cache = function(){
-			MeshCache.cacheBillboardPlane("key", scene);
-			MeshCache.cacheBillboardPlane("baddie", scene);
-			MeshCache.cacheBillboardContainer(scene);
-			MeshCache.cacheBillboard("key", scene);
-			MeshCache.cacheBillboard("baddie", scene);
+			grid = GridUtils.makeRnd(SIZE_I, SIZE_J, {rnd:0.001, values:[0, 1, 2, 3, 4]});
+			empty = _.shuffle(GridUtils.getMatchingLocations(grid, 0));
 		};
 
 		var build = function(){
@@ -65,13 +44,10 @@ require(["MeshUtils", "GridUtils", "MeshCache", "SceneBuilder", "GreedyMesh", "M
 		};
 
 		var addPlayer = function(){
-			var empty, comp;
+			var comp;
 			playerId = manager.createEntity(['MessageComponent', 'PossessionsComponent', 'SpeedComponent', 'MeshComponent']);
-			console.log("player", playerId);
-			empty = _.shuffle(GridUtils.getMatchingLocations(grid, 0));
 			comp = manager.getComponentDataForEntity('MeshComponent', playerId);
 			comp.mesh = SceneBuilder.addPlayer(empty[0], scene);
-			console.log("mesh", comp.mesh);
 		};
 
 		var startRender = function(){
@@ -92,36 +68,39 @@ require(["MeshUtils", "GridUtils", "MeshCache", "SceneBuilder", "GreedyMesh", "M
 
 		var setupManager = function(){
 			manager = new EntityManager();
-			_.each([HealthComponent, MessageComponent, PossessionsComponent, MeshComponent, SpeedComponent, CameraComponent], function(c){
+			_.each([HealthComponent, MessageComponent, PossessionsComponent, MeshComponent, SpeedComponent, VComponent, CameraComponent], function(c){
 				manager.addComponent(c.name, c);
 			});
-			manager.addProcessor(new MovementProcessor(manager, engine));
+		};
+
+		var addBaddies = function(){
+			_.each([1, 2, 3, 4, 5, 6, 7, 8], function(i){
+				var comp, id, v;
+				id = manager.createEntity(['MessageComponent', 'PossessionsComponent', 'MeshComponent', 'VComponent']);
+				comp = manager.getComponentDataForEntity('MeshComponent', id);
+				comp.mesh = SceneBuilder.addBaddie(empty[i], scene);
+				v = manager.getComponentDataForEntity('VComponent', id);
+				v.vel = {x:Math.random() - 0.5, y:Math.random() - 0.5};
+				baddieIds.push(id);
+			});
 		};
 
 		var init = function(){
+			scene.debugLayer.show();
 			setupManager();
 			makeCamera();
 			makeGrid();
-			cache();
 			build();
 			addPlayer();
 			addEnvironment();
 			addControls();
+			addBaddies();
+			manager.addProcessor(new MovementProcessor(manager, engine, playerId));
 			manager.addProcessor(new MatchPlayerProcessor(manager, engine, playerId, cameraId));
+			manager.addProcessor(new MovementProcessorB(manager));
 			startRender();
 		};
 
-		var moveBaddies = function(){
-			_.each(characters, function(c){
-				//c.moveWithCollisions(new BABYLON.Vector3(c.v.x/20, 0, c.v.z/20));
-				//if(Math.random() < 0.01){
-					//c.v = new BABYLON.Vector3(Math.random()-0.5, 0, Math.random()-0.5);
-				//}
-			});
-		};
-		var moveAll = function(){
-			//moveBaddies();
-		};
 		window.engine = new BABYLON.Engine(canvas, false, null, false);
 
 		makeScene();
