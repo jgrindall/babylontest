@@ -2,13 +2,17 @@ require(["MeshUtils", "GridUtils", "MeshCache", "SceneBuilder", "GreedyMesh", "M
 
 "components/HealthComponent", "components/SpeedComponent", "components/MessageComponent", "components/MeshComponent", "components/VComponent",
 
-"components/CameraComponent", "components/PossessionsComponent", "processors/MatchPlayerProcessor", "processors/MovementProcessor", "processors/MovementProcessorB"],
+"components/CameraComponent", "components/PossessionsComponent", "processors/MatchPlayerProcessor", "processors/MovementProcessor", "processors/MovementProcessorB",
+
+"processors/CollisionProcessor"],
 
 	function(MeshUtils, GridUtils, MeshCache, SceneBuilder, GreedyMesh, Materials, GamePad, GamePadUtils, EntityManager,
 
 	HealthComponent, SpeedComponent, MessageComponent, MeshComponent, VComponent,
 
-	CameraComponent, PossessionsComponent, MatchPlayerProcessor, MovementProcessor, MovementProcessorB) {
+	CameraComponent, PossessionsComponent, MatchPlayerProcessor, MovementProcessor, MovementProcessorB,
+
+	CollisionProcessor) {
 
 		window.SIZE_I = 24;
 		window.SIZE_J = 24;
@@ -74,7 +78,7 @@ require(["MeshUtils", "GridUtils", "MeshCache", "SceneBuilder", "GreedyMesh", "M
 		};
 
 		var addBaddies = function(){
-			_.each([1, 2, 3, 4, 5, 6, 7, 8], function(i){
+			_.each([1, 2, 3, 4, 5, 6, 7, 8, 9, 10], function(i){
 				var comp, id, v;
 				id = manager.createEntity(['MessageComponent', 'PossessionsComponent', 'MeshComponent', 'VComponent']);
 				comp = manager.getComponentDataForEntity('MeshComponent', id);
@@ -98,6 +102,7 @@ require(["MeshUtils", "GridUtils", "MeshCache", "SceneBuilder", "GreedyMesh", "M
 			manager.addProcessor(new MovementProcessor(manager, engine, playerId));
 			manager.addProcessor(new MatchPlayerProcessor(manager, engine, playerId, cameraId));
 			manager.addProcessor(new MovementProcessorB(manager));
+			manager.addProcessor(new CollisionProcessor(manager, playerId, baddieIds));
 			startRender();
 		};
 
