@@ -46,6 +46,7 @@ define([], function(){
 		var newEast = 	{x:east.x + dx, 				z:east.z + dz};
 		var newNorth = 	{x:north.x + dx, 				z:north.z + dz};
 		var newSouth = 	{x:south.x + dx, 				z:south.z + dz};
+		//we dont need to check all boxes, we need a lookup
 		_.each(boxes, function(box){
 			if(_pointInBox(newNorth, box)){
 				dirs['n'] = 1;
