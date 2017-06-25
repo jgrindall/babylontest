@@ -1,9 +1,10 @@
 define([], function(){
-	
+	"use strict";
+
 	var GamePadUtils = {
-		
+
 	};
-	
+
 	GamePadUtils.linkGamePadToId = function(manager, gamePad, id){
 		var ROT_ANGLE = 50, ROT_SPEED = 0.03, SPEED = 0.5, MIN_DIST = 0.25;;
 		gamePad.update.add({
@@ -36,11 +37,11 @@ define([], function(){
 			}
 		});
 	};
-	
+
 	GamePadUtils.unlinkGamePad = function(manager, gamepad, id){
 		//TODO gamePad.update.remove();
 	};
 
 	return GamePadUtils;
-	
+
 });

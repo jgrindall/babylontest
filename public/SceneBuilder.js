@@ -1,6 +1,9 @@
-define(["GridUtils", "MeshCache", "GreedyMesh", "Materials"],
+define(["GridUtils", "MeshCache", "GreedyMeshAlgo", "Materials"],
 
-	function(GridUtils, MeshCache, GreedyMesh, Materials){
+	function(GridUtils, MeshCache, GreedyMeshAlgo, Materials){
+
+	"use strict";
+
 
 	var SceneBuilder = {
 
@@ -8,8 +11,8 @@ define(["GridUtils", "MeshCache", "GreedyMesh", "Materials"],
 
 	SceneBuilder.makeScene = function(engine){
 		var scene = new BABYLON.Scene(engine);
-		scene.gravity = new BABYLON.Vector3(0, 0, 0);
-		scene.collisionsEnabled = true;
+		//scene.gravity = new BABYLON.Vector3(0, 0, 0);
+		//scene.collisionsEnabled = true;
 		var light0 = new BABYLON.HemisphericLight("Hemi0", new BABYLON.Vector3(0, 1, 0), scene);
 		var light1 = new BABYLON.PointLight("Omni", new BABYLON.Vector3(2, 150, -2), scene);
 		light0.diffuse = new BABYLON.Color3(1, 1, 1);
@@ -58,7 +61,7 @@ define(["GridUtils", "MeshCache", "GreedyMesh", "Materials"],
 		for(_i = 0; _i < SIZE_I; _i++){
 			for(_j = 0; _j < SIZE_J; _j++){
 				_.each(["n", "s", "w", "e"], function(dir){
-					wallData = a[_i][_j].walls;
+					var wallData = a[_i][_j].walls;
 					if(wallData[dir] >= 1){
 						addWallAt([_i, _j], dir, a[_i][_j].val, wallData[dir]);
 					}
@@ -82,6 +85,12 @@ define(["GridUtils", "MeshCache", "GreedyMesh", "Materials"],
 			box.position.x = x;
 			box.position.z = z;
 			box.position.y = y;
+			box.__width = quad[2];
+			box.__height = quad[3];
+			if(quad[2] < quad[3]){
+				box.__width = quad[3];
+				box.__height = quad[2];
+			}
 			box.freezeWorldMatrix();
 			boxes.push(box);
 		});
@@ -103,12 +112,13 @@ define(["GridUtils", "MeshCache", "GreedyMesh", "Materials"],
 	};
 
 	SceneBuilder.addFromData = function(scene, grid){
-		var greedy;
-		greedy = GreedyMesh.get(grid);
+		var greedy, boxes;
+		greedy = GreedyMeshAlgo.get(grid);
 		GridUtils.addFacesInfoToGrid(grid);
 		SceneBuilder.cache(scene, grid, greedy);
-		SceneBuilder.addBoxes(greedy.quads);
+		boxes = SceneBuilder.addBoxes(greedy.quads);
 		SceneBuilder.addWalls(grid);
+		return boxes;
 	};
 
 	SceneBuilder.addBaddie = function(pos, i, scene){
@@ -116,7 +126,7 @@ define(["GridUtils", "MeshCache", "GreedyMesh", "Materials"],
 		babylonPos = GridUtils.ijToBabylon(pos[0], pos[1]);
 		container = MeshCache.getBillboardBoxFromCache([1, 1]);
 		billboard = MeshCache.getBillboardPlaneFromCache(1, 1);
-		container.isVisible = false;
+		//container.isVisible = false;
 		container.position = new BABYLON.Vector3(babylonPos.x + SIZE/2, y, babylonPos.z - SIZE/2);
 		billboard.position = new BABYLON.Vector3(babylonPos.x + SIZE/2, y, babylonPos.z - SIZE/2);
 		return [container, billboard];
@@ -136,7 +146,8 @@ define(["GridUtils", "MeshCache", "GreedyMesh", "Materials"],
 	};
 
 	SceneBuilder.addSky = function(scene){
-		var skybox = BABYLON.MeshBuilder.CreateBox("skyBox", {size:512}, scene);
+		var SIZE_MAX = Math.max(SIZE_I, SIZE_J);
+		var skybox = BABYLON.MeshBuilder.CreateBox("skyBox", {size:1024}, scene);
 		var skyboxMaterial = new BABYLON.StandardMaterial("skyBox", scene);
 		skyboxMaterial.backFaceCulling = false;
 		skyboxMaterial.reflectionTexture = new BABYLON.CubeTexture("assets/skybox", scene);

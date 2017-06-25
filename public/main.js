@@ -1,4 +1,4 @@
-require(["MeshUtils", "GridUtils", "MeshCache", "SceneBuilder", "GreedyMesh", "Materials", "GamePad", "GamePadUtils", "lib/entity-manager",
+require(["MeshUtils", "GridUtils", "MeshCache", "SceneBuilder", "GreedyMeshAlgo", "Materials", "GamePad", "GamePadUtils", "lib/entity-manager",
 
 "components/HealthComponent", "components/SpeedComponent", "components/MessageComponent", "components/MeshComponent", "components/VComponent",
 
@@ -6,7 +6,7 @@ require(["MeshUtils", "GridUtils", "MeshCache", "SceneBuilder", "GreedyMesh", "M
 
 "processors/CollisionProcessor"],
 
-	function(MeshUtils, GridUtils, MeshCache, SceneBuilder, GreedyMesh, Materials, GamePad, GamePadUtils, EntityManager,
+	function(MeshUtils, GridUtils, MeshCache, SceneBuilder, GreedyMeshAlgo, Materials, GamePad, GamePadUtils, EntityManager,
 
 	HealthComponent, SpeedComponent, MessageComponent, MeshComponent, VComponent,
 
@@ -14,11 +14,14 @@ require(["MeshUtils", "GridUtils", "MeshCache", "SceneBuilder", "GreedyMesh", "M
 
 	CollisionProcessor) {
 
-		window.SIZE_I = 24;
-		window.SIZE_J = 24;
+		"use strict";
+
+
+		window.SIZE_I = 14;
+		window.SIZE_J = 14;
 		window.SIZE = 7;
 		window.SIZE = 7;
-		var grid, empty, scene, cameraId, playerId, gamePad, manager, canvas, baddieIds = [];
+		var grid, empty, scene, cameraId, playerId, gamePad, manager, canvas, baddieIds = [], boxes;
 
 		canvas = document.querySelector("#renderCanvas");
 
@@ -34,22 +37,24 @@ require(["MeshUtils", "GridUtils", "MeshCache", "SceneBuilder", "GreedyMesh", "M
 		var makeCamera = function () {
 			var comp;
 			cameraId = manager.createEntity(['CameraComponent']);
+			console.log("cameraId", cameraId);
 			comp = manager.getComponentDataForEntity('CameraComponent', cameraId);
 			comp.camera = SceneBuilder.makeCamera(scene);
 		};
 
 		var makeGrid = function(){
-			grid = GridUtils.makeRnd(SIZE_I, SIZE_J, {rnd:0.001, values:[0, 1, 2, 3, 4]});
+			grid = GridUtils.makeRnd(SIZE_I, SIZE_J, {rnd:0.0, values:[0, 1, 2, 3, 4]});
 			empty = _.shuffle(GridUtils.getMatchingLocations(grid, 0));
 		};
 
 		var build = function(){
-			SceneBuilder.addFromData(scene, grid);
+			boxes = SceneBuilder.addFromData(scene, grid);
 		};
 
 		var addPlayer = function(){
 			var comp;
 			playerId = manager.createEntity(['MessageComponent', 'PossessionsComponent', 'SpeedComponent', 'MeshComponent']);
+			console.log("playerId", playerId);
 			comp = manager.getComponentDataForEntity('MeshComponent', playerId);
 			comp.mesh = SceneBuilder.addPlayer(empty[0], scene);
 		};
@@ -78,13 +83,15 @@ require(["MeshUtils", "GridUtils", "MeshCache", "SceneBuilder", "GreedyMesh", "M
 		};
 
 		var addBaddies = function(){
-			_.each([1, 2, 3, 4, 5, 6, 7, 8, 9, 10], function(i){
+			_.each(_.range(1, 2), function(i){
 				var comp, id, v;
 				id = manager.createEntity(['MessageComponent', 'PossessionsComponent', 'MeshComponent', 'VComponent']);
 				comp = manager.getComponentDataForEntity('MeshComponent', id);
-				comp.mesh = SceneBuilder.addBaddie(empty[i], scene);
+				//comp.mesh = SceneBuilder.addBaddie(empty[i], scene);
+				comp.mesh = SceneBuilder.addBaddie([5, 5], scene);
 				v = manager.getComponentDataForEntity('VComponent', id);
-				v.vel = {x:Math.random() - 0.5, y:Math.random() - 0.5};
+				v.vel = {x:1, y:0};
+				console.log("baddieid", id);
 				baddieIds.push(id);
 			});
 		};
@@ -101,7 +108,7 @@ require(["MeshUtils", "GridUtils", "MeshCache", "SceneBuilder", "GreedyMesh", "M
 			addBaddies();
 			manager.addProcessor(new MovementProcessor(manager, engine, playerId));
 			manager.addProcessor(new MatchPlayerProcessor(manager, engine, playerId, cameraId));
-			manager.addProcessor(new MovementProcessorB(manager));
+			manager.addProcessor(new MovementProcessorB(manager, baddieIds, boxes));
 			manager.addProcessor(new CollisionProcessor(manager, playerId, baddieIds));
 			startRender();
 		};

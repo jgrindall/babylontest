@@ -1,6 +1,8 @@
 define([], function(){
 	/* helper functions */
 
+	"use strict";
+
 	var MeshUtils = {};
 
 	MeshUtils.setUVOffsetAndScale = function(mesh, uOffset, vOffset, uScale, vScale) {

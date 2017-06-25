@@ -1,6 +1,9 @@
 define([], function(){
 	/* helper functions */
 
+	"use strict";
+
+
 	var GridUtils = {};
 
 	GridUtils.makeEmpty = function(SIZE_I, SIZE_J){
@@ -26,7 +29,7 @@ define([], function(){
 	};
 
 	GridUtils.addDirectionsOfWalls = function(a){
-		var _i, _j, SIZE_I = a.length, SIZE_J = a[0].length, EMPTY, fillFaceAt, fillWithDir, isInside;
+		var _i, _j, SIZE_I = a.length, SIZE_J = a[0].length, EMPTY, getWallsAt, fillFaceAt, fillWithDir, isInside;
 		EMPTY = {"n":0, "s":0, "w":0, "e":0};
 		isInside = function(i, j){
 			return (i >= 0 && j >= 0 && i < SIZE_I && j < SIZE_J);

@@ -1,4 +1,7 @@
-define(["lib/Deferred", "Base64", "Textures"], function(Deferred, Base64, Textures){
+define(["lib/Deferred_", "Base64", "Textures"], function(Deferred, Base64, Textures){
+
+
+	"use strict";
 
 	var Materials = {};
 

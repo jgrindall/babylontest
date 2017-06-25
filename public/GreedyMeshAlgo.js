@@ -1,5 +1,6 @@
 define(["GridUtils"], function(GridUtils){
 	/* helper functions */
+	"use strict";
 
 	var rectPassesTest = function(i, j, w, h, test){
 		var _i, _j;
@@ -15,7 +16,7 @@ define(["GridUtils"], function(GridUtils){
 
 	var greedyMesh = function(a, options){
 		var i = 0, j = -1; // start just off the grid because we will make one step in to point 0,0.
-		var shouldVisitCell, quads = [], SIZE_I, SIZE_J, visited = [], isInside, moveToNext, rectIsFullAndNotVisited, mark, buildQuad;
+		var shouldVisitCell, quads = [], SIZE_I, SIZE_J, visited = [], markVisited, buildHoriz, buildVertic, isInside, moveToNext, rectIsFullAndNotVisited, mark, buildQuad;
 		options = _.defaults(options || {}, {
 			"dir":"horiz",
 			"maxSize":100

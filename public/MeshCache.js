@@ -1,5 +1,7 @@
 define(["MeshUtils", "Materials"], function(MeshUtils, Materials){
 
+	"use strict";
+
 	var cache = {};
 	var cacheI = 0;
 
@@ -92,7 +94,7 @@ define(["MeshUtils", "Materials"], function(MeshUtils, Materials){
 		if(cached){
 			cacheI++;
 			plane = cached.createInstance("index: " + cacheI);
-	 		plane.material = cached.material;
+	 		//plane.material = cached.material;
 			return plane;
 		}
 		else{
@@ -120,7 +122,7 @@ define(["MeshUtils", "Materials"], function(MeshUtils, Materials){
 		if(cached){
 			cacheI++;
 			plane = cached.createInstance("index: " + cacheI);
-	 		plane.material = cached.material;
+	 		//plane.material = cached.material;
 			plane.billboardMode = BABYLON.Mesh.BILLBOARDMODE_ALL;
 			return plane;
 		}

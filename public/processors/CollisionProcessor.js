@@ -1,4 +1,5 @@
 define([], function(){
+	"use strict";
 
 	var CollisionProcessor = function(manager, playerId, baddieIds){
 		this.manager = manager;
@@ -19,7 +20,7 @@ define([], function(){
 			if (mesh0 && playerMesh && mesh0.intersectsMesh(playerMesh, false)) {
 				console.log("HIT");
 			}
-		})
+		});
 		//if(player && container && player.intersectsMesh(container, false)){
 			//console.log("HIT CHAR");
 		//}

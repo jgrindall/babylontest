@@ -1,12 +1,13 @@
 define([], function(){
-	
+	"use strict";
+
 	var RADIUS = 80;
-	
+
 	var GamePad = function(id){
 		this.update = new MiniRunner('update');
 		this.make(id);
 	};
-	
+
 	GamePad.prototype.make = function(id){
 		var update = this.update;
 		this.manager = nipplejs.create({
@@ -29,7 +30,7 @@ define([], function(){
 			update.emit("end");
 		});
 	};
-	
+
 	GamePad.prototype.destroy = function(){
 		this.manager.off();
 		this.update = null;
@@ -38,5 +39,5 @@ define([], function(){
 	};
 
 	return GamePad;
-	
+
 });

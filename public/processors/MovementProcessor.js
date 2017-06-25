@@ -1,4 +1,5 @@
 define([], function(){
+	"use strict";
 
 	var FRICTION = 0.7;
 
@@ -14,7 +15,7 @@ define([], function(){
 	};
 
 	MovementProcessor.prototype.update = function () {
-		var speedData, sf, ids, manager = this.manager;
+		var speedData, speedEntities, sf, ids, manager = this.manager;
 		speedEntities = manager.getComponentsData('SpeedComponent');
 		sf = (60/this.engine.getFps());  // a sort of correction factor to take into account slow fps - move the objects more
 

@@ -1,4 +1,5 @@
 define([], function(){
+	"use strict";
 
 	var MatchPlayerProcessor = function(manager, engine, playerId, cameraId){
 		this.manager = manager;
@@ -13,7 +14,7 @@ define([], function(){
 	};
 
 	MatchPlayerProcessor.prototype.update = function () {
-		var manager = this.manager;
+		var manager = this.manager, cameraComp, meshComp, speedComp;
 		cameraComp = manager.getComponentDataForEntity('CameraComponent', this.cameraId);
 		meshComp = manager.getComponentDataForEntity('MeshComponent', this.playerId);
 		speedComp = manager.getComponentDataForEntity('SpeedComponent', this.playerId);
