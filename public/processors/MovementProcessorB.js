@@ -35,6 +35,7 @@ define(["GeomUtils"], function(GeomUtils){
 		var newEast = 	{x:east.x + dx, 				z:east.z + dz};
 		var newNorth = 	{x:north.x + dx, 				z:north.z + dz};
 		var newSouth = 	{x:south.x + dx, 				z:south.z + dz};
+		//console.log('check', boxes.length);
 		_.each(boxes, function(box){
 			if(GeomUtils.pointInBox(newNorth, box)){
 				dirs['n'] = 1;
@@ -52,7 +53,7 @@ define(["GeomUtils"], function(GeomUtils){
 		return dirs;
 	};
 
-	MovementProcessorB.prototype.update = function () {
+	MovementProcessorB.prototype.update = function (a, b, c) {
 		var _this = this, box = this.boxes[0];
 		var manager = this.manager;
 		var pullOut = function(){
@@ -70,6 +71,7 @@ define(["GeomUtils"], function(GeomUtils){
 			}
 			pullOut();
 			meshComp.mesh[0].position.x += vComp.vel.x * SF;
+			meshComp.mesh[0].rotation.z += 0.1;
 			//meshComp.mesh[1].position.x = meshComp.mesh[0].position.x;
 			//meshComp.mesh[1].position.z = meshComp.mesh[0].position.z;
 		});

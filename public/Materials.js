@@ -10,6 +10,7 @@ define(["lib/Deferred_", "Base64", "Textures"], function(Deferred, Base64, Textu
 		.then(function(canvas){
 			Materials.base64Material = new BABYLON.StandardMaterial("base64Material", scene);
 			Materials.base64Material.diffuseTexture = Textures.getTextureFromCanvas(canvas, scene);
+			Materials.base64Material.diffuseTexture.hasAlpha = true;
 			Materials.base64Material.freeze();
 
 			Materials.keyMaterial = new BABYLON.StandardMaterial("keyMaterial", scene);

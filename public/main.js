@@ -32,7 +32,7 @@ require(["MeshUtils", "GridUtils", "MeshCache", "SceneBuilder", "GreedyMeshAlgo"
 
 		var makeScene = function () {
 			scene = SceneBuilder.makeScene(engine);
-			scene.enablePhysics();
+			//scene.enablePhysics();
 		};
 
 		var makeCamera = function () {
@@ -44,7 +44,7 @@ require(["MeshUtils", "GridUtils", "MeshCache", "SceneBuilder", "GreedyMeshAlgo"
 		};
 
 		var makeGrid = function(){
-			grid = GridUtils.makeRnd(SIZE_I, SIZE_J, {rnd:0.0, values:[0, 1, 2, 3, 4]});
+			grid = GridUtils.makeRnd(SIZE_I, SIZE_J, {rnd:0.1, values:[0, 1, 2, 3, 4]});
 			empty = _.shuffle(GridUtils.getMatchingLocations(grid, 0));
 		};
 
@@ -111,8 +111,11 @@ require(["MeshUtils", "GridUtils", "MeshCache", "SceneBuilder", "GreedyMeshAlgo"
 			manager.addProcessor(new MovementProcessor(manager, engine, playerId));
 			manager.addProcessor(new MatchPlayerProcessor(manager, engine, playerId, cameraId));
 			manager.addProcessor(new MovementProcessorB(manager, baddieIds, boxes, canHit));
-			manager.addProcessor(new CollisionProcessor(manager, playerId, baddieIds));
+		    //manager.addProcessor(new CollisionProcessor(manager, playerId, baddieIds));
 			startRender();
+
+
+
 		};
 
 		window.engine = new BABYLON.Engine(canvas, false, null, false);

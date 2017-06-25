@@ -11,18 +11,27 @@ define(["GridUtils", "MeshCache", "GreedyMeshAlgo", "Materials"],
 
 	SceneBuilder.makeScene = function(engine){
 		var scene = new BABYLON.Scene(engine);
+		scene.ambientColor = new BABYLON.Color3(0.2, 0.2, 0.2);
+		scene.fogMode = BABYLON.Scene.FOGMODE_EXP;
+		scene.fogDensity = 0.02;
+		scene.fogStart = 10.0;
+		scene.fogEnd = 40.0;
+		scene.fogColor = new BABYLON.Color3(0.2, 0.2, 0.3);
 		//scene.gravity = new BABYLON.Vector3(0, 0, 0);
 		//scene.collisionsEnabled = true;
 		var light0 = new BABYLON.HemisphericLight("Hemi0", new BABYLON.Vector3(0, 1, 0), scene);
 		var light1 = new BABYLON.PointLight("Omni", new BABYLON.Vector3(2, 150, -2), scene);
-		light0.diffuse = new BABYLON.Color3(1, 1, 1);
-		light0.specular = new BABYLON.Color3(1, 1, 1);
-		light0.groundColor = new BABYLON.Color3(1, 1, 1);
+		light1.diffuse = new BABYLON.Color3(0.2, 0.2, 0.2);
+		light0.specular = new BABYLON.Color3(0.1, 0.1, 0.1);
+		light0.groundColor = new BABYLON.Color3(0.1, 0.1, 0.1);
+		light0.intensity = 0.5;
+		light1.intensity = 0.5;
 		return scene;
 	};
 
 	SceneBuilder.makeCamera = function(scene){
 		var camera = new BABYLON.FreeCamera("FreeCamera", new BABYLON.Vector3(SIZE_I*SIZE/2, 200, SIZE_J*SIZE/2), scene);
+		//var postProcess = new BABYLON.BlackAndWhitePostProcess("bandw", 1.0, camera);
 		return camera;
 	};
 
@@ -134,7 +143,7 @@ define(["GridUtils", "MeshCache", "GreedyMeshAlgo", "Materials"],
 		var player = BABYLON.MeshBuilder.CreateBox("player", {height: SIZE*0.75, width:SIZE*0.75, depth:SIZE*0.75}, scene);
 		player.material = mat;
 		player.checkCollisions = true;
-		player.position = new BABYLON.Vector3(babylonPos.x + SIZE/2, y, babylonPos.z - SIZE/2);
+		player.position = new BABYLON.Vector3(babylonPos.x + SIZE/2, SIZE, babylonPos.z - SIZE/2);
 		player.ellipsoid = new BABYLON.Vector3(SIZE/2, SIZE/2, SIZE/2);
 		return player;
 	};
@@ -157,7 +166,7 @@ define(["GridUtils", "MeshCache", "GreedyMeshAlgo", "Materials"],
 		ground.material.backFaceCulling = false;
 		ground.position = new BABYLON.Vector3(SIZE_MAX*SIZE/2, 0, SIZE_MAX*SIZE/2);
 		ground.rotation = new BABYLON.Vector3(Math.PI/2, 0, 0);
-		ground.checkCollisions = true;
+		//ground.checkCollisions = true;
 	};
 
 	return SceneBuilder;

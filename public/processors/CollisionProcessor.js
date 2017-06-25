@@ -15,15 +15,16 @@ define([], function(){
 	CollisionProcessor.prototype.update = function () {
 		var manager = this.manager;
 		var playerMesh = manager.getComponentDataForEntity('MeshComponent', this.playerId).mesh;
+		$("span").text("No");
 		_.each(this.baddieIds, function(id){
 			var mesh0 = manager.getComponentDataForEntity('MeshComponent', id).mesh[0];
-			if (mesh0 && playerMesh && mesh0.intersectsMesh(playerMesh, false)) {
-				console.log("HIT");
+			var dx = mesh0.position.x - playerMesh.position.x;
+			var dz = mesh0.position.z - playerMesh.position.z;
+			var dSqr = dx*dx + dz*dz;
+			if (dSqr < SIZE*SIZE) {
+				$("span").text("Yes");
 			}
 		});
-		//if(player && container && player.intersectsMesh(container, false)){
-			//console.log("HIT CHAR");
-		//}
 	};
 
 	return CollisionProcessor;
