@@ -1,4 +1,4 @@
-define([], function(){
+define(["GeomUtils"], function(GeomUtils){
 	/* helper functions */
 
 	"use strict";
@@ -55,6 +55,28 @@ define([], function(){
 				a[_i][_j].walls = getWallsAt(_i, _j);
 			}
 		}
+	};
+
+	GridUtils.getBoxesCanHit = function(a, boxes){
+		var _i, _j, SIZE_I = a.length, SIZE_J = a[0].length;
+		var canHit = GridUtils.makeEmpty(SIZE_I, SIZE_J);
+		var getCanHit = function(i, j){
+			var rect = {left:i*SIZE - SIZE, right:i*SIZE + SIZE, bottom:j*SIZE - SIZE, top:j*SIZE + SIZE};
+			var hit = [];
+			_.each(boxes, function(box, i){
+				var boxRect = GeomUtils.getBoxRect(box);
+				if(GeomUtils.rectIntersectRect(boxRect, rect)){
+					hit.push(box);
+				}
+			});
+			return hit;
+		};
+		for(_i = 0; _i < SIZE_I; _i++){
+			for(_j = 0; _j < SIZE_J; _j++){
+				canHit[_i][_j] = getCanHit(_i, _j);
+			}
+		}
+		return canHit;
 	};
 
 	GridUtils.ijToBabylon = function(i, j){

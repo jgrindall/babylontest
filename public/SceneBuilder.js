@@ -23,7 +23,6 @@ define(["GridUtils", "MeshCache", "GreedyMeshAlgo", "Materials"],
 
 	SceneBuilder.makeCamera = function(scene){
 		var camera = new BABYLON.FreeCamera("FreeCamera", new BABYLON.Vector3(SIZE_I*SIZE/2, 200, SIZE_J*SIZE/2), scene);
-		camera.checkCollisions = false;
 		return camera;
 	};
 
@@ -85,12 +84,7 @@ define(["GridUtils", "MeshCache", "GreedyMeshAlgo", "Materials"],
 			box.position.x = x;
 			box.position.z = z;
 			box.position.y = y;
-			box.__width = quad[3];
-			box.__height = quad[2];
-			if(quad[2] < quad[3]){
-				box.__width = quad[2];
-				box.__height = quad[3];
-			}
+			box.__quad = quad;
 			box.freezeWorldMatrix();
 			boxes.push(box);
 		});
@@ -107,8 +101,8 @@ define(["GridUtils", "MeshCache", "GreedyMeshAlgo", "Materials"],
 		_.each(lengthsNeeded, function(lengths, key){
 			MeshCache.addPlanesToCache(scene, lengths, key, SIZE);
 		});
-		MeshCache.addBillboardBoxToCache(scene, [1, 1], SIZE);
-		MeshCache.addBillboardPlanesToCache(scene, [1], 1, SIZE);
+		MeshCache.addBillboardBoxToCache(scene);
+		MeshCache.addBillboardPlaneToCache(scene, 5);
 	};
 
 	SceneBuilder.addFromData = function(scene, grid){
@@ -124,12 +118,12 @@ define(["GridUtils", "MeshCache", "GreedyMeshAlgo", "Materials"],
 	SceneBuilder.addBaddie = function(pos, i, scene){
 		var y = SIZE/2, container, billboard, babylonPos;
 		babylonPos = GridUtils.ijToBabylon(pos[0], pos[1]);
-		container = MeshCache.getBillboardBoxFromCache([1, 1]);
-		billboard = MeshCache.getBillboardPlaneFromCache(1, 1);
+		//container = MeshCache.getBillboardBoxFromCache();
+		billboard = MeshCache.getBillboardPlaneFromCache(5);
 		//container.isVisible = false;
-		container.position = new BABYLON.Vector3(babylonPos.x + SIZE/2, y, babylonPos.z - SIZE/2);
+		//container.position = new BABYLON.Vector3(babylonPos.x + SIZE/2, y, babylonPos.z - SIZE/2);
 		billboard.position = new BABYLON.Vector3(babylonPos.x + SIZE/2, y, babylonPos.z - SIZE/2);
-		return [container, billboard];
+		return [billboard];
 	};
 
 	SceneBuilder.addPlayer = function(pos, scene){
@@ -141,7 +135,7 @@ define(["GridUtils", "MeshCache", "GreedyMeshAlgo", "Materials"],
 		player.material = mat;
 		player.checkCollisions = true;
 		player.position = new BABYLON.Vector3(babylonPos.x + SIZE/2, y, babylonPos.z - SIZE/2);
-		player.ellipsoid = new BABYLON.Vector3(SIZE/3, SIZE/3, SIZE/3);
+		player.ellipsoid = new BABYLON.Vector3(SIZE/2, SIZE/2, SIZE/2);
 		return player;
 	};
 
@@ -165,7 +159,6 @@ define(["GridUtils", "MeshCache", "GreedyMeshAlgo", "Materials"],
 		ground.rotation = new BABYLON.Vector3(Math.PI/2, 0, 0);
 		ground.checkCollisions = true;
 	};
-
 
 	return SceneBuilder;
 

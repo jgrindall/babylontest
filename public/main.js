@@ -17,11 +17,11 @@ require(["MeshUtils", "GridUtils", "MeshCache", "SceneBuilder", "GreedyMeshAlgo"
 		"use strict";
 
 
-		window.SIZE_I = 14;
-		window.SIZE_J = 14;
+		window.SIZE_I = 16;
+		window.SIZE_J = 16;
 		window.SIZE = 7;
 		window.SIZE = 7;
-		var grid, empty, scene, cameraId, playerId, gamePad, manager, canvas, baddieIds = [], boxes;
+		var grid, empty, scene, cameraId, playerId, gamePad, manager, canvas, baddieIds = [], boxes, canHit;
 
 		canvas = document.querySelector("#renderCanvas");
 
@@ -32,6 +32,7 @@ require(["MeshUtils", "GridUtils", "MeshCache", "SceneBuilder", "GreedyMeshAlgo"
 
 		var makeScene = function () {
 			scene = SceneBuilder.makeScene(engine);
+			scene.enablePhysics();
 		};
 
 		var makeCamera = function () {
@@ -49,6 +50,7 @@ require(["MeshUtils", "GridUtils", "MeshCache", "SceneBuilder", "GreedyMeshAlgo"
 
 		var build = function(){
 			boxes = SceneBuilder.addFromData(scene, grid);
+			canHit = GridUtils.getBoxesCanHit(grid, boxes);
 		};
 
 		var addPlayer = function(){
@@ -83,12 +85,12 @@ require(["MeshUtils", "GridUtils", "MeshCache", "SceneBuilder", "GreedyMeshAlgo"
 		};
 
 		var addBaddies = function(){
-			_.each(_.range(1, 2), function(i){
+			_.each(_.range(1, SIZE_I-2), function(i){
 				var comp, id, v;
 				id = manager.createEntity(['MessageComponent', 'PossessionsComponent', 'MeshComponent', 'VComponent']);
 				comp = manager.getComponentDataForEntity('MeshComponent', id);
 				//comp.mesh = SceneBuilder.addBaddie(empty[i], scene);
-				comp.mesh = SceneBuilder.addBaddie([5, 5], scene);
+				comp.mesh = SceneBuilder.addBaddie([i, 5], scene);
 				v = manager.getComponentDataForEntity('VComponent', id);
 				v.vel = {'x':1, 'z':0};
 				console.log("baddieid", id);
@@ -108,7 +110,7 @@ require(["MeshUtils", "GridUtils", "MeshCache", "SceneBuilder", "GreedyMeshAlgo"
 			addBaddies();
 			manager.addProcessor(new MovementProcessor(manager, engine, playerId));
 			manager.addProcessor(new MatchPlayerProcessor(manager, engine, playerId, cameraId));
-			manager.addProcessor(new MovementProcessorB(manager, baddieIds, boxes));
+			manager.addProcessor(new MovementProcessorB(manager, baddieIds, boxes, canHit));
 			manager.addProcessor(new CollisionProcessor(manager, playerId, baddieIds));
 			startRender();
 		};
