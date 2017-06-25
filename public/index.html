@@ -20,12 +20,18 @@
                 bottom:90px;
                 right:90px;
             }
+            p.pos, p.dir{
+                font-size:smaller;
+                padding:0;
+                margin:0;
+            }
         </style>
     </head>
     <body>
         <canvas width='90%' height='90%' id="renderCanvas"></canvas>
 		<div id="zone_joystick"></div>
-        <span></span>
+        <p class='pos'></p>
+        <p class='dir'></p>
         <script data-main="main" src="lib/require.js"></script>
 
         <script>

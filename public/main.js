@@ -90,7 +90,7 @@ require(["MeshUtils", "GridUtils", "MeshCache", "SceneBuilder", "GreedyMeshAlgo"
 				//comp.mesh = SceneBuilder.addBaddie(empty[i], scene);
 				comp.mesh = SceneBuilder.addBaddie([5, 5], scene);
 				v = manager.getComponentDataForEntity('VComponent', id);
-				v.vel = {x:1, y:0};
+				v.vel = {'x':1, 'z':0};
 				console.log("baddieid", id);
 				baddieIds.push(id);
 			});

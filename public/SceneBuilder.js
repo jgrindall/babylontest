@@ -85,11 +85,11 @@ define(["GridUtils", "MeshCache", "GreedyMeshAlgo", "Materials"],
 			box.position.x = x;
 			box.position.z = z;
 			box.position.y = y;
-			box.__width = quad[2];
-			box.__height = quad[3];
+			box.__width = quad[3];
+			box.__height = quad[2];
 			if(quad[2] < quad[3]){
-				box.__width = quad[3];
-				box.__height = quad[2];
+				box.__width = quad[2];
+				box.__height = quad[3];
 			}
 			box.freezeWorldMatrix();
 			boxes.push(box);
