@@ -33,6 +33,7 @@ require(["MeshUtils", "GridUtils", "MeshCache", "SceneBuilder", "GreedyMeshAlgo"
 		var makeScene = function () {
 			scene = SceneBuilder.makeScene(engine);
 			//scene.enablePhysics();
+			
 		};
 
 		var makeCamera = function () {
@@ -44,7 +45,7 @@ require(["MeshUtils", "GridUtils", "MeshCache", "SceneBuilder", "GreedyMeshAlgo"
 		};
 
 		var makeGrid = function(){
-			grid = GridUtils.makeRnd(SIZE_I, SIZE_J, {rnd:0.1, values:[0, 1, 2, 3, 4]});
+			grid = GridUtils.makeRnd(SIZE_I, SIZE_J, {rnd:0.0, values:[0, 1, 2, 3, 4]});
 			empty = _.shuffle(GridUtils.getMatchingLocations(grid, 0));
 		};
 
@@ -67,7 +68,8 @@ require(["MeshUtils", "GridUtils", "MeshCache", "SceneBuilder", "GreedyMeshAlgo"
 					scene.render();
 				}
 				if(manager){
-					manager.update();
+					console.log(scene.getLastFrameDuration());
+					manager.update(scene.getLastFrameDuration());
 				}
 			});
 		};
@@ -108,6 +110,8 @@ require(["MeshUtils", "GridUtils", "MeshCache", "SceneBuilder", "GreedyMeshAlgo"
 			addEnvironment();
 			addControls();
 			addBaddies();
+			var octahedron = BABYLON.MeshBuilder.CreatePolyhedron("oct", {type: 1, size: 1}, scene);
+			octahedron.position = new BABYLON.Vector3(30, 7, 30);
 			manager.addProcessor(new MovementProcessor(manager, engine, playerId));
 			manager.addProcessor(new MatchPlayerProcessor(manager, engine, playerId, cameraId));
 			manager.addProcessor(new MovementProcessorB(manager, baddieIds, boxes, canHit));
