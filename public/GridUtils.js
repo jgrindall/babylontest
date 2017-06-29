@@ -138,6 +138,47 @@ define(["GeomUtils"], function(GeomUtils){
 		GridUtils.extendWalls(a);
 	};
 
+	GridUtils.getPath = function(strategy, pos, grid){
+		console.log(strategy, pos, grid);
+		var i = pos[0], j = pos[1], i0, j0, i1, j1;
+		if(strategy === "north-south"){
+			while(grid[i][j] === 0){
+				i--;
+			}
+			i++;
+			i0 = i;
+			i = pos[0];
+			while(grid[i][j] === 0){
+				i++;
+			}
+			i--;
+			i1 = i;
+			return {
+				"i0":i0,
+				"i1":i1,
+				"j":j
+			};
+		}
+		else if(strategy === "west-east"){
+			while(grid[i][j] === 0){
+				j--;
+			}
+			j++;
+			j0 = j;
+			j = pos[1];
+			while(grid[i][j] === 0){
+				j++;
+			}
+			j--;
+			j1 = j;
+			return {
+				"j0":j0,
+				"j1":j1,
+				"i":i
+			};
+		}
+	};
+
 	GridUtils.getMatchingLocations = function(a, testFn){
 		var _i, _j, SIZE_I = a.length, SIZE_J = a[0].length, matching = [], _temp;
 		if(typeof testFn === "number"){

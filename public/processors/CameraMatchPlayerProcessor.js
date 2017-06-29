@@ -1,7 +1,7 @@
 define([], function(){
 	"use strict";
 
-	var MatchPlayerProcessor = function(manager, engine, playerId, cameraId){
+	var CameraMatchPlayerProcessor = function(manager, engine, playerId, cameraId){
 		this.manager = manager;
 		this.engine = engine;
 		this.playerId = playerId;
@@ -9,11 +9,11 @@ define([], function(){
 		this.init();
 	};
 
-	MatchPlayerProcessor.prototype.init = function(){
+	CameraMatchPlayerProcessor.prototype.init = function(){
 		//
 	};
 
-	MatchPlayerProcessor.prototype.update = function () {
+	CameraMatchPlayerProcessor.prototype.update = function () {
 		var manager = this.manager, cameraComp, meshComp, speedComp;
 		cameraComp = manager.getComponentDataForEntity('CameraComponent', this.cameraId);
 		meshComp = manager.getComponentDataForEntity('MeshComponent', this.playerId);
@@ -22,6 +22,6 @@ define([], function(){
 		cameraComp.camera.rotationQuaternion = BABYLON.Quaternion.RotationAxis(new BABYLON.Vector3(0, 1, 0), speedComp.angle);
 	};
 
-	return MatchPlayerProcessor;
+	return CameraMatchPlayerProcessor;
 
 });

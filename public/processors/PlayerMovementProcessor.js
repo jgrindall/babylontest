@@ -2,18 +2,18 @@ define([], function(){
 
 	var FRICTION = 0.7;
 
-	var MovementProcessor = function(manager, engine, playerId){
+	var PlayerMovementProcessor = function(manager, engine, playerId){
 		this.manager = manager;
 		this.engine = engine;
 		this.playerId = playerId;
 		this.init();
 	};
 
-	MovementProcessor.prototype.init = function(){
+	PlayerMovementProcessor.prototype.init = function(){
 		//
 	};
 
-	MovementProcessor.prototype.update = function () {
+	PlayerMovementProcessor.prototype.update = function () {
 		var speedData, sf, manager = this.manager;
 		sf = (60/this.engine.getFps());  // a sort of correction factor to take into account slow fps - move the objects more
 		var dx, dz, meshComp, speedComp;
@@ -36,6 +36,6 @@ define([], function(){
 		}
 	};
 
-	return MovementProcessor;
+	return PlayerMovementProcessor;
 
 });

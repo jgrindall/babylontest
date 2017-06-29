@@ -127,12 +127,9 @@ define(["GridUtils", "MeshCache", "GreedyMeshAlgo", "Materials"],
 	SceneBuilder.addBaddie = function(pos, i, scene){
 		var y = SIZE/2, container, billboard, babylonPos;
 		babylonPos = GridUtils.ijToBabylon(pos[0], pos[1]);
-		//container = MeshCache.getBillboardBoxFromCache();
 		billboard = MeshCache.getBillboardPlaneFromCache(5);
-		//container.isVisible = false;
-		//container.position = new BABYLON.Vector3(babylonPos.x + SIZE/2, y, babylonPos.z - SIZE/2);
 		billboard.position = new BABYLON.Vector3(babylonPos.x + SIZE/2, y, babylonPos.z - SIZE/2);
-		return [billboard];
+		return billboard;
 	};
 
 	SceneBuilder.addPlayer = function(pos, scene){
