@@ -2,7 +2,7 @@ define(["GeomUtils"], function(GeomUtils){
 
 	"use strict";
 
-	var SF = 0.15;
+	var SF = 0.25;
 
 	var BaddieMovementProcessor = function(manager, baddieIds, boxes, canHit){
 		this.manager = manager;
@@ -56,10 +56,10 @@ define(["GeomUtils"], function(GeomUtils){
 	BaddieMovementProcessor.prototype.moveWestEast = function(id, sComp){
 		var meshComp = this.manager.getComponentDataForEntity('MeshComponent', id);
 		var position = meshComp.mesh.position;
-		if(position.x/SIZE < sComp.path.j0){
+		if(position.x < sComp.path.j0 * SIZE){
 			sComp.vel.x = 1;
 		}
-		else if(position.x/SIZE > sComp.path.j1){
+		else if(position.x > sComp.path.j1 * SIZE){
 			sComp.vel.x = -1;
 		}
 		position.x += sComp.vel.x*SF;
@@ -68,10 +68,10 @@ define(["GeomUtils"], function(GeomUtils){
 	BaddieMovementProcessor.prototype.moveNorthSouth = function(id, sComp){
 		var meshComp = this.manager.getComponentDataForEntity('MeshComponent', id);
 		var position = meshComp.mesh.position;
-		if(position.z/SIZE < sComp.path.i0){
+		if(position.z < sComp.path.i0 * SIZE){
 			sComp.vel.z = 1;
 		}
-		else if(position.z/SIZE > sComp.path.i1){
+		else if(position.z > sComp.path.i1 * SIZE){
 			sComp.vel.z = -1;
 		}
 		position.z += sComp.vel.z*SF;

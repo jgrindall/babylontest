@@ -25,6 +25,7 @@ require(["MeshUtils", "GridUtils", "MeshCache", "SceneBuilder", "GreedyMeshAlgo"
 
 		window.SIZE_I = 16;
 		window.SIZE_J = 16;
+		var NUM_BADDIES = 10;
 		window.SIZE = 7;
 		window.SIZE = 7;
 		var grid, empty, scene, cameraId, playerId, gamePad, manager, canvas, baddieIds = [], boxes, canHit;
@@ -91,16 +92,22 @@ require(["MeshUtils", "GridUtils", "MeshCache", "SceneBuilder", "GreedyMeshAlgo"
 
 		var addBaddies = function(){
 			var _grid = grid;
-			_.each(_.range(1, SIZE_I-2), function(i){
+			_.each(_.range(1, 1 + NUM_BADDIES), function(i){
 				var id, v;
 				id = manager.createEntity(['MessageComponent', 'PossessionsComponent', 'MeshComponent', 'BaddieStrategyComponent']);
-				manager.getComponentDataForEntity('MeshComponent', id).mesh = SceneBuilder.addBaddie([i, 5], scene);
+				var pos = [i, i];
+				manager.getComponentDataForEntity('MeshComponent', id).mesh = SceneBuilder.addBaddie(pos, scene);
 				v = manager.getComponentDataForEntity('BaddieStrategyComponent', id);
-				v.vel = {'x':1, 'z':0};
-				v.strategy = Math.random() < 0.5 ? "north-south" : "west-east";
-				if(v.strategy === "north-south"){
-					v.path = GridUtils.getPath(v.strategy, [i, 5], grid);
+				var ns = Math.random() < 0.5;
+				if(ns){
+					v.vel = {'x':0, 'z':1};
+					v.strategy = "north-south";
 				}
+				else{
+					v.vel = {'x':1, 'z':0};
+					v.strategy = "west-east";
+				}
+				v.path = GridUtils.getPath(v.strategy, pos, grid);
 				baddieIds.push(id);
 			});
 		};

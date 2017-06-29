@@ -139,16 +139,15 @@ define(["GeomUtils"], function(GeomUtils){
 	};
 
 	GridUtils.getPath = function(strategy, pos, grid){
-		console.log(strategy, pos, grid);
 		var i = pos[0], j = pos[1], i0, j0, i1, j1;
 		if(strategy === "north-south"){
-			while(grid[i][j] === 0){
+			while(grid[i][j].val === 0){
 				i--;
 			}
 			i++;
 			i0 = i;
 			i = pos[0];
-			while(grid[i][j] === 0){
+			while(grid[i][j].val === 0){
 				i++;
 			}
 			i--;
@@ -160,13 +159,13 @@ define(["GeomUtils"], function(GeomUtils){
 			};
 		}
 		else if(strategy === "west-east"){
-			while(grid[i][j] === 0){
+			while(grid[i][j].val === 0){
 				j--;
 			}
 			j++;
 			j0 = j;
 			j = pos[1];
-			while(grid[i][j] === 0){
+			while(grid[i][j].val === 0){
 				j++;
 			}
 			j--;
