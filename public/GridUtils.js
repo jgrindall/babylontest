@@ -22,7 +22,7 @@ define(["GeomUtils"], function(GeomUtils){
 		for(_i = 0; _i < a.length; _i++){
 			s = "";
 			for(_j = 0; _j < a[0].length; _j++){
-				s += a[_i][_j] + " ";
+				s += a[_i][_j].val + " ";
 			}
 			console.log(_i + "\t" + s);
 		}

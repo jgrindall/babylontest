@@ -4,6 +4,15 @@ define(["GeomUtils"], function(GeomUtils){
 
 	var SF = 0.25;
 
+	var _pathIsUnit = function(strategy, path){
+		if(strategy === "north-south"){
+			return (path.i0 === path.i1);
+		}
+		else if(strategy === "west-east"){
+			return (path.j0 === path.j1);
+		}
+	};
+
 	var BaddieMovementProcessor = function(manager, baddieIds, boxes, canHit){
 		this.manager = manager;
 		this.baddieIds = baddieIds;
@@ -81,10 +90,10 @@ define(["GeomUtils"], function(GeomUtils){
 		var manager = this.manager;
 		var sComp = manager.getComponentDataForEntity('BaddieStrategyComponent', id);
 		var strategy = sComp.strategy;
-		if(strategy === "north-south"){
+		if(strategy === "north-south" && !_pathIsUnit(strategy, sComp.path)){
 			this.moveNorthSouth(id, sComp);
 		}
-		else if(strategy === "west-east"){
+		else if(strategy === "west-east" && !_pathIsUnit(strategy, sComp.path)){
 			this.moveWestEast(id, sComp);
 			//console.log(pos, sComp.path);
 		}

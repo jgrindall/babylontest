@@ -133,15 +133,15 @@ define(["GridUtils", "MeshCache", "GreedyMeshAlgo", "Materials"],
 	};
 
 	SceneBuilder.addPlayer = function(pos, scene){
-		var y = SIZE/2;
+		var y = SIZE/4;
 		var mat = new BABYLON.StandardMaterial("Mat", scene);
 		mat.diffuseColor = new BABYLON.Color3(0.7, 0, 0.7); // purple
 		var babylonPos = GridUtils.ijToBabylon(pos[0], pos[1]);
 		var player = BABYLON.MeshBuilder.CreateBox("player", {height: SIZE*0.75, width:SIZE*0.75, depth:SIZE*0.75}, scene);
 		player.material = mat;
 		player.checkCollisions = true;
-		player.position = new BABYLON.Vector3(babylonPos.x + SIZE/2, SIZE, babylonPos.z - SIZE/2);
-		player.ellipsoid = new BABYLON.Vector3(SIZE/2, SIZE/2, SIZE/2);
+		player.position = new BABYLON.Vector3(babylonPos.x + SIZE/2, y, babylonPos.z - SIZE/2);
+		player.ellipsoid = new BABYLON.Vector3(SIZE/4, SIZE/4, SIZE/4);
 		return player;
 	};
 
