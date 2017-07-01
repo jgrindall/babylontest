@@ -219,10 +219,10 @@ define(["GeomUtils"], function(GeomUtils){
 
 	GridUtils.makeRnd = function(SIZE_I, SIZE_J, options){
 		var _i, _j, a = [], getVal;
-		options = _.defaults(options || {}, {"rnd":0.5, "values":[0, 1]});
+		options = _.defaults(options || {}, {"rnd":0.25, "values":[1]});
 		getVal = function(){
-			var n = options.values.length - 1;
-			return options.values[Math.floor(Math.random()*n) + 1];
+			var n = options.values.length;
+			return options.values[Math.floor(Math.random()*n)];
 		};
 		for(_i = 0; _i < SIZE_I; _i++){
 			a[_i] = [];

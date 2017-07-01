@@ -25,7 +25,7 @@ require(["MeshUtils", "GridUtils", "MeshCache", "SceneBuilder", "GreedyMeshAlgo"
 
 		window.SIZE_I = 12;
 		window.SIZE_J = 12;
-		var NUM_BADDIES = 1;
+		var NUM_BADDIES = 8;
 		window.SIZE = 10;
 
 		var grid, empty, scene, cameraId, playerId, gamePad, manager, canvas, baddieIds = [], boxes, canHit;
@@ -51,7 +51,7 @@ require(["MeshUtils", "GridUtils", "MeshCache", "SceneBuilder", "GreedyMeshAlgo"
 		};
 
 		var makeGrid = function(){
-			grid = GridUtils.makeRnd(SIZE_I, SIZE_J, {rnd:0.0, values:[0, 1, 2, 3, 4]});
+			grid = GridUtils.makeRnd(SIZE_I, SIZE_J, {rnd:0.0, values:[1, 2]});
 			GridUtils.log(grid);
 			empty = _.shuffle(GridUtils.getMatchingLocations(grid, 0));
 			var pf = new PF.Grid(GridUtils.getPF(grid));
@@ -82,6 +82,10 @@ require(["MeshUtils", "GridUtils", "MeshCache", "SceneBuilder", "GreedyMeshAlgo"
 					manager.update(scene.getLastFrameDuration());
 				}
 			});
+		};
+
+		var addWater = function(){
+			SceneBuilder.addWater(scene, [5, 5]);
 		};
 
 		var addEnvironment = function(){
@@ -126,6 +130,7 @@ require(["MeshUtils", "GridUtils", "MeshCache", "SceneBuilder", "GreedyMeshAlgo"
 			makeGrid();
 			build();
 			addPlayer();
+			addWater();
 			addEnvironment();
 			addControls();
 			addBaddies();

@@ -29,9 +29,12 @@ define(["GridUtils", "MeshCache", "GreedyMeshAlgo", "Materials"],
 		return scene;
 	};
 
+	SceneBuilder.addWater = function(){
+
+	};
+
 	SceneBuilder.makeCamera = function(scene){
 		var camera = new BABYLON.FreeCamera("FreeCamera", new BABYLON.Vector3(SIZE_I*SIZE/2, 200, SIZE_J*SIZE/2), scene);
-		//var postProcess = new BABYLON.BlackAndWhitePostProcess("bandw", 1.0, camera);
 		return camera;
 	};
 
@@ -111,6 +114,7 @@ define(["GridUtils", "MeshCache", "GreedyMeshAlgo", "Materials"],
 			MeshCache.addPlanesToCache(scene, lengths, key, SIZE);
 		});
 		MeshCache.addBillboardBoxToCache(scene);
+		MeshCache.addBillboardPlaneToCache(scene, 4);
 		MeshCache.addBillboardPlaneToCache(scene, 5);
 	};
 
@@ -127,7 +131,8 @@ define(["GridUtils", "MeshCache", "GreedyMeshAlgo", "Materials"],
 	SceneBuilder.addBaddie = function(pos, i, scene){
 		var y = SIZE/2, container, billboard, babylonPos;
 		babylonPos = GridUtils.ijToBabylon(pos[0], pos[1]);
-		billboard = MeshCache.getBillboardPlaneFromCache(5);
+		var mat = Math.random() < 0.5 ? 4 : 5;
+		billboard = MeshCache.getBillboardPlaneFromCache(mat);
 		billboard.position = new BABYLON.Vector3(babylonPos.x + SIZE/2, y, babylonPos.z - SIZE/2);
 		return billboard;
 	};

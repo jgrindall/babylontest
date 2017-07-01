@@ -17,6 +17,7 @@ define(["lib/Deferred_", "Base64"], function(Deferred, Base64){
 		var c = document.createElement("canvas"), context = c.getContext("2d"), SIZE = 64, loadImages, drawImages;
 		c.width = SIZE;
 		c.height = SIZE*urls.length;
+		$("body").append(c);
 		loadImages = function(){
 			return Promise.all(_.map(urls, Textures.loadImage));
 		};
