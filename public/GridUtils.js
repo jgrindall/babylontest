@@ -140,6 +140,7 @@ define(["GeomUtils"], function(GeomUtils){
 
 	GridUtils.getPath = function(strategy, pos, grid){
 		var i = pos[0], j = pos[1], i0, j0, i1, j1;
+		var TOP_LEFT = {"x":0, "z":window.SIZE_I * window.SIZE};
 		if(strategy === "north-south"){
 			while(grid[i][j].val === 0){
 				i--;
@@ -155,7 +156,10 @@ define(["GeomUtils"], function(GeomUtils){
 			return {
 				"i0":i0,
 				"i1":i1,
-				"j":j
+				"j":j,
+				"x":SIZE*j,
+				"zmax":TOP_LEFT.z - i0 * SIZE - SIZE/2,
+				"zmin":TOP_LEFT.z - i1 * SIZE - SIZE/2
 			};
 		}
 		else if(strategy === "west-east"){
@@ -173,7 +177,10 @@ define(["GeomUtils"], function(GeomUtils){
 			return {
 				"j0":j0,
 				"j1":j1,
-				"i":i
+				"i":i,
+				"z":SIZE*i,
+				"xmin":j0 * SIZE + SIZE/2,
+				"xmax":j1 * SIZE + SIZE/2
 			};
 		}
 	};
