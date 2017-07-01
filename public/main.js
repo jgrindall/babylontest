@@ -22,11 +22,10 @@ require(["MeshUtils", "GridUtils", "MeshCache", "SceneBuilder", "GreedyMeshAlgo"
 
 		"use strict";
 
-
-		window.SIZE_I = 12;
-		window.SIZE_J = 12;
-		var NUM_BADDIES = 8;
-		window.SIZE = 10;
+		window.SIZE_I = 20;
+		window.SIZE_J = 20;
+		var NUM_BADDIES = 1;
+		window.SIZE = 20;
 
 		var grid, empty, scene, cameraId, playerId, gamePad, manager, canvas, baddieIds = [], boxes, canHit;
 

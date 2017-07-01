@@ -47,10 +47,10 @@ define(["MeshUtils", "Materials"], function(MeshUtils, Materials){
 		if(!cache[key]){
 			box = BABYLON.MeshBuilder.CreateBox(key, {height: SIZE, width:SIZE, depth:SIZE}, scene);
 			box.convertToUnIndexedMesh();
-			//box.checkCollisions = true;
-			//box.material = Materials.redMaterial;
-			box.isVisible = false;
-			box.setEnabled(false);
+			box.checkCollisions = true;
+			box.material = Materials.redMaterial;
+			//box.isVisible = false;
+			//box.setEnabled(false);
 			cache[key] = box;
 			scene.meshes.pop();
 		}
@@ -107,8 +107,8 @@ define(["MeshUtils", "Materials"], function(MeshUtils, Materials){
 			box = cached.createInstance("box index: " + cacheI);
 			cacheI++;
 			box.checkCollisions = true;
-			box.isVisible = false;
-			box.setEnabled(false);
+			//box.isVisible = false;
+			//box.setEnabled(false);
 			return box;
 		}
 		else{

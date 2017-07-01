@@ -29,8 +29,12 @@ define(["GridUtils", "MeshCache", "GreedyMeshAlgo", "Materials"],
 		return scene;
 	};
 
-	SceneBuilder.addWater = function(){
-
+	SceneBuilder.addWater = function(scene, pos){
+		var y = SIZE/2, container, billboard, babylonPos;
+		babylonPos = GridUtils.ijToBabylon(pos[0], pos[1]);
+		container = MeshCache.getBillboardBoxFromCache();
+		container.position = new BABYLON.Vector3(babylonPos.x + SIZE/2, y, babylonPos.z - SIZE/2);
+		return container;
 	};
 
 	SceneBuilder.makeCamera = function(scene){
