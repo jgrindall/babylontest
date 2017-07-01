@@ -138,6 +138,20 @@ define(["GeomUtils"], function(GeomUtils){
 		GridUtils.extendWalls(a);
 	};
 
+	GridUtils.getPF = function(a){
+		var SIZE_I = a.length, SIZE_J = a[0].length;
+		var e = GridUtils.makeEmpty(SIZE_I, SIZE_J);
+		var _i, _j;
+		for(_i = 0; _i < SIZE_I; _i++){
+			for(_j = 0; _j < SIZE_J; _j++){
+				if(a[_i][_j].val >= 1){
+					e[_i][_j] = 1;
+				}
+			}
+		}
+		return e;
+	};
+
 	GridUtils.getPath = function(strategy, pos, grid){
 		var i = pos[0], j = pos[1], i0, j0, i1, j1;
 		var TOP_LEFT = {"x":0, "z":window.SIZE_I * window.SIZE};

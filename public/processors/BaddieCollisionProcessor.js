@@ -17,7 +17,7 @@ define([], function(){
 		var playerMesh = manager.getComponentDataForEntity('MeshComponent', this.playerId).mesh;
 		$("span").text("No");
 		_.each(this.baddieIds, function(id){
-			var mesh0 = manager.getComponentDataForEntity('MeshComponent', id).mesh[0];
+			var mesh0 = manager.getComponentDataForEntity('MeshComponent', id).mesh;
 			var dx = mesh0.position.x - playerMesh.position.x;
 			var dz = mesh0.position.z - playerMesh.position.z;
 			var dSqr = dx*dx + dz*dz;

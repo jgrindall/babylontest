@@ -12,20 +12,20 @@ define(["GridUtils", "MeshCache", "GreedyMeshAlgo", "Materials"],
 	SceneBuilder.makeScene = function(engine){
 		var scene = new BABYLON.Scene(engine);
 		scene.ambientColor = new BABYLON.Color3(0.8, 0.8, 0.2);
-		//scene.fogMode = BABYLON.Scene.FOGMODE_EXP;
-		//scene.fogDensity = 0.02;
-		//scene.fogStart = 10.0;
-		//scene.fogEnd = 40.0;
-		//scene.fogColor = new BABYLON.Color3(0.2, 0.2, 0.3);
-		//scene.gravity = new BABYLON.Vector3(0, 0, 0);
-		//scene.collisionsEnabled = true;
+		scene.fogMode = BABYLON.Scene.FOGMODE_EXP;
+		scene.fogDensity = 0.02;
+		scene.fogStart = 10.0;
+		scene.fogEnd = 40.0;
+		scene.fogColor = new BABYLON.Color3(0.2, 0.2, 0.3);
+		scene.gravity = new BABYLON.Vector3(0, 0, 0);
+		scene.collisionsEnabled = true;
 		var light0 = new BABYLON.HemisphericLight("Hemi0", new BABYLON.Vector3(0, 1, 0), scene);
 		var light1 = new BABYLON.PointLight("Omni", new BABYLON.Vector3(2, 150, -2), scene);
 		light1.diffuse = new BABYLON.Color3(0.2, 0.2, 0.2);
-		light0.specular = new BABYLON.Color3(0.1, 0.1, 0.1);
-		light0.groundColor = new BABYLON.Color3(0.1, 0.1, 0.1);
-		light0.intensity = 0.5;
-		light1.intensity = 0.5;
+		light0.specular = new BABYLON.Color3(0.6, 0.6, 0.6);
+		light0.groundColor = new BABYLON.Color3(0.6, 0.6, 0.6);
+		light0.intensity = 0.75;
+		light1.intensity = 0.75;
 		return scene;
 	};
 

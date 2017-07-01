@@ -25,7 +25,7 @@ require(["MeshUtils", "GridUtils", "MeshCache", "SceneBuilder", "GreedyMeshAlgo"
 
 		window.SIZE_I = 12;
 		window.SIZE_J = 12;
-		var NUM_BADDIES = 6;
+		var NUM_BADDIES = 1;
 		window.SIZE = 10;
 
 		var grid, empty, scene, cameraId, playerId, gamePad, manager, canvas, baddieIds = [], boxes, canHit;
@@ -51,9 +51,14 @@ require(["MeshUtils", "GridUtils", "MeshCache", "SceneBuilder", "GreedyMeshAlgo"
 		};
 
 		var makeGrid = function(){
-			grid = GridUtils.makeRnd(SIZE_I, SIZE_J, {rnd:0.175, values:[0, 1, 2, 3, 4]});
+			grid = GridUtils.makeRnd(SIZE_I, SIZE_J, {rnd:0.0, values:[0, 1, 2, 3, 4]});
 			GridUtils.log(grid);
 			empty = _.shuffle(GridUtils.getMatchingLocations(grid, 0));
+			var pf = new PF.Grid(GridUtils.getPF(grid));
+			var backup = pf.clone();
+			var finder = new PF.AStarFinder();
+			var paths = finder.findPath(3, 3, 7, 7, pf);
+			console.log(paths);
 		};
 
 		var build = function(){
@@ -129,11 +134,8 @@ require(["MeshUtils", "GridUtils", "MeshCache", "SceneBuilder", "GreedyMeshAlgo"
 			manager.addProcessor(new PlayerMovementProcessor(manager, engine, playerId));
 			manager.addProcessor(new CameraMatchPlayerProcessor(manager, engine, playerId, cameraId));
 			manager.addProcessor(new BaddieMovementProcessor(manager, baddieIds, boxes, canHit));
-		    //manager.addProcessor(new BaddieCollisionProcessor(manager, playerId, baddieIds));
+		    manager.addProcessor(new BaddieCollisionProcessor(manager, playerId, baddieIds));
 			startRender();
-
-
-
 		};
 
 		window.engine = new BABYLON.Engine(canvas, false, null, false);
