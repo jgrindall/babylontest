@@ -34,6 +34,43 @@ define(["GridUtils", "MeshCache", "GreedyMeshAlgo", "Materials"],
 		babylonPos = GridUtils.ijToBabylon(pos[0], pos[1]);
 		container = MeshCache.getBillboardBoxFromCache();
 		container.position = new BABYLON.Vector3(babylonPos.x + SIZE/2, y, babylonPos.z - SIZE/2);
+
+		var particleSystem = new BABYLON.ParticleSystem("particles", 50, scene);
+		particleSystem.particleTexture = new BABYLON.Texture("assets/red.jpg", scene);
+		particleSystem.emitter = container;
+
+    	particleSystem.minEmitBox = new BABYLON.Vector3(-1, 0, 0); // Starting all from
+    	particleSystem.maxEmitBox = new BABYLON.Vector3(1, 0, 0); // To...
+
+	    particleSystem.color1 = new BABYLON.Color4(0.7, 0.8, 1.0, 1.0);
+	    particleSystem.color2 = new BABYLON.Color4(0.2, 0.5, 1.0, 1.0);
+	    particleSystem.colorDead = new BABYLON.Color4(0, 0, 0.2, 0.0);
+
+	    particleSystem.minSize = 0.25;
+	    particleSystem.maxSize = 1;
+
+	    particleSystem.minLifeTime = 0.3;
+	    particleSystem.maxLifeTime = 1.5;
+
+	    particleSystem.emitRate = 500;
+
+	    particleSystem.blendMode = BABYLON.ParticleSystem.BLENDMODE_ONEONE;
+
+	    particleSystem.gravity = new BABYLON.Vector3(0, -9.81, 0);
+
+	    particleSystem.direction1 = new BABYLON.Vector3(-7, 8, 3);
+	    particleSystem.direction2 = new BABYLON.Vector3(7, 8, -3);
+
+	    particleSystem.minAngularSpeed = 0;
+	    particleSystem.maxAngularSpeed = Math.PI;
+
+	    particleSystem.minEmitPower = 1;
+	    particleSystem.maxEmitPower = 3;
+	    particleSystem.updateSpeed = 0.005;
+
+	    particleSystem.start();
+
+
 		return container;
 	};
 
@@ -166,13 +203,55 @@ define(["GridUtils", "MeshCache", "GreedyMeshAlgo", "Materials"],
 
 	SceneBuilder.addGround = function(scene){
 		var SIZE_MAX = Math.max(SIZE_I, SIZE_J);
-		var ground = BABYLON.Mesh.CreatePlane("ground", SIZE_MAX*SIZE, scene);
-		ground.material = new BABYLON.StandardMaterial("groundMat", scene);
-		ground.material.diffuseTexture = new BABYLON.Texture("assets/groundMat.jpg", scene);
-		ground.material.backFaceCulling = false;
+		var ground = BABYLON.Mesh.CreateGround("ground", SIZE_MAX*SIZE, SIZE_MAX*SIZE, 32, scene);
+		//ground.material = new BABYLON.StandardMaterial("groundMat", scene);
+		//ground.material.diffuseTexture = new BABYLON.Texture("assets/groundMat.jpg", scene);
+		//ground.material.backFaceCulling = false;
 		ground.position = new BABYLON.Vector3(SIZE_MAX*SIZE/2, 0, SIZE_MAX*SIZE/2);
 		ground.rotation = new BABYLON.Vector3(Math.PI/2, 0, 0);
 		//ground.checkCollisions = true;
+		//var bumpMaterial = new BABYLON.StandardMaterial("texture1", scene);
+		//ground.material.bumpTexture = new BABYLON.Texture("assets/worldHeightMap.jpg", scene)
+
+
+		//var ground = BABYLON.Mesh.CreateGround("ground", 512, 512, 32, scene);
+
+		var lavaMaterial = new BABYLON.LavaMaterial("lava", scene);
+		lavaMaterial.noiseTexture = new BABYLON.Texture("assets/bricks.png", scene); // Set the bump texture
+		lavaMaterial.diffuseTexture = new BABYLON.Texture("assets/key.png", scene); // Set the diffuse texture
+
+		ground.material = lavaMaterial;
+
+
+		return;
+
+
+		var lavaMaterial = new BABYLON.LavaMaterial("lava", scene);
+		lavaMaterial.noiseTexture = new BABYLON.Texture("assets/bricks.png", scene); // Set the bump texture
+		lavaMaterial.diffuseTexture = new BABYLON.Texture("assets/key.png", scene); // Set the diffuse texture
+		lavaMaterial.speed = 1.5;
+		ground.material = lavaMaterial;
+
+
+
+
+		var water = new BABYLON.WaterMaterial("water", scene);
+		var waterMesh = BABYLON.Mesh.CreateSphere("waterMesh", 32, 120, scene);
+		water.backFaceCulling = false;
+		water.bumpTexture = new BABYLON.Texture("assets/key.png", scene);
+		water.windForce = -45;
+		water.waveHeight = 1.3;
+		//water.addToRenderList(skybox);
+		//water.addToRenderList(ground);
+		water.waterColor = new BABYLON.Color3(1, 0, 1);
+		water.colorBlendFactor = 0.5;
+		water.specularColor = new BABYLON.Color3(0, 0, 0);
+		waterMesh.material = water;
+
+
+
+
+
 	};
 
 	return SceneBuilder;
