@@ -65,10 +65,17 @@ require(["MeshUtils", "GridUtils", "MeshCache", "SceneBuilder", "GreedyMeshAlgo"
 			comp = manager.getComponentDataForEntity('MeshComponent', playerId);
 			comp.mesh = SceneBuilder.addPlayer(empty[0], scene);
 		};
-
+//var time = 0;
 		var __render = function(){
 			if(scene){
 				scene.render();
+
+				//var shaderMaterial = scene.getMaterialByName("shader");
+                //shaderMaterial.setFloat("time", time);
+                //time += 0.02;
+                //shaderMaterial.setVector3("cameraPosition", scene.activeCamera.position);
+
+
 			}
 			if(manager){
 				manager.update(scene.getLastFrameDuration());
@@ -154,6 +161,7 @@ require(["MeshUtils", "GridUtils", "MeshCache", "SceneBuilder", "GreedyMeshAlgo"
 		};
 
 		setTimeout(function(){
+			return;
 			engine.stopRenderLoop(__render);
 			manager.removeProcessor(processors[0]);
 			manager.removeProcessor(processors[1]);
@@ -162,11 +170,11 @@ require(["MeshUtils", "GridUtils", "MeshCache", "SceneBuilder", "GreedyMeshAlgo"
 			processors = [];
 			scene.dispose();
 			Materials.destroy();
-			
+
 		}, 5000);
 
 		setTimeout(function(){
-			launch();
+			//launch();
 		}, 10000);
 
 		launch();
