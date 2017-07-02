@@ -7,6 +7,10 @@ define(["lib/Deferred_", "Base64", "Textures"], function(Deferred, Base64, Textu
 
 	Materials.NUM_MATS = 5;
 
+	Materials.destroy = function(){
+		
+	};
+
 	Materials.makeMaterials = function(scene, callback){
 		Textures.createCanvasFromURLArray([Base64.bricks, Base64.crate, Base64.steel, Base64.baddie, Base64.bird])
 		.then(function(canvas){

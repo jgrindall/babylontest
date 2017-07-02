@@ -29,6 +29,8 @@ require(["MeshUtils", "GridUtils", "MeshCache", "SceneBuilder", "GreedyMeshAlgo"
 
 		var grid, empty, scene, cameraId, playerId, gamePad, manager, canvas, baddieIds = [], boxes, canHit;
 
+		var processors = [];
+
 		canvas = document.querySelector("#renderCanvas");
 
 		var addControls = function(){
@@ -38,20 +40,17 @@ require(["MeshUtils", "GridUtils", "MeshCache", "SceneBuilder", "GreedyMeshAlgo"
 
 		var makeScene = function () {
 			scene = SceneBuilder.makeScene(engine);
-			//scene.enablePhysics();
 		};
 
 		var makeCamera = function () {
 			var comp;
 			cameraId = manager.createEntity(['CameraComponent']);
-			console.log("cameraId", cameraId);
 			comp = manager.getComponentDataForEntity('CameraComponent', cameraId);
 			comp.camera = SceneBuilder.makeCamera(scene);
 		};
 
 		var makeGrid = function(){
 			grid = GridUtils.makeRnd(SIZE_I, SIZE_J, {rnd:0.0, values:[1, 2]});
-			GridUtils.log(grid);
 			empty = _.shuffle(GridUtils.getMatchingLocations(grid, 0));
 		};
 
@@ -136,25 +135,41 @@ require(["MeshUtils", "GridUtils", "MeshCache", "SceneBuilder", "GreedyMeshAlgo"
 			addBaddies();
 			var octahedron = BABYLON.MeshBuilder.CreatePolyhedron("oct", {type: 1, size: 1}, scene);
 			octahedron.position = new BABYLON.Vector3(30, 7, 30);
-			manager.addProcessor(new PlayerMovementProcessor(manager, engine, playerId));
-			manager.addProcessor(new CameraMatchPlayerProcessor(manager, engine, playerId, cameraId));
-			manager.addProcessor(new BaddieMovementProcessor(manager, baddieIds, boxes, canHit));
-		    manager.addProcessor(new BaddieCollisionProcessor(manager, playerId, baddieIds));
+			processors.push(new PlayerMovementProcessor(manager, engine, playerId));
+			processors.push(new CameraMatchPlayerProcessor(manager, engine, playerId, cameraId));
+			processors.push(new BaddieMovementProcessor(manager, baddieIds, boxes, canHit));
+			processors.push(new BaddieCollisionProcessor(manager, playerId, baddieIds));
+			manager.addProcessor(processors[0]);
+			manager.addProcessor(processors[1]);
+			manager.addProcessor(processors[2]);
+		    manager.addProcessor(processors[3]);
 			startRender();
 		};
 
 		window.engine = new BABYLON.Engine(canvas, false, null, false);
 
-		makeScene();
-		Materials.makeMaterials(scene, init);
-
+		var launch = function(){
+			makeScene();
+			Materials.makeMaterials(scene, init);
+		};
 
 		setTimeout(function(){
 			engine.stopRenderLoop(__render);
+			manager.removeProcessor(processors[0]);
+			manager.removeProcessor(processors[1]);
+			manager.removeProcessor(processors[2]);
+			manager.removeProcessor(processors[3]);
+			processors = [];
 			scene.dispose();
-			//scene.render();
-
-
+			Materials.destroy();
+			
 		}, 5000);
+
+		setTimeout(function(){
+			launch();
+		}, 10000);
+
+		launch();
+
 	}
 );
