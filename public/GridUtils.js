@@ -152,7 +152,7 @@ define(["GeomUtils"], function(GeomUtils){
 		return e;
 	};
 
-	GridUtils.getPath = function(strategy, pos, grid){
+	GridUtils.getPath = function(strategy, pos, grid, playerPos){
 		var i = pos[0], j = pos[1], i0, j0, i1, j1;
 		var TOP_LEFT = {"x":0, "z":window.SIZE_I * window.SIZE};
 		if(strategy === "north-south"){
@@ -168,9 +168,6 @@ define(["GeomUtils"], function(GeomUtils){
 			i--;
 			i1 = i;
 			return {
-				"i0":i0,
-				"i1":i1,
-				"j":j,
 				"x":SIZE*j,
 				"zmax":TOP_LEFT.z - i0 * SIZE - SIZE/2,
 				"zmin":TOP_LEFT.z - i1 * SIZE - SIZE/2
@@ -189,14 +186,23 @@ define(["GeomUtils"], function(GeomUtils){
 			j--;
 			j1 = j;
 			return {
-				"j0":j0,
-				"j1":j1,
-				"i":i,
 				"z":SIZE*i,
 				"xmin":j0 * SIZE + SIZE/2,
 				"xmax":j1 * SIZE + SIZE/2
 			};
 		}
+		else if(strategy === "hunt"){
+			return GridUtils.getAStarPath(pos, grid, playerPos);
+			console.log(strategy, pos, grid);
+		}
+	};
+
+	GridUtils.getAStarPath = function(pos, grid, playerPos){
+		var pf = new PF.Grid(GridUtils.getPF(grid));
+		var backup = pf.clone();
+		var finder = new PF.AStarFinder();
+		var paths = finder.findPath(3, 3, 7, 7, pf);
+		return paths;
 	};
 
 	GridUtils.getMatchingLocations = function(a, testFn){

@@ -6,10 +6,10 @@ define(["GeomUtils"], function(GeomUtils){
 
 	var _pathIsUnit = function(strategy, path){
 		if(strategy === "north-south"){
-			return (path.i0 === path.i1);
+			return Math.abs(path.zmin - path.zmax) < 0.1;
 		}
 		else if(strategy === "west-east"){
-			return (path.j0 === path.j1);
+			return Math.abs(path.xmin - path.xmax) < 0.1;
 		}
 	};
 
@@ -26,6 +26,7 @@ define(["GeomUtils"], function(GeomUtils){
 	};
 
 	BaddieMovementProcessor.prototype.getDirsHit = function (id) {
+		/*
 		var dirs = {n:0, s:0, w:0, e:0}, dx, dz, meshComp, mesh0, speedComp, vComp;
 		var manager = this.manager;
 		vComp = 		manager.getComponentDataForEntity('BaddieStrategyComponent', id);
@@ -60,6 +61,7 @@ define(["GeomUtils"], function(GeomUtils){
 			}
 		});
 		return dirs;
+		*/
 	};
 
 	BaddieMovementProcessor.prototype.moveWestEast = function(id, sComp){

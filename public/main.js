@@ -53,11 +53,6 @@ require(["MeshUtils", "GridUtils", "MeshCache", "SceneBuilder", "GreedyMeshAlgo"
 			grid = GridUtils.makeRnd(SIZE_I, SIZE_J, {rnd:0.0, values:[1, 2]});
 			GridUtils.log(grid);
 			empty = _.shuffle(GridUtils.getMatchingLocations(grid, 0));
-			var pf = new PF.Grid(GridUtils.getPF(grid));
-			var backup = pf.clone();
-			var finder = new PF.AStarFinder();
-			var paths = finder.findPath(3, 3, 7, 7, pf);
-			console.log(paths);
 		};
 
 		var build = function(){
@@ -122,7 +117,7 @@ require(["MeshUtils", "GridUtils", "MeshCache", "SceneBuilder", "GreedyMeshAlgo"
 					v.vel = {'x':1, 'z':0};
 					v.strategy = "hunt";
 				}
-				v.path = GridUtils.getPath(v.strategy, pos, grid);
+				v.path = GridUtils.getPath(v.strategy, pos, grid, empty[0]);
 				console.log(pos, v.strategy, v.path);
 				baddieIds.push(id);
 			});
