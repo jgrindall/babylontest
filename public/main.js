@@ -24,7 +24,7 @@ require(["MeshUtils", "GridUtils", "MeshCache", "SceneBuilder", "GreedyMeshAlgo"
 
 		window.SIZE_I = 20;
 		window.SIZE_J = 20;
-		var NUM_BADDIES = 1;
+		var NUM_BADDIES = 6;
 		window.SIZE = 10;
 
 		var grid, empty, scene, cameraId, playerId, gamePad, manager, canvas, baddieIds = [], boxes, canHit;
@@ -72,15 +72,17 @@ require(["MeshUtils", "GridUtils", "MeshCache", "SceneBuilder", "GreedyMeshAlgo"
 			comp.mesh = SceneBuilder.addPlayer(empty[0], scene);
 		};
 
+		var __render = function(){
+			if(scene){
+				scene.render();
+			}
+			if(manager){
+				manager.update(scene.getLastFrameDuration());
+			}
+		};
+
 		var startRender = function(){
-			window.engine.runRenderLoop(function () {
-				if(scene){
-					scene.render();
-				}
-				if(manager){
-					manager.update(scene.getLastFrameDuration());
-				}
-			});
+			window.engine.runRenderLoop(__render);
 		};
 
 		var addWater = function(){
@@ -107,14 +109,18 @@ require(["MeshUtils", "GridUtils", "MeshCache", "SceneBuilder", "GreedyMeshAlgo"
 				var pos = empty[i + 1]
 				manager.getComponentDataForEntity('MeshComponent', id).mesh = SceneBuilder.addBaddie(pos, scene);
 				v = manager.getComponentDataForEntity('BaddieStrategyComponent', id);
-				var ns = Math.random() < 0.5;
-				if(ns){
+				var ns = Math.random();
+				if(ns < 0.33){
 					v.vel = {'x':0, 'z':1};
 					v.strategy = "north-south";
 				}
-				else{
+				else if(ns < 0.67){
 					v.vel = {'x':1, 'z':0};
 					v.strategy = "west-east";
+				}
+				else{
+					v.vel = {'x':1, 'z':0};
+					v.strategy = "hunt";
 				}
 				v.path = GridUtils.getPath(v.strategy, pos, grid);
 				console.log(pos, v.strategy, v.path);
@@ -123,7 +129,7 @@ require(["MeshUtils", "GridUtils", "MeshCache", "SceneBuilder", "GreedyMeshAlgo"
 		};
 
 		var init = function(){
-			scene.debugLayer.show();
+			//scene.debugLayer.show();
 			setupManager();
 			makeCamera();
 			makeGrid();
@@ -146,5 +152,14 @@ require(["MeshUtils", "GridUtils", "MeshCache", "SceneBuilder", "GreedyMeshAlgo"
 
 		makeScene();
 		Materials.makeMaterials(scene, init);
+
+
+		setTimeout(function(){
+			engine.stopRenderLoop(__render);
+			scene.dispose();
+			//scene.render();
+
+
+		}, 5000);
 	}
 );

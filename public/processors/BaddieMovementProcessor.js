@@ -98,16 +98,7 @@ define(["GeomUtils"], function(GeomUtils){
 			//console.log(pos, sComp.path);
 		}
 		else{
-			/*
-			var dirs = 			_this.getDirsHit(id);
-			if(dirs['w'] && !dirs['e']){
-				sComp.vel.x = 1;
-			}
-			else if(dirs['e'] && !dirs['w']){
-				sComp.vel.x = -1;
-			}
-			meshComp.mesh[0].position.x += sComp.vel.x * SF;
-			*/
+			// hunt
 		}
 	};
 
