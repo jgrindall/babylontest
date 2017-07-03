@@ -22,7 +22,7 @@ define(["GeomUtils"], function(GeomUtils){
 		for(_i = 0; _i < a.length; _i++){
 			s = "";
 			for(_j = 0; _j < a[0].length; _j++){
-				s += a[_i][_j] + " ";
+				s += a[_i][_j].val + " ";
 			}
 			console.log(_i + "\t" + s);
 		}
@@ -138,6 +138,73 @@ define(["GeomUtils"], function(GeomUtils){
 		GridUtils.extendWalls(a);
 	};
 
+	GridUtils.getPF = function(a){
+		var SIZE_I = a.length, SIZE_J = a[0].length;
+		var e = GridUtils.makeEmpty(SIZE_I, SIZE_J);
+		var _i, _j;
+		for(_i = 0; _i < SIZE_I; _i++){
+			for(_j = 0; _j < SIZE_J; _j++){
+				if(a[_i][_j].val >= 1){
+					e[_i][_j] = 1;
+				}
+			}
+		}
+		return e;
+	};
+
+	GridUtils.getPath = function(strategy, pos, grid, playerPos){
+		var i = pos[0], j = pos[1], i0, j0, i1, j1;
+		var TOP_LEFT = {"x":0, "z":window.SIZE_I * window.SIZE};
+		if(strategy === "north-south"){
+			while(grid[i][j].val === 0){
+				i--;
+			}
+			i++;
+			i0 = i;
+			i = pos[0];
+			while(grid[i][j].val === 0){
+				i++;
+			}
+			i--;
+			i1 = i;
+			return {
+				"x":SIZE*j,
+				"zmax":TOP_LEFT.z - i0 * SIZE - SIZE/2,
+				"zmin":TOP_LEFT.z - i1 * SIZE - SIZE/2
+			};
+		}
+		else if(strategy === "west-east"){
+			while(grid[i][j].val === 0){
+				j--;
+			}
+			j++;
+			j0 = j;
+			j = pos[1];
+			while(grid[i][j].val === 0){
+				j++;
+			}
+			j--;
+			j1 = j;
+			return {
+				"z":SIZE*i,
+				"xmin":j0 * SIZE + SIZE/2,
+				"xmax":j1 * SIZE + SIZE/2
+			};
+		}
+		else if(strategy === "hunt"){
+			return GridUtils.getAStarPath(pos, grid, playerPos);
+			console.log(strategy, pos, grid);
+		}
+	};
+
+	GridUtils.getAStarPath = function(pos, grid, playerPos){
+		var pf = new PF.Grid(GridUtils.getPF(grid));
+		var backup = pf.clone();
+		var finder = new PF.AStarFinder();
+		var paths = finder.findPath(3, 3, 7, 7, pf);
+		return paths;
+	};
+
 	GridUtils.getMatchingLocations = function(a, testFn){
 		var _i, _j, SIZE_I = a.length, SIZE_J = a[0].length, matching = [], _temp;
 		if(typeof testFn === "number"){
@@ -158,10 +225,10 @@ define(["GeomUtils"], function(GeomUtils){
 
 	GridUtils.makeRnd = function(SIZE_I, SIZE_J, options){
 		var _i, _j, a = [], getVal;
-		options = _.defaults(options || {}, {"rnd":0.5, "values":[0, 1]});
+		options = _.defaults(options || {}, {"rnd":0.25, "values":[1]});
 		getVal = function(){
-			var n = options.values.length - 1;
-			return options.values[Math.floor(Math.random()*n) + 1];
+			var n = options.values.length;
+			return options.values[Math.floor(Math.random()*n)];
 		};
 		for(_i = 0; _i < SIZE_I; _i++){
 			a[_i] = [];

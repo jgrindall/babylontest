@@ -1,13 +1,15 @@
 define([], function(){
-	
+
 	var PossessionsComponent = {
 		state: {
-		       text:"HELLO THERE!!"
+		    possessions:[
+				
+			]
 		}
 	};
-	
+
 	PossessionsComponent.name = "PossessionsComponent";
 
 	return PossessionsComponent;
-	
+
 });

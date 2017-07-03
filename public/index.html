@@ -1,7 +1,6 @@
 
 <html>
     <head>
-        <script src='lib/babylon.custom.cannon.js'></script>
         <script src='lib/jquery.js'></script>
         <script src='lib/hand.js'></script>
         <script src='lib/underscore-min.js'></script>
@@ -9,7 +8,9 @@
 		<script src='lib/minirunner.js'></script>
 		<script src='lib/keydrown.js'></script>
 		<script src='lib/array_includes_polyfill.js'></script>
-
+        <script src='lib/pathfinding-browser.min.js'></script>
+		<script src='lib/babylon.custom.js'></script>
+		
         <style>
             #renderCanvas{
                 width:90%;
@@ -31,14 +32,8 @@
         <span>No</span>
         <canvas width='90%' height='90%' id="renderCanvas"></canvas>
 		<div id="zone_joystick"></div>
-        <span></span>
-        <p class='pos'></p>
-        <p class='dir'></p>
         <script data-main="main" src="lib/require.js"></script>
 
-        <script>
-
-        </script>
 
     </body>
 </html>

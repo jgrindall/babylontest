@@ -1,13 +1,13 @@
 define([], function(){
-	
+
 	var MeshComponent = {
 		state: {
-		       text:"HELLO THERE!!"
+		    mesh:null
 		}
 	};
-	
+
 	MeshComponent.name = "MeshComponent";
 
 	return MeshComponent;
-	
+
 });

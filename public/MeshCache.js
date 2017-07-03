@@ -18,7 +18,6 @@ define(["MeshUtils", "Materials"], function(MeshUtils, Materials){
 		if(!cache[key]){
 			box = BABYLON.MeshBuilder.CreateBox(key, {height: SIZE, width:SIZE*size[0], depth:SIZE*size[1]}, scene);
 			box.convertToUnIndexedMesh();
-			//box.checkCollisions = true;
 			box.setEnabled(false);
 			cache[key] = box;
 			scene.meshes.pop();
@@ -28,12 +27,14 @@ define(["MeshUtils", "Materials"], function(MeshUtils, Materials){
 	MeshCache.addPlanesToCache = function(scene, lengths, material){
 		_.each(lengths, function(len){
 			var key = "plane_" + material + "_" + len, plane;
+			console.log(key);
 			if(!cache[key]){
 				plane = BABYLON.MeshBuilder.CreatePlane(key, {height: SIZE, width:SIZE*len}, scene);
 				cache[key] = plane;
 				plane.convertToUnIndexedMesh();
 				plane.material = Materials.base64Material;
-				MeshUtils.setUVOffsetAndScale(plane, 0, material/5, len, 1/5);
+				var h = 1/Materials.NUM_MATS;
+				MeshUtils.setUVOffsetAndScale(plane, 0, (Materials.NUM_MATS - material)*h, len, h);
 				plane.setEnabled(false);
 				scene.meshes.pop();
 			}
@@ -46,10 +47,10 @@ define(["MeshUtils", "Materials"], function(MeshUtils, Materials){
 		if(!cache[key]){
 			box = BABYLON.MeshBuilder.CreateBox(key, {height: SIZE, width:SIZE, depth:SIZE}, scene);
 			box.convertToUnIndexedMesh();
-			//box.checkCollisions = true;
-			//box.material = Materials.redMaterial;
-			box.isVisible = false;
-			box.setEnabled(false);
+			box.checkCollisions = true;
+			box.material = Materials.redMaterial;
+			//box.isVisible = false;
+			//box.setEnabled(false);
 			cache[key] = box;
 			scene.meshes.pop();
 		}
@@ -63,7 +64,8 @@ define(["MeshUtils", "Materials"], function(MeshUtils, Materials){
 			plane.convertToUnIndexedMesh();
 			plane.material = Materials.base64Material;
 			plane.billboardMode = BABYLON.Mesh.BILLBOARDMODE_ALL;
-			MeshUtils.setUVOffsetAndScale(plane, 0, material/5, 1, 1/5);
+			var h = 1/Materials.NUM_MATS;
+			MeshUtils.setUVOffsetAndScale(plane, 0, (Materials.NUM_MATS - material)*h, 1, h);
 			plane.setEnabled(false);
 			scene.meshes.pop();
 		}
@@ -105,8 +107,8 @@ define(["MeshUtils", "Materials"], function(MeshUtils, Materials){
 			box = cached.createInstance("box index: " + cacheI);
 			cacheI++;
 			box.checkCollisions = true;
-			box.isVisible = false;
-			box.setEnabled(false);
+			//box.isVisible = false;
+			//box.setEnabled(false);
 			return box;
 		}
 		else{
