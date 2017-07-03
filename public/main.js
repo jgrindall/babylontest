@@ -8,7 +8,7 @@ require(["MeshUtils", "GridUtils", "MeshCache", "SceneBuilder", "GreedyMeshAlgo"
 
 "components/CameraComponent", "components/PossessionsComponent", "processors/CameraMatchPlayerProcessor",
 
-"processors/PlayerMovementProcessor", "processors/BaddieMovementProcessor",
+"processors/PlayerMovementProcessor", "processors/BaddieMovementProcessor", "processors/UpdateHuntProcessor"
 
 "processors/BaddieCollisionProcessor"],
 
@@ -16,7 +16,7 @@ require(["MeshUtils", "GridUtils", "MeshCache", "SceneBuilder", "GreedyMeshAlgo"
 
 	HealthComponent, SpeedComponent, MessageComponent, MeshComponent, BaddieStrategyComponent,
 
-	CameraComponent, PossessionsComponent, CameraMatchPlayerProcessor, PlayerMovementProcessor, BaddieMovementProcessor,
+	CameraComponent, PossessionsComponent, CameraMatchPlayerProcessor, PlayerMovementProcessor, BaddieMovementProcessor, UpdateHuntProcessor,
 
 	BaddieCollisionProcessor) {
 
@@ -26,6 +26,8 @@ require(["MeshUtils", "GridUtils", "MeshCache", "SceneBuilder", "GreedyMeshAlgo"
 		window.SIZE_J = 20;
 		var NUM_BADDIES = 6;
 		window.SIZE = 10;
+		
+		window.SIZE_MAX = Math.max(SIZE_I, SIZE_J);
 
 		var grid, empty, scene, cameraId, playerId, gamePad, manager, canvas, baddieIds = [], boxes, canHit;
 
@@ -65,17 +67,11 @@ require(["MeshUtils", "GridUtils", "MeshCache", "SceneBuilder", "GreedyMeshAlgo"
 			comp = manager.getComponentDataForEntity('MeshComponent', playerId);
 			comp.mesh = SceneBuilder.addPlayer(empty[0], scene);
 		};
-//var time = 0;
+
 		var __render = function(){
 			if(scene){
 				scene.render();
-
-				//var shaderMaterial = scene.getMaterialByName("shader");
-                //shaderMaterial.setFloat("time", time);
-                //time += 0.02;
-                //shaderMaterial.setVector3("cameraPosition", scene.activeCamera.position);
-
-
+				$("p").text(engine.getFps().toFixed(0));
 			}
 			if(manager){
 				manager.update(scene.getLastFrameDuration());
@@ -88,6 +84,11 @@ require(["MeshUtils", "GridUtils", "MeshCache", "SceneBuilder", "GreedyMeshAlgo"
 
 		var addWater = function(){
 			SceneBuilder.addWater(scene, [5, 5]);
+			SceneBuilder.addFire(scene, [5, 5]);
+		};
+		
+		var addParticles = function(){
+			SceneBuilder.addParticles(scene, [5, 5]);
 		};
 
 		var addEnvironment = function(){
@@ -130,13 +131,14 @@ require(["MeshUtils", "GridUtils", "MeshCache", "SceneBuilder", "GreedyMeshAlgo"
 		};
 
 		var init = function(){
-			//scene.debugLayer.show();
+			scene.debugLayer.show();
 			setupManager();
 			makeCamera();
 			makeGrid();
 			build();
 			addPlayer();
 			addWater();
+			addParticles();
 			addEnvironment();
 			addControls();
 			addBaddies();
@@ -146,10 +148,12 @@ require(["MeshUtils", "GridUtils", "MeshCache", "SceneBuilder", "GreedyMeshAlgo"
 			processors.push(new CameraMatchPlayerProcessor(manager, engine, playerId, cameraId));
 			processors.push(new BaddieMovementProcessor(manager, baddieIds, boxes, canHit));
 			processors.push(new BaddieCollisionProcessor(manager, playerId, baddieIds));
+			processors.push(new UpdateHuntProcessor(manager, baddieIds));
 			manager.addProcessor(processors[0]);
 			manager.addProcessor(processors[1]);
 			manager.addProcessor(processors[2]);
 		    manager.addProcessor(processors[3]);
+			manager.addProcessor(processors[4]);
 			startRender();
 		};
 
