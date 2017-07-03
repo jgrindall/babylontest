@@ -6,12 +6,12 @@ define(["GeomUtils"], function(GeomUtils){
 
 	var GridUtils = {};
 
-	GridUtils.makeEmpty = function(SIZE_I, SIZE_J){
+	GridUtils.makeEmpty = function(SIZE_I, SIZE_J, entry){
 		var a = [], _i, _j;
 		for(_i = 0; _i < SIZE_I; _i++){
 			a[_i] = [];
 			for(_j = 0; _j < SIZE_J; _j++){
-				a[_i][_j] = {};
+				a[_i][_j] = _.extend({}, entry);
 			}
 		}
 		return a;
@@ -29,54 +29,43 @@ define(["GeomUtils"], function(GeomUtils){
 	};
 
 	GridUtils.addDirectionsOfWalls = function(a){
-		var _i, _j, SIZE_I = a.length, SIZE_J = a[0].length, EMPTY, getWallsAt, fillFaceAt, fillWithDir, isInside;
+		var _i, _j, SIZE_I = a.length, SIZE_J = a[0].length, EMPTY, isWall, getWallsAt, fillWithDir, isInside;
 		EMPTY = {"n":0, "s":0, "w":0, "e":0};
+		//console.log("add dirs", a);
+		isWall = function(i, j){
+			//console.log("isWall", i, j);
+			//console.log("isWall", a[i][j]);
+			return (a[i][j].type === "wall");
+		};
 		isInside = function(i, j){
 			return (i >= 0 && j >= 0 && i < SIZE_I && j < SIZE_J);
 		};
-		fillWithDir = function(f, _i, _j, dir, di, dj){
+		fillWithDir = function(walls, _i, _j, dir, di, dj){
 			var checkI = _i + di, checkJ = _j + dj;
-			if(a[_i][_j].val > 0 && isInside(checkI, checkJ) && a[checkI][checkJ].val === 0){
-				f[dir] = 1;
+			//console.log("look at ", _i, _j, dir, di, dj);
+			//console.log(isWall(_i, _j), isInside(checkI, checkJ), isWall(checkI, checkJ));
+			if(isInside(_i, _j) && isWall(_i, _j) && isInside(checkI, checkJ) && !isWall(checkI, checkJ)){
+				//console.log("yes!");
+				walls[dir] = 1;
 			}
 		};
 		getWallsAt = function(_i, _j){
 			// fill the array with n,s,w,e if there is a wall in that direction of the cell
 			// eg. n:1 if there is a wall on my north side
-			var f = _.extend({}, EMPTY);
-			fillWithDir(f, _i, _j, "n", -1, 0);
-			fillWithDir(f, _i, _j, "s", +1, 0);
-			fillWithDir(f, _i, _j, "w", 0, -1);
-			fillWithDir(f, _i, _j, "e", 0, +1);
-			return f;
+			//console.log("get walls", _i, _j, a);
+			var walls = _.extend({}, EMPTY);
+			fillWithDir(walls, _i, _j, "n", -1, 0);
+			fillWithDir(walls, _i, _j, "s", +1, 0);
+			fillWithDir(walls, _i, _j, "w", 0, -1);
+			fillWithDir(walls, _i, _j, "e", 0, +1);
+			//console.log("walls", walls);
+			return walls;
 		};
 		for(_i = 0; _i < SIZE_I; _i++){
 			for(_j = 0; _j < SIZE_J; _j++){
-				a[_i][_j].walls = getWallsAt(_i, _j);
+				a[_i][_j].data.walls = getWallsAt(_i, _j);
 			}
 		}
-	};
-
-	GridUtils.getBoxesCanHit = function(a, boxes){
-		var _i, _j, SIZE_I = a.length, SIZE_J = a[0].length;
-		var canHit = GridUtils.makeEmpty(SIZE_I, SIZE_J);
-		var getCanHit = function(i, j){
-			var rect = {left:i*SIZE - SIZE, right:i*SIZE + SIZE, bottom:j*SIZE - SIZE, top:j*SIZE + SIZE};
-			var hit = [];
-			_.each(boxes, function(box, i){
-				var boxRect = GeomUtils.getBoxRect(box);
-				if(GeomUtils.rectIntersectRect(boxRect, rect)){
-					hit.push(box);
-				}
-			});
-			return hit;
-		};
-		for(_i = 0; _i < SIZE_I; _i++){
-			for(_j = 0; _j < SIZE_J; _j++){
-				canHit[_i][_j] = getCanHit(_i, _j);
-			}
-		}
-		return canHit;
 	};
 
 	GridUtils.ijToBabylon = function(i, j){
@@ -86,7 +75,7 @@ define(["GeomUtils"], function(GeomUtils){
 			z:topLeft.z - i*SIZE
 		};
 	};
-	
+
 	GridUtils.babylonToIJ = function(pos){
 		return {
 			x:Math.floor(pos.x / SIZE),
@@ -95,15 +84,16 @@ define(["GeomUtils"], function(GeomUtils){
 	};
 
 	GridUtils.extendWalls = function(a){
+		console.log("extend", a);
 		var _i, _j, SIZE_I = a.length, SIZE_J = a[0].length;
 		var addInDir = function(dir, _i, _j, di, dj){
-			var steps = 1, fCheck, f = a[_i][_j].walls, val = a[_i][_j].val;
-			if(f[dir] >= 1){
+			var steps = 1, wallCheck, walls = a[_i][_j].data.walls;
+			if(walls[dir] >= 1){
 				while(_j + dj*steps < SIZE_J && _i + di*steps < SIZE_I){
-					fCheck = a[_i + di][_j + dj].walls;
-					if(fCheck[dir] >= 1 && a[_i][_j].val === a[_i + di*steps][_j + dj*steps].val){
-						f[dir]++;
-						fCheck[dir]--;
+					wallCheck = a[_i + di][_j + dj].data.walls;
+					if(wallCheck[dir] >= 1 && a[_i][_j].data.texture === a[_i + di*steps][_j + dj*steps].data.texture){
+						walls[dir]++;
+						wallCheck[dir]--;
 					}
 					else{
 						break;
@@ -120,6 +110,7 @@ define(["GeomUtils"], function(GeomUtils){
 				addInDir("e", _i, _j, 1, 0);
 			}
 		}
+		console.log("extended", a);
 	};
 
 	GridUtils.getLengthsNeeded = function(a){
@@ -190,16 +181,35 @@ define(["GeomUtils"], function(GeomUtils){
 		}
 	};
 
-	GridUtils.getMatchingLocations = function(a, testFn){
-		var _i, _j, SIZE_I = a.length, SIZE_J = a[0].length, matching = [];
-		if(typeof testFn === "string"){
-			testFn = function(obj){
-				return (obj.type === testFn);
-			};
+	GridUtils.getSolid = function(grid){
+		var _isSolid = function(val){
+			if(val && (val.type === "wall" || val.type === "water")){
+				return {
+					"val":1
+				}
+			}
+			return {
+				"val":0
+			}
 		};
+		return GridUtils.map(grid, _isSolid);
+	};
+
+	GridUtils.map = function(a, f){
+		var _i, _j, SIZE_I = a.length, SIZE_J = a[0].length, output = GridUtils.makeEmpty(SIZE_I, SIZE_J);
 		for(_i = 0; _i < SIZE_I; _i++){
 			for(_j = 0; _j < SIZE_J; _j++){
-				if(testFn(a[_i][_j].val)){
+				output[_i][_j] = f(a[_i][_j]);
+			}
+		}
+		return output;
+	};
+
+	GridUtils.getMatchingLocations = function(a, testFn){
+		var _i, _j, SIZE_I = a.length, SIZE_J = a[0].length, matching = [];
+		for(_i = 0; _i < SIZE_I; _i++){
+			for(_j = 0; _j < SIZE_J; _j++){
+				if(testFn(a[_i][_j])){
 					matching.push([_i, _j]);
 				}
 			}

@@ -12,10 +12,10 @@ define(["GridUtils", "MeshCache", "GreedyMeshAlgo", "Materials"],
 	SceneBuilder.makeScene = function(engine){
 		var scene = new BABYLON.Scene(engine);
 		scene.ambientColor = new BABYLON.Color3(0.8, 0.8, 0.2);
-		//scene.fogMode = BABYLON.Scene.FOGMODE_EXP;
-		scene.fogDensity = 0.005;
-		scene.fogStart = 30.0;
-		scene.fogEnd = 50.0;
+		scene.fogMode = BABYLON.Scene.FOGMODE_EXP;
+		scene.fogDensity = 0.02;
+		scene.fogStart = 10.0;
+		scene.fogEnd = 40.0;
 		scene.fogColor = new BABYLON.Color3(0.2, 0.2, 0.3);
 		scene.gravity = new BABYLON.Vector3(0, 0, 0);
 		scene.collisionsEnabled = true;
@@ -29,7 +29,9 @@ define(["GridUtils", "MeshCache", "GreedyMeshAlgo", "Materials"],
 		return scene;
 	};
 
-	SceneBuilder.addParticles = function(scene, pos){
+	SceneBuilder.addFire = function(){};
+
+	SceneBuilder.addWater = function(scene, pos){
 		var y = SIZE/2, container, billboard, babylonPos;
 		babylonPos = GridUtils.ijToBabylon(pos[0], pos[1]);
 		container = MeshCache.getBillboardBoxFromCache();
@@ -46,8 +48,8 @@ define(["GridUtils", "MeshCache", "GreedyMeshAlgo", "Materials"],
 	    particleSystem.color2 = new BABYLON.Color4(0.2, 0.5, 1.0, 1.0);
 	    particleSystem.colorDead = new BABYLON.Color4(0, 0, 0.2, 0.0);
 
-	    particleSystem.minSize = 0.75;
-	    particleSystem.maxSize = 4;
+	    particleSystem.minSize = 0.25;
+	    particleSystem.maxSize = 1;
 
 	    particleSystem.minLifeTime = 0.3;
 	    particleSystem.maxLifeTime = 1.5;
@@ -56,10 +58,10 @@ define(["GridUtils", "MeshCache", "GreedyMeshAlgo", "Materials"],
 
 	    particleSystem.blendMode = BABYLON.ParticleSystem.BLENDMODE_ONEONE;
 
-	    particleSystem.gravity = new BABYLON.Vector3(0, -20.81, 0);
+	    particleSystem.gravity = new BABYLON.Vector3(0, -9.81, 0);
 
-	    particleSystem.direction1 = new BABYLON.Vector3(-7, 4, 3);
-	    particleSystem.direction2 = new BABYLON.Vector3(7, 4, -3);
+	    particleSystem.direction1 = new BABYLON.Vector3(-7, 8, 3);
+	    particleSystem.direction2 = new BABYLON.Vector3(7, 8, -3);
 
 	    particleSystem.minAngularSpeed = 0;
 	    particleSystem.maxAngularSpeed = Math.PI;
@@ -68,7 +70,7 @@ define(["GridUtils", "MeshCache", "GreedyMeshAlgo", "Materials"],
 	    particleSystem.maxEmitPower = 3;
 	    particleSystem.updateSpeed = 0.005;
 
-	    //particleSystem.start();
+	    particleSystem.start();
 
 
 		return container;
@@ -113,9 +115,9 @@ define(["GridUtils", "MeshCache", "GreedyMeshAlgo", "Materials"],
 		for(_i = 0; _i < SIZE_I; _i++){
 			for(_j = 0; _j < SIZE_J; _j++){
 				_.each(["n", "s", "w", "e"], function(dir){
-					var wallData = a[_i][_j].walls;
+					var wallData = a[_i][_j].data.walls;
 					if(wallData[dir] >= 1){
-						addWallAt([_i, _j], dir, a[_i][_j].val, wallData[dir]);
+						addWallAt([_i, _j], dir, a[_i][_j].data.texture, wallData[dir]);
 					}
 				});
 			}
@@ -137,7 +139,6 @@ define(["GridUtils", "MeshCache", "GreedyMeshAlgo", "Materials"],
 			box.position.x = x;
 			box.position.z = z;
 			box.position.y = y;
-			box.__quad = quad;
 			box.freezeWorldMatrix();
 			boxes.push(box);
 		});
@@ -179,13 +180,14 @@ define(["GridUtils", "MeshCache", "GreedyMeshAlgo", "Materials"],
 	};
 
 	SceneBuilder.addPlayer = function(pos, scene){
+		var y = SIZE/4;
 		var mat = new BABYLON.StandardMaterial("Mat", scene);
 		mat.diffuseColor = new BABYLON.Color3(0.7, 0, 0.7); // purple
 		var babylonPos = GridUtils.ijToBabylon(pos[0], pos[1]);
 		var player = BABYLON.MeshBuilder.CreateBox("player", {height: SIZE*0.75, width:SIZE*0.75, depth:SIZE*0.75}, scene);
 		player.material = mat;
 		player.checkCollisions = true;
-		player.position = new BABYLON.Vector3(babylonPos.x + SIZE/2, SIZE/2, babylonPos.z - SIZE/2);
+		player.position = new BABYLON.Vector3(babylonPos.x + SIZE/2, y, babylonPos.z - SIZE/2);
 		player.ellipsoid = new BABYLON.Vector3(SIZE/4, SIZE/4, SIZE/4);
 		return player;
 	};

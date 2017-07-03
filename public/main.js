@@ -8,7 +8,7 @@ require(["MeshUtils", "GridUtils", "MeshCache", "SceneBuilder", "GreedyMeshAlgo"
 
 "components/CameraComponent", "components/PossessionsComponent", "processors/CameraMatchPlayerProcessor",
 
-"processors/PlayerMovementProcessor", "processors/BaddieMovementProcessor", "processors/UpdateHuntProcessor"
+"processors/PlayerMovementProcessor", "processors/BaddieMovementProcessor", "processors/UpdateHuntProcessor",
 
 "processors/BaddieCollisionProcessor", "DATA"],
 
@@ -28,9 +28,9 @@ require(["MeshUtils", "GridUtils", "MeshCache", "SceneBuilder", "GreedyMeshAlgo"
 		window.SIZE_MAX = Math.max(SIZE_I, SIZE_J);
 
 		var grid, pfGrid, empty, scene, cameraId, playerId, gamePad, manager, canvas, baddieIds = [], boxes, canHit, processors = [];
-		
+
 		window._DATA = DATA;
-		
+
 		canvas = document.querySelector("#renderCanvas");
 
 		var addControls = function(){
@@ -51,14 +51,14 @@ require(["MeshUtils", "GridUtils", "MeshCache", "SceneBuilder", "GreedyMeshAlgo"
 
 		var makeGrid = function(){
 			grid = window._DATA;
+			console.log("GRID", grid);
 			empty = _.shuffle(GridUtils.getMatchingLocations(grid, function(obj){
-				return !obj;
+				return obj.type === "empty";
 			}));
 		};
 
 		var build = function(){
 			boxes = SceneBuilder.addFromData(scene, grid);
-			canHit = GridUtils.getBoxesCanHit(grid, boxes);
 		};
 
 		var addPlayer = function(){
@@ -84,11 +84,11 @@ require(["MeshUtils", "GridUtils", "MeshCache", "SceneBuilder", "GreedyMeshAlgo"
 
 		var addWater = function(){
 			SceneBuilder.addWater(scene, [5, 5]);
-			SceneBuilder.addFire(scene, [5, 5]);
+			//SceneBuilder.addFire(scene, [5, 5]);
 		};
-		
+
 		var addParticles = function(){
-			SceneBuilder.addParticles(scene, [5, 5]);
+			//SceneBuilder.addParticles(scene, [5, 5]);
 		};
 
 		var addEnvironment = function(){
@@ -103,7 +103,7 @@ require(["MeshUtils", "GridUtils", "MeshCache", "SceneBuilder", "GreedyMeshAlgo"
 			});
 		};
 
-		
+
 		var addBaddies = function(){
 			var _grid = grid;
 			_.each(_.range(1, 1 + NUM_BADDIES), function(i){
@@ -140,12 +140,12 @@ require(["MeshUtils", "GridUtils", "MeshCache", "SceneBuilder", "GreedyMeshAlgo"
 			addParticles();
 			addEnvironment();
 			addControls();
-			addBaddies();
+			//addBaddies();
 			var octahedron = BABYLON.MeshBuilder.CreatePolyhedron("oct", {type: 1, size: 1}, scene);
 			octahedron.position = new BABYLON.Vector3(30, 7, 30);
 			processors.push(new PlayerMovementProcessor(manager, engine, playerId));
 			processors.push(new CameraMatchPlayerProcessor(manager, engine, playerId, cameraId));
-			processors.push(new BaddieMovementProcessor(manager, baddieIds, boxes, canHit));
+			processors.push(new BaddieMovementProcessor(manager, baddieIds, boxes));
 			processors.push(new BaddieCollisionProcessor(manager, playerId, baddieIds));
 			processors.push(new UpdateHuntProcessor(manager, baddieIds, playerId, pfGrid));
 			manager.addProcessor(processors[0]);
