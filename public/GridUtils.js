@@ -11,7 +11,7 @@ define(["GeomUtils"], function(GeomUtils){
 		for(_i = 0; _i < SIZE_I; _i++){
 			a[_i] = [];
 			for(_j = 0; _j < SIZE_J; _j++){
-				a[_i][_j] = 0;
+				a[_i][_j] = {};
 			}
 		}
 		return a;
@@ -22,7 +22,7 @@ define(["GeomUtils"], function(GeomUtils){
 		for(_i = 0; _i < a.length; _i++){
 			s = "";
 			for(_j = 0; _j < a[0].length; _j++){
-				s += a[_i][_j].val + " ";
+				s += a[_i][_j].type + "\t";
 			}
 			console.log(_i + "\t" + s);
 		}
@@ -86,6 +86,13 @@ define(["GeomUtils"], function(GeomUtils){
 			z:topLeft.z - i*SIZE
 		};
 	};
+	
+	GridUtils.babylonToIJ = function(pos){
+		return {
+			x:Math.floor(pos.x / SIZE),
+			z:Math.floor(pos.z / SIZE)
+		};
+	};
 
 	GridUtils.extendWalls = function(a){
 		var _i, _j, SIZE_I = a.length, SIZE_J = a[0].length;
@@ -138,20 +145,6 @@ define(["GeomUtils"], function(GeomUtils){
 		GridUtils.extendWalls(a);
 	};
 
-	GridUtils.getPF = function(a){
-		var SIZE_I = a.length, SIZE_J = a[0].length;
-		var e = GridUtils.makeEmpty(SIZE_I, SIZE_J);
-		var _i, _j;
-		for(_i = 0; _i < SIZE_I; _i++){
-			for(_j = 0; _j < SIZE_J; _j++){
-				if(a[_i][_j].val >= 1){
-					e[_i][_j] = 1;
-				}
-			}
-		}
-		return e;
-	};
-
 	GridUtils.getPath = function(strategy, pos, grid, playerPos){
 		var i = pos[0], j = pos[1], i0, j0, i1, j1;
 		var TOP_LEFT = {"x":0, "z":window.SIZE_I * window.SIZE};
@@ -197,20 +190,11 @@ define(["GeomUtils"], function(GeomUtils){
 		}
 	};
 
-	GridUtils.getAStarPath = function(pos, grid, playerPos){
-		var pf = new PF.Grid(GridUtils.getPF(grid));
-		var backup = pf.clone();
-		var finder = new PF.AStarFinder();
-		var paths = finder.findPath(3, 3, 7, 7, pf);
-		return paths;
-	};
-
 	GridUtils.getMatchingLocations = function(a, testFn){
-		var _i, _j, SIZE_I = a.length, SIZE_J = a[0].length, matching = [], _temp;
-		if(typeof testFn === "number"){
-			_temp = testFn;
-			testFn = function(val){
-				return (val === _temp);
+		var _i, _j, SIZE_I = a.length, SIZE_J = a[0].length, matching = [];
+		if(typeof testFn === "string"){
+			testFn = function(obj){
+				return (obj.type === testFn);
 			};
 		};
 		for(_i = 0; _i < SIZE_I; _i++){
@@ -221,27 +205,6 @@ define(["GeomUtils"], function(GeomUtils){
 			}
 		}
 		return matching;
-	};
-
-	GridUtils.makeRnd = function(SIZE_I, SIZE_J, options){
-		var _i, _j, a = [], getVal;
-		options = _.defaults(options || {}, {"rnd":0.25, "values":[1]});
-		getVal = function(){
-			var n = options.values.length;
-			return options.values[Math.floor(Math.random()*n)];
-		};
-		for(_i = 0; _i < SIZE_I; _i++){
-			a[_i] = [];
-			for(_j = 0; _j < SIZE_J; _j++){
-				if(_i === 0 || _j === 0 || _i === SIZE_I - 1 || _j === SIZE_J - 1){
-					a[_i][_j] = {"val":getVal()};
-				}
-				else{
-					a[_i][_j] = {"val":(Math.random() > options.rnd) ? 0 : getVal()};
-				}
-			}
-		}
-		return a;
 	};
 
 	return GridUtils;

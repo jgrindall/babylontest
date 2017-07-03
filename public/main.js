@@ -10,7 +10,7 @@ require(["MeshUtils", "GridUtils", "MeshCache", "SceneBuilder", "GreedyMeshAlgo"
 
 "processors/PlayerMovementProcessor", "processors/BaddieMovementProcessor", "processors/UpdateHuntProcessor"
 
-"processors/BaddieCollisionProcessor"],
+"processors/BaddieCollisionProcessor", "DATA"],
 
 	function(MeshUtils, GridUtils, MeshCache, SceneBuilder, GreedyMeshAlgo, Materials, GamePad, GamePadUtils, EntityManager,
 
@@ -18,21 +18,19 @@ require(["MeshUtils", "GridUtils", "MeshCache", "SceneBuilder", "GreedyMeshAlgo"
 
 	CameraComponent, PossessionsComponent, CameraMatchPlayerProcessor, PlayerMovementProcessor, BaddieMovementProcessor, UpdateHuntProcessor,
 
-	BaddieCollisionProcessor) {
+	BaddieCollisionProcessor, DATA) {
 
 		"use strict";
 
-		window.SIZE_I = 20;
-		window.SIZE_J = 20;
-		var NUM_BADDIES = 6;
+		window.SIZE_I = 10;
+		window.SIZE_J = 10;
 		window.SIZE = 10;
-		
 		window.SIZE_MAX = Math.max(SIZE_I, SIZE_J);
 
-		var grid, empty, scene, cameraId, playerId, gamePad, manager, canvas, baddieIds = [], boxes, canHit;
-
-		var processors = [];
-
+		var grid, pfGrid, empty, scene, cameraId, playerId, gamePad, manager, canvas, baddieIds = [], boxes, canHit, processors = [];
+		
+		window._DATA = DATA;
+		
 		canvas = document.querySelector("#renderCanvas");
 
 		var addControls = function(){
@@ -52,8 +50,10 @@ require(["MeshUtils", "GridUtils", "MeshCache", "SceneBuilder", "GreedyMeshAlgo"
 		};
 
 		var makeGrid = function(){
-			grid = GridUtils.makeRnd(SIZE_I, SIZE_J, {rnd:0.0, values:[1, 2]});
-			empty = _.shuffle(GridUtils.getMatchingLocations(grid, 0));
+			grid = window._DATA;
+			empty = _.shuffle(GridUtils.getMatchingLocations(grid, function(obj){
+				return !obj;
+			}));
 		};
 
 		var build = function(){
@@ -103,6 +103,7 @@ require(["MeshUtils", "GridUtils", "MeshCache", "SceneBuilder", "GreedyMeshAlgo"
 			});
 		};
 
+		
 		var addBaddies = function(){
 			var _grid = grid;
 			_.each(_.range(1, 1 + NUM_BADDIES), function(i){
@@ -121,11 +122,9 @@ require(["MeshUtils", "GridUtils", "MeshCache", "SceneBuilder", "GreedyMeshAlgo"
 					v.strategy = "west-east";
 				}
 				else{
-					v.vel = {'x':1, 'z':0};
 					v.strategy = "hunt";
 				}
 				v.path = GridUtils.getPath(v.strategy, pos, grid, empty[0]);
-				console.log(pos, v.strategy, v.path);
 				baddieIds.push(id);
 			});
 		};
@@ -148,7 +147,7 @@ require(["MeshUtils", "GridUtils", "MeshCache", "SceneBuilder", "GreedyMeshAlgo"
 			processors.push(new CameraMatchPlayerProcessor(manager, engine, playerId, cameraId));
 			processors.push(new BaddieMovementProcessor(manager, baddieIds, boxes, canHit));
 			processors.push(new BaddieCollisionProcessor(manager, playerId, baddieIds));
-			processors.push(new UpdateHuntProcessor(manager, baddieIds));
+			processors.push(new UpdateHuntProcessor(manager, baddieIds, playerId, pfGrid));
 			manager.addProcessor(processors[0]);
 			manager.addProcessor(processors[1]);
 			manager.addProcessor(processors[2]);
