@@ -125,12 +125,12 @@ require(["MeshUtils", "GridUtils", "MeshCache", "SceneBuilder", "GreedyMeshAlgo"
 
 			console.log("solid", solid);
 
-			console.log("A*", new PF.AStarFinder().findPath(1, 1, 7, 7, new PF.Grid(solid)));
+			console.log("A*", new PF.AStarFinder().findPath(1, 1, 6, 6, new PF.Grid(solid)));
 
 			empty = _.shuffle(GridUtils.getMatchingLocations(grid, function(obj){
 				return obj.type === "empty";
 			}));
-			empty = [[1, 1], [7, 7]];
+			empty = [[1, 1], [6, 6]];
 			build();
 			addPlayer();
 			addParticles();
