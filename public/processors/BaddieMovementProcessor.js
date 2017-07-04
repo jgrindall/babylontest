@@ -46,6 +46,12 @@ define(["GeomUtils"], function(GeomUtils){
 		}
 		position.z += sComp.vel.z*SF;
 	};
+	
+	BaddieMovementProcessor.prototype.moveHunt = function(id, sComp){
+		var meshComp = this.manager.getComponentDataForEntity('MeshComponent', id);
+		var position = meshComp.mesh.position;
+		console.log(position, sComp.path);
+	};
 
 	BaddieMovementProcessor.prototype.updateBaddie = function (id) {
 		var manager = this.manager;
@@ -56,10 +62,9 @@ define(["GeomUtils"], function(GeomUtils){
 		}
 		else if(strategy === "west-east" && !_pathIsUnit(strategy, sComp.path)){
 			this.moveWestEast(id, sComp);
-			//console.log(pos, sComp.path);
 		}
-		else{
-			// hunt
+		else if(strategy === "hunt"){
+			this.moveHunt(id, sComp);
 		}
 	};
 

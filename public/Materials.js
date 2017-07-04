@@ -36,15 +36,16 @@ define(["lib/Deferred_", "Base64", "Textures"], function(Deferred, Base64, Textu
 			Materials.redMaterial.alpha = 0.7;
 			Materials.redMaterial.freeze();
 			
-			var waterTexture = new BABYLON.FireProceduralTexture("water", 8, scene);  //TODO 8??
-			var fireTexture = new BABYLON.FireProceduralTexture("fire", 8, scene);  //TODO 8??
+			var waterTexture = new BABYLON.FireProceduralTexture("water", 8, scene); // water is a blue fire.
+			var fireTexture = new BABYLON.FireProceduralTexture("fire", 8, scene);
+			fireTexture.speed  = new BABYLON.Vector2(10, 8);
 			
 			Materials.waterMaterial = new BABYLON.StandardMaterial("water", scene);
 			Materials.waterMaterial.ambientColor = BLUE1;
 			Materials.waterMaterial.diffuseColor = BLUE1;
 			Materials.waterMaterial.opacityTexture = waterTexture;
 			Materials.waterMaterial.bumpTexture =  waterTexture;
-			waterTexture.speed  = new BABYLON.Vector2(0, 0.5);
+			waterTexture.speed  = new BABYLON.Vector2(0, 0.8);
 			waterTexture.fireColors = [
 				BLUE2,
 				BLUE3,
@@ -54,7 +55,7 @@ define(["lib/Deferred_", "Base64", "Textures"], function(Deferred, Base64, Textu
 				BLUE4
 			];
 			Materials.fireMaterial = new BABYLON.StandardMaterial("fire", scene);
-			Materials.waterMaterial.diffuseTexture = fireTexture;
+			Materials.fireMaterial.diffuseTexture = fireTexture;
 			Materials.fireMaterial.opacityTexture = fireTexture;
 			callback();
 		});

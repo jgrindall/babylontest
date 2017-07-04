@@ -152,13 +152,13 @@ define(["GeomUtils"], function(GeomUtils){
 		var i = pos[0], j = pos[1], i0, j0, i1, j1;
 		var TOP_LEFT = {"x":0, "z":window.SIZE_I * window.SIZE};
 		if(strategy === "north-south"){
-			while(grid[i][j].val === 0){
+			while(grid[i][j].type === "empty"){
 				i--;
 			}
 			i++;
 			i0 = i;
 			i = pos[0];
-			while(grid[i][j].val === 0){
+			while(grid[i][j].type === "empty"){
 				i++;
 			}
 			i--;
@@ -170,13 +170,13 @@ define(["GeomUtils"], function(GeomUtils){
 			};
 		}
 		else if(strategy === "west-east"){
-			while(grid[i][j].val === 0){
+			while(grid[i][j].type === "empty"){
 				j--;
 			}
 			j++;
 			j0 = j;
 			j = pos[1];
-			while(grid[i][j].val === 0){
+			while(grid[i][j].type === "empty"){
 				j++;
 			}
 			j--;
@@ -187,10 +187,10 @@ define(["GeomUtils"], function(GeomUtils){
 				"xmax":j1 * SIZE + SIZE/2
 			};
 		}
-		else if(strategy === "hunt"){
-			return GridUtils.getAStarPath(pos, grid, playerPos);
-			console.log(strategy, pos, grid);
-		}
+	};
+	
+	GridUtils.getAStarPath = function(pos, grid, playerPos){
+		return new PF.AStarFinder().findPath(pos.x, pos.z, playerPos.x, playerPos.z, grid.clone());
 	};
 
 	GridUtils.map = function(a, f){

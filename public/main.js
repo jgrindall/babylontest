@@ -29,11 +29,11 @@ require(["MeshUtils", "GridUtils", "MeshCache", "SceneBuilder", "GreedyMeshAlgo"
 
 		"use strict";
 
-		var grid, pfGrid, empty, scene, cameraId, playerId, gamePad, manager, canvas, baddieIds = [], canHit, processors = [];
+		var grid, solid, empty, scene, cameraId, playerId, gamePad, manager, canvas, baddieIds = [], canHit, processors = [];
 
 		window._DATA = DATA;
 		
-		var NUM_BADDIES = 2;
+		var NUM_BADDIES = 1;
 
 		canvas = document.querySelector("#renderCanvas");
 
@@ -98,11 +98,11 @@ require(["MeshUtils", "GridUtils", "MeshCache", "SceneBuilder", "GreedyMeshAlgo"
 				manager.getComponentDataForEntity('MeshComponent', id).mesh = SceneBuilder.addBaddie(pos, scene);
 				v = manager.getComponentDataForEntity('BaddieStrategyComponent', id);
 				var ns = Math.random();
-				if(ns < 0.33){
+				if(ns < -0.33){
 					v.vel = {'x':0, 'z':1};
 					v.strategy = "north-south";
 				}
-				else if(ns < 0.67){
+				else if(ns < -0.67){
 					v.vel = {'x':1, 'z':0};
 					v.strategy = "west-east";
 				}
@@ -119,6 +119,7 @@ require(["MeshUtils", "GridUtils", "MeshCache", "SceneBuilder", "GreedyMeshAlgo"
 			//scene.debugLayer.show();
 			setupManager();
 			makeCamera();
+			solid = GridUtils.getSolid(grid);
 			empty = _.shuffle(GridUtils.getMatchingLocations(grid, function(obj){
 				return obj.type === "empty";
 			}));
@@ -129,13 +130,13 @@ require(["MeshUtils", "GridUtils", "MeshCache", "SceneBuilder", "GreedyMeshAlgo"
 			SceneBuilder.addSky(scene);
 			addControls();
 			addBaddies();
-			var octahedron = BABYLON.MeshBuilder.CreatePolyhedron("oct", {type: 1, size: 1}, scene);
-			octahedron.position = new BABYLON.Vector3(30, 7, 30);
+			//var octahedron = BABYLON.MeshBuilder.CreatePolyhedron("oct", {type: 1, size: 1}, scene);
+			//octahedron.position = new BABYLON.Vector3(30, 7, 30);
 			processors.push(new PlayerMovementProcessor(manager, engine, playerId));
 			processors.push(new CameraMatchPlayerProcessor(manager, engine, playerId, cameraId));
 			processors.push(new BaddieMovementProcessor(manager, baddieIds));
 			processors.push(new BaddieCollisionProcessor(manager, playerId, baddieIds));
-			processors.push(new UpdateHuntProcessor(manager, baddieIds, playerId, pfGrid));
+			processors.push(new UpdateHuntProcessor(manager, baddieIds, playerId, solid));
 			manager.addProcessor(processors[0]);
 			manager.addProcessor(processors[1]);
 			manager.addProcessor(processors[2]);

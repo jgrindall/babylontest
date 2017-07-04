@@ -1,20 +1,15 @@
-define([], function(){
+define(["GridUtils"], function(GridUtils){
 	"use strict";
 	
 	var FREQUENCY = 500; // do not execute every tick
 	
-	var _toGrid = function(pos){
-		return {
-			x:Math.floor(pos.x / SIZE),
-			z:Math.floor(pos.z / SIZE)
-		};
-	};
-	
-	var UpdateHuntProcessor = function(manager, baddieIds, playerId, pfGrid){
+	var UpdateHuntProcessor = function(manager, baddieIds, playerId, solid){
 		this.num = 0;
+		this.baddieIds = baddieIds;
 		this.manager = manager;
 		this.playerId = playerId;
-		this.pfGrid = pfGrid;
+		console.log("solid", solid);
+		this.pfGrid = new PF.Grid(solid);
 		this.init();
 	};
 
@@ -26,12 +21,14 @@ define([], function(){
 		console.log("update hunt");
 		var manager = this.manager, pfGrid = this.pfGrid;
 		var position = manager.getComponentDataForEntity('MeshComponent', this.playerId).mesh.position;
-		var playerPos = _toGrid(position);
+		var playerPos = GridUtils.babylonToIJ(position);
 		_.each(this.baddieIds, function(id){
-			var sComp = manager.getComponentDataForEntity('BaddieStrategyComponent', id);
+			var sComp, mesh, baddiePos;
+			sComp = manager.getComponentDataForEntity('BaddieStrategyComponent', id);
 			if(sComp.strategy === "hunt"){
-				var mesh = manager.getComponentDataForEntity('MeshComponent', id).mesh;
-				var baddiePos = _toGrid(mesh.position);
+				mesh = manager.getComponentDataForEntity('MeshComponent', id).mesh;
+				baddiePos = GridUtils.babylonToIJ(mesh.position);
+				console.log("set path!");
 				sComp.path = GridUtils.getAStarPath(baddiePos, pfGrid, playerPos);
 			}
 		});

@@ -128,10 +128,11 @@ define(["GridUtils", "MeshCache", "GreedyMeshAlgo", "Materials"],
 	SceneBuilder.addBoxes = function(quads){
 		var y = SIZE/2, boxes = [], TOP_LEFT = {"x":0, "z":SIZE_I * SIZE};
 		_.each(quads, function(quad){
-			var size = (quad[2] >= quad[3]) ? [quad[2], quad[3]] : [quad[3], quad[2]];
-			var box = MeshCache.getBoxFromCache(size);
-			var x = TOP_LEFT.x + (quad[1] + quad[2]/2)*SIZE;
-			var z = TOP_LEFT.z - (quad[0] + quad[3]/2)*SIZE;
+			var size, box, x, z;
+			size = (quad[2] >= quad[3]) ? [quad[2], quad[3]] : [quad[3], quad[2]];
+			box = MeshCache.getBoxFromCache(size);
+			x = TOP_LEFT.x + (quad[1] + quad[2]/2)*SIZE;
+			z = TOP_LEFT.z - (quad[0] + quad[3]/2)*SIZE;
 			if(quad[2] < quad[3]){
 				box.rotation = new BABYLON.Vector3(0, Math.PI/2, 0);
 			}
@@ -173,6 +174,7 @@ define(["GridUtils", "MeshCache", "GreedyMeshAlgo", "Materials"],
 	};
 
 	SceneBuilder.addFromData = function(scene, grid){
+		// add walls, water, fire
 		var greedy, solid, water, greedyWater, fire, greedyFire;
 		solid = GridUtils.getSolid(grid);
 		greedy = GreedyMeshAlgo.get(solid);
@@ -253,11 +255,21 @@ define(["GridUtils", "MeshCache", "GreedyMeshAlgo", "Materials"],
 	};
 
 	SceneBuilder.addGround = function(scene){
+		var img = new Image();
 		var ground = BABYLON.Mesh.CreatePlane("ground", SIZE_MAX*SIZE, scene);
 		ground.material = new BABYLON.StandardMaterial("groundMat", scene);
-		ground.material.diffuseTexture = new BABYLON.Texture("assets/groundMat.jpg", scene);
 		ground.position = new BABYLON.Vector3(SIZE_MAX*SIZE/2, 0, SIZE_MAX*SIZE/2);
 		ground.rotation = new BABYLON.Vector3(Math.PI/2, 0, 0);
+		img.onload = function(){
+			var c = document.createElement("canvas");
+			c.width = img.width;
+			c.height = img.height;
+			c.getContext("2d").drawImage(img, 0, 0);
+			// also draw a blue rect for the water
+			var base64 = c.toDataURL();
+			ground.material.diffuseTexture = new BABYLON.Texture("data:b642", scene, false, false, BABYLON.Texture.BILINEAR_SAMPLINGMODE, null, null, base64, true);
+		};
+		img.src = "assets/groundMat.jpg";
 	};
 
 	return SceneBuilder;

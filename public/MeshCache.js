@@ -11,32 +11,32 @@ define(["MeshUtils", "Materials"], function(MeshUtils, Materials){
 		cache = {};
 		cacheI = 0;
 	};
+	
+	MeshCache.cache = function(scene, mesh, key, options){
+		mesh.setEnabled(false);
+		cache[key] = mesh;
+		scene.meshes.pop(); // remove it from the display list
+	};
 
 	MeshCache.addBoxToCache = function(scene, size, SIZE){
-		var key, box;
-		key = "box" + "_" + size[0] + "_" + size[1];
+		var key = "box" + "_" + size[0] + "_" + size[1], box;
 		if(!cache[key]){
 			box = BABYLON.MeshBuilder.CreateBox(key, {height: SIZE, width:SIZE*size[0], depth:SIZE*size[1]}, scene);
 			box.convertToUnIndexedMesh();
-			box.setEnabled(false);
-			cache[key] = box;
-			scene.meshes.pop();
+			MeshCache.cache(scene, box, key);
 		}
 	};
 
 	MeshCache.addPlanesToCache = function(scene, lengths, material){
 		_.each(lengths, function(len){
 			var key = "plane_" + material + "_" + len, plane;
-			console.log(key);
 			if(!cache[key]){
 				plane = BABYLON.MeshBuilder.CreatePlane(key, {height: SIZE, width:SIZE*len}, scene);
-				cache[key] = plane;
 				plane.convertToUnIndexedMesh();
 				plane.material = Materials.base64Material;
 				var h = 1/Materials.NUM_MATS;
 				MeshUtils.setUVOffsetAndScale(plane, 0, (Materials.NUM_MATS - material)*h, len, h);
-				plane.setEnabled(false);
-				scene.meshes.pop();
+				MeshCache.cache(scene, plane, key);
 			}
 		});
 	};
@@ -117,6 +117,7 @@ define(["MeshUtils", "Materials"], function(MeshUtils, Materials){
 		console.log("add water to cache", key);
 		if(!cache[key]){
 			plane = BABYLON.MeshBuilder.CreatePlane(key, {height: SIZE*size[0], width:SIZE*size[1]}, scene);
+			plane.rotate(new BABYLON.Vector3(1, 0, 0), Math.PI / 2, BABYLON.Space.Local);
 			cache[key] = plane;
 			plane.material = Materials.waterMaterial;
 			scene.meshes.pop();
@@ -130,7 +131,6 @@ define(["MeshUtils", "Materials"], function(MeshUtils, Materials){
 		if(cached){
 			cacheI++;
 			plane = cached.createInstance("index: " + cacheI);
-	 		plane.material = cached.material;
 			return plane;
 		}
 		else{
@@ -144,6 +144,7 @@ define(["MeshUtils", "Materials"], function(MeshUtils, Materials){
 		console.log("add fire to cache", key);
 		if(!cache[key]){
 			plane = BABYLON.MeshBuilder.CreatePlane(key, {height: SIZE*size[0], width:SIZE*size[1]}, scene);
+			plane.rotate(new BABYLON.Vector3(1, 0, 0), Math.PI / 2, BABYLON.Space.Local);
 			cache[key] = plane;
 			plane.material = Materials.fireMaterial;
 			scene.meshes.pop();
@@ -157,7 +158,6 @@ define(["MeshUtils", "Materials"], function(MeshUtils, Materials){
 		if(cached){
 			cacheI++;
 			plane = cached.createInstance("index: " + cacheI);
-	 		plane.material = cached.material;
 			return plane;
 		}
 		else{
