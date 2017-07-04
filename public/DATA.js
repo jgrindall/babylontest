@@ -8,7 +8,7 @@ define([], function(){
 				d[i][j] = {
 					"type":"wall",
 					"data":{
-						"texture":1
+						"texture": Math.random() < 0.5 ? 1 : 2
 					}
 				};
 			}
@@ -50,22 +50,14 @@ define([], function(){
 
 		}
 	};
-	
-	/*
 
-	d[2][3] = {
-		"type":"water",
-		"data":{
-
-		}
-	};
 
 	d[6][6] = {
 		"type":"fire",
 		"data":{
 
 		}
-	};*/
+	};
 
 	return d;
 

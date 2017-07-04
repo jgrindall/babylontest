@@ -1,6 +1,6 @@
 
-window.SIZE_I = 6;
-window.SIZE_J = 6;
+window.SIZE_I = 16;
+window.SIZE_J = 16;
 window.SIZE = 10;
 window.SIZE_MAX = Math.max(SIZE_I, SIZE_J);
 
@@ -29,7 +29,7 @@ require(["MeshUtils", "GridUtils", "MeshCache", "SceneBuilder", "GreedyMeshAlgo"
 
 		"use strict";
 
-		var grid, pfGrid, empty, scene, cameraId, playerId, gamePad, manager, canvas, baddieIds = [], boxes, canHit, processors = [];
+		var grid, pfGrid, empty, scene, cameraId, playerId, gamePad, manager, canvas, baddieIds = [], canHit, processors = [];
 
 		window._DATA = DATA;
 
@@ -51,16 +51,8 @@ require(["MeshUtils", "GridUtils", "MeshCache", "SceneBuilder", "GreedyMeshAlgo"
 			comp.camera = SceneBuilder.makeCamera(scene);
 		};
 
-		var makeGrid = function(){
-			grid = window._DATA;
-			console.log("GRID", grid);
-			empty = _.shuffle(GridUtils.getMatchingLocations(grid, function(obj){
-				return obj.type === "empty";
-			}));
-		};
-
 		var build = function(){
-			boxes = SceneBuilder.addFromData(scene, grid);
+			SceneBuilder.addFromData(scene, grid);
 		};
 
 		var addPlayer = function(){
@@ -85,7 +77,7 @@ require(["MeshUtils", "GridUtils", "MeshCache", "SceneBuilder", "GreedyMeshAlgo"
 		};
 
 		var addWater = function(){
-			SceneBuilder.addWater(scene, [5, 5]);
+			SceneBuilder.addWater(scene, );
 			//SceneBuilder.addFire(scene, [5, 5]);
 		};
 
@@ -132,13 +124,15 @@ require(["MeshUtils", "GridUtils", "MeshCache", "SceneBuilder", "GreedyMeshAlgo"
 		};
 
 		var init = function(){
-			scene.debugLayer.show();
+			grid = window._DATA;
+			//scene.debugLayer.show();
 			setupManager();
 			makeCamera();
-			makeGrid();
+			empty = _.shuffle(GridUtils.getMatchingLocations(grid, function(obj){
+				return obj.type === "empty";
+			}));
 			build();
 			addPlayer();
-			addWater();
 			addParticles();
 			addEnvironment();
 			addControls();
@@ -147,7 +141,7 @@ require(["MeshUtils", "GridUtils", "MeshCache", "SceneBuilder", "GreedyMeshAlgo"
 			octahedron.position = new BABYLON.Vector3(30, 7, 30);
 			processors.push(new PlayerMovementProcessor(manager, engine, playerId));
 			processors.push(new CameraMatchPlayerProcessor(manager, engine, playerId, cameraId));
-			processors.push(new BaddieMovementProcessor(manager, baddieIds, boxes));
+			processors.push(new BaddieMovementProcessor(manager, baddieIds));
 			processors.push(new BaddieCollisionProcessor(manager, playerId, baddieIds));
 			processors.push(new UpdateHuntProcessor(manager, baddieIds, playerId, pfGrid));
 			manager.addProcessor(processors[0]);

@@ -13,10 +13,9 @@ define(["GeomUtils"], function(GeomUtils){
 		}
 	};
 
-	var BaddieMovementProcessor = function(manager, baddieIds, boxes){
+	var BaddieMovementProcessor = function(manager, baddieIds){
 		this.manager = manager;
 		this.baddieIds = baddieIds;
-		this.boxes = boxes;
 		this.init();
 	};
 

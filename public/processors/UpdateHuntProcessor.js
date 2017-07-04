@@ -1,7 +1,7 @@
 define([], function(){
 	"use strict";
 	
-	var FREQUENCY = 50; // do not execute every tick
+	var FREQUENCY = 500; // do not execute every tick
 	
 	var _toGrid = function(pos){
 		return {

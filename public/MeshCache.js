@@ -49,8 +49,6 @@ define(["MeshUtils", "Materials"], function(MeshUtils, Materials){
 			box.convertToUnIndexedMesh();
 			box.checkCollisions = true;
 			box.material = Materials.redMaterial;
-			//box.isVisible = false;
-			//box.setEnabled(false);
 			cache[key] = box;
 			scene.meshes.pop();
 		}
@@ -78,7 +76,6 @@ define(["MeshUtils", "Materials"], function(MeshUtils, Materials){
 			box = cached.createInstance("box index: " + cacheI);
 			cacheI++;
 			box.checkCollisions = true;
-			//box.isVisible = false;
 			return box;
 		}
 		else{
@@ -107,16 +104,74 @@ define(["MeshUtils", "Materials"], function(MeshUtils, Materials){
 			box = cached.createInstance("box index: " + cacheI);
 			cacheI++;
 			box.checkCollisions = true;
-			//box.isVisible = false;
-			//box.setEnabled(false);
 			return box;
 		}
 		else{
 			throw new Error("not found " + key);
 		}
 	};
+	
+	MeshCache.addWaterToCache = function(scene, size){
+		var key, plane;
+		key = "water" + "_" + size[0] + "_" + size[1];
+		console.log("add water to cache", key);
+		if(!cache[key]){
+			plane = BABYLON.MeshBuilder.CreatePlane(key, {height: SIZE*size[0], width:SIZE*size[1]}, scene);
+			plane.rotation = new BABYLON.Vector3(Math.PI/2, 0, 0);
+			cache[key] = plane;
+			plane.convertToUnIndexedMesh();
+			plane.material = Materials.waterMaterial;
+			//plane.setEnabled(false);
+			scene.meshes.pop();
+		}
+	};
+	
+	MeshCache.getFireFromCache = function(size){
+		var cached, plane, key = "fire" + "_" + size[0] + "_" + size[1];
+		console.log("get fire from cache", key);
+		cached = cache[key];
+		if(cached){
+			cacheI++;
+			plane = cached.createInstance("index: " + cacheI);
+	 		plane.material = cached.material;
+			return plane;
+		}
+		else{
+			throw new Error("not found " + key);
+		}
+	};
+	
+	MeshCache.addFireToCache = function(scene, size){
+		var key, plane;
+		key = "fire" + "_" + size[0] + "_" + size[1];
+		console.log("add fire to cache", key);
+		if(!cache[key]){
+			plane = BABYLON.MeshBuilder.CreatePlane(key, {height: SIZE*size[0], width:SIZE*size[1]}, scene);
+			plane.rotation = new BABYLON.Vector3(Math.PI/2, 0, 0);
+			cache[key] = plane;
+			plane.convertToUnIndexedMesh();
+			plane.material = Materials.fireMaterial;
+			//plane.setEnabled(false);
+			scene.meshes.pop();
+		}
+	};
+	
+	MeshCache.getWaterFromCache = function(size){
+		var cached, plane, key = "water" + "_" + size[0] + "_" + size[1];
+		console.log("get water from cache", key);
+		cached = cache[key];
+		if(cached){
+			cacheI++;
+			plane = cached.createInstance("index: " + cacheI);
+	 		plane.material = cached.material;
+			return plane;
+		}
+		else{
+			throw new Error("not found " + key);
+		}
+	};
 
-	MeshCache.getBillboardPlaneFromCache = function(key){
+	MeshCache.getBaddieFromCache = function(key){
 		var cached, plane, key = "billboardplane_" + key;
 		cached = cache[key];
 		if(cached){

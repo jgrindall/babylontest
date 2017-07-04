@@ -8,6 +8,9 @@ define(["GeomUtils"], function(GeomUtils){
 
 	GridUtils.makeEmpty = function(SIZE_I, SIZE_J, entry){
 		var a = [], _i, _j;
+		if(typeof entry === "undefined"){
+			entry = 0;
+		}
 		for(_i = 0; _i < SIZE_I; _i++){
 			a[_i] = [];
 			for(_j = 0; _j < SIZE_J; _j++){
@@ -36,10 +39,7 @@ define(["GeomUtils"], function(GeomUtils){
 	GridUtils.addDirectionsOfWalls = function(a){
 		var _i, _j, SIZE_I = a.length, SIZE_J = a[0].length, EMPTY, isWall, getWallsAt, fillWithDir, isInside;
 		EMPTY = {"n":0, "s":0, "w":0, "e":0};
-		//console.log("add dirs", a);
 		isWall = function(i, j){
-			//console.log("isWall", i, j);
-			//console.log("isWall", a[i][j]);
 			return (a[i][j].type === "wall");
 		};
 		isInside = function(i, j){
@@ -47,23 +47,18 @@ define(["GeomUtils"], function(GeomUtils){
 		};
 		fillWithDir = function(walls, _i, _j, dir, di, dj){
 			var checkI = _i + di, checkJ = _j + dj;
-			//console.log("look at ", _i, _j, dir, di, dj);
-			//console.log(isWall(_i, _j), isInside(checkI, checkJ), isWall(checkI, checkJ));
 			if(isInside(_i, _j) && isWall(_i, _j) && isInside(checkI, checkJ) && !isWall(checkI, checkJ)){
-				//console.log("yes!");
 				walls[dir] = 1;
 			}
 		};
 		getWallsAt = function(_i, _j){
 			// fill the array with n,s,w,e if there is a wall in that direction of the cell
 			// eg. n:1 if there is a wall on my north side
-			//console.log("get walls", _i, _j, a);
 			var walls = _.extend({}, EMPTY);
 			fillWithDir(walls, _i, _j, "n", -1, 0);
 			fillWithDir(walls, _i, _j, "s", +1, 0);
 			fillWithDir(walls, _i, _j, "w", 0, -1);
 			fillWithDir(walls, _i, _j, "e", 0, +1);
-			//console.log("walls", walls);
 			return walls;
 		};
 		for(_i = 0; _i < SIZE_I; _i++){
@@ -135,10 +130,18 @@ define(["GeomUtils"], function(GeomUtils){
 		return lengthsNeeded;
 	};
 	
-	GridUtils.getSolid = function(a){
+	GridUtils.getByType = function(a, typeArr){
+		console.log("get type", typeArr, a);
+		if(!_.isArray(typeArr)){
+			typeArr = [typeArr];
+		}
 		return GridUtils.map(a, function(obj){
-			return (obj.type === "wall" || obj.type === "water") ? 1 : 0;
+			return (typeArr.indexOf(obj.type) >= 0) ? 1 : 0;
 		});
+	};
+	
+	GridUtils.getSolid = function(a){
+		return GridUtils.getByType(a, ["water", "wall"]);
 	};
 
 	GridUtils.addFacesInfoToGrid = function(a){
