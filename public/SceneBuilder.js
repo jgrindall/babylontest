@@ -225,6 +225,7 @@ define(["GridUtils", "MeshCache", "GreedyMeshAlgo", "Materials"],
 	SceneBuilder.addBaddie = function(pos, i, scene){
 		var y = SIZE/2, container, billboard, babylonPos, mat;
 		babylonPos = GridUtils.ijToBabylon(pos[0], pos[1]);
+		console.log("baddie babylon pos", babylonPos);
 		mat = Math.random() < 0.5 ? 4 : 5;
 		billboard = MeshCache.getBaddieFromCache(mat);
 		billboard.position = new BABYLON.Vector3(babylonPos.x + SIZE/2, y, babylonPos.z - SIZE/2);
@@ -236,6 +237,7 @@ define(["GridUtils", "MeshCache", "GreedyMeshAlgo", "Materials"],
 		var mat = new BABYLON.StandardMaterial("Mat", scene);
 		mat.diffuseColor = new BABYLON.Color3(0.7, 0, 0.7); // purple
 		var babylonPos = GridUtils.ijToBabylon(pos[0], pos[1]);
+		console.log("player babylon pos", babylonPos);
 		var player = BABYLON.MeshBuilder.CreateBox("player", {height: SIZE*0.75, width:SIZE*0.75, depth:SIZE*0.75}, scene);
 		player.material = mat;
 		player.checkCollisions = true;

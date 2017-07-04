@@ -30,6 +30,7 @@ define(["GridUtils"], function(GridUtils){
 				baddiePos = GridUtils.babylonToIJ(mesh.position);
 				console.log("set path!");
 				sComp.path = GridUtils.getAStarPath(baddiePos, pfGrid, playerPos);
+				console.log("sComp.path", sComp.path);
 			}
 		});
 	};

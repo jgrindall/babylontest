@@ -1,4 +1,4 @@
-define(["GeomUtils"], function(GeomUtils){
+define(["GeomUtils", "GridUtils"], function(GeomUtils, GridUtils){
 
 	"use strict";
 
@@ -50,7 +50,56 @@ define(["GeomUtils"], function(GeomUtils){
 	BaddieMovementProcessor.prototype.moveHunt = function(id, sComp){
 		var meshComp = this.manager.getComponentDataForEntity('MeshComponent', id);
 		var position = meshComp.mesh.position;
-		console.log(position, sComp.path);
+		console.log("pos", position);
+		var section = sComp.path.sections[sComp.path.currentNum];
+		console.log("section", section);
+		sComp.vel.x = 0;
+		sComp.vel.z = 0;
+		var _nextSection = function(){
+			console.log("next section");
+			position.x = section.end.x;
+			position.z = section.end.y;
+			sComp.path.currentNum++;
+		};
+		if(section.dir === "n"){
+			if(position.z < section.end.z){
+				sComp.vel.x = 0;
+				sComp.vel.z = 1;
+			}
+			else{
+				_nextSection();
+			}
+		}
+		else if(section.dir === "s"){
+			if(position.z > section.end.z){
+				sComp.vel.x = 0;
+				sComp.vel.z = -1;
+			}
+			else{
+				_nextSection();
+			}
+		}
+		else if(section.dir === "w"){
+			if(position.x > section.end.x){
+				sComp.vel.x = -1;
+				sComp.vel.z = 0;
+			}
+			else{
+				_nextSection();
+			}
+		}
+		else if(section.dir === "e"){
+			if(position.x < section.end.x){
+				sComp.vel.x = -1;
+				sComp.vel.z = 0;
+			}
+			else{
+				_nextSection();
+			}
+		}
+		console.log("move", sComp.vel);
+		position.x += sComp.vel.x*SF;
+		position.z += sComp.vel.z*SF;
 	};
 
 	BaddieMovementProcessor.prototype.updateBaddie = function (id) {
@@ -63,7 +112,7 @@ define(["GeomUtils"], function(GeomUtils){
 		else if(strategy === "west-east" && !_pathIsUnit(strategy, sComp.path)){
 			this.moveWestEast(id, sComp);
 		}
-		else if(strategy === "hunt"){
+		else if(strategy === "hunt" && sComp.path && sComp.path.sections){
 			this.moveHunt(id, sComp);
 		}
 	};

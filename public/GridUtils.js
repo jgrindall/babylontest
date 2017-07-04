@@ -129,7 +129,6 @@ define(["GeomUtils"], function(GeomUtils){
 	};
 	
 	GridUtils.getByType = function(a, typeArr){
-		console.log("get type", typeArr, a);
 		if(!_.isArray(typeArr)){
 			typeArr = [typeArr];
 		}
@@ -190,7 +189,38 @@ define(["GeomUtils"], function(GeomUtils){
 	};
 	
 	GridUtils.getAStarPath = function(pos, grid, playerPos){
-		return new PF.AStarFinder().findPath(pos.x, pos.z, playerPos.x, playerPos.z, grid.clone());
+		// TODO - cache new PF.AStarFinder()??
+		// TODO - web worker?
+		var i, points, numPoints, sections = [], _addDir;
+		points = new PF.AStarFinder().findPath(pos.x, pos.z, playerPos.x, playerPos.z, grid.clone());
+		if(!points || points.length <= 1){
+			return null; // no path
+		}
+		numPoints = points.length;
+		points = _.map(points, function(p){
+			return GridUtils.ijToBabylon(p[0], p[1]);
+		});
+		for(i = 0; i <= numPoints - 2; i++){
+			sections.push({
+				"start":points[i],
+				"end":points[i + 1]
+			});
+		}
+		_addDir = function(obj){
+			//TODO - these are integers in the original points array
+			if(Math.abs(obj.start.x - obj.end.x) < 0.1){
+				obj.dir = (obj.start.z < obj.end.z ? "n" : "s");
+			}
+			else{
+				obj.dir = (obj.start.x < obj.end.x ? "e" : "w");
+			}
+		};
+		_.each(sections, _addDir);
+		console.log("SECTIONS", sections);
+		return {
+			"sections":sections,
+			"currentNum":0
+		};
 	};
 
 	GridUtils.map = function(a, f){

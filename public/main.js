@@ -62,6 +62,7 @@ require(["MeshUtils", "GridUtils", "MeshCache", "SceneBuilder", "GreedyMeshAlgo"
 			playerId = manager.createEntity(['MessageComponent', 'PossessionsComponent', 'SpeedComponent', 'MeshComponent']);
 			comp = manager.getComponentDataForEntity('MeshComponent', playerId);
 			comp.mesh = SceneBuilder.addPlayer(empty[0], scene);
+			console.log("add player", empty[0]);
 		};
 
 		var __render = function(){
@@ -96,6 +97,7 @@ require(["MeshUtils", "GridUtils", "MeshCache", "SceneBuilder", "GreedyMeshAlgo"
 				id = manager.createEntity(['MessageComponent', 'PossessionsComponent', 'MeshComponent', 'BaddieStrategyComponent']);
 				var pos = empty[i + 1]
 				manager.getComponentDataForEntity('MeshComponent', id).mesh = SceneBuilder.addBaddie(pos, scene);
+				console.log("add baddie", pos);
 				v = manager.getComponentDataForEntity('BaddieStrategyComponent', id);
 				var ns = Math.random();
 				if(ns < -0.33){
