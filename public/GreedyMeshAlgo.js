@@ -16,18 +16,18 @@ define(["GridUtils"], function(GridUtils){
 
 	var greedyMesh = function(a, options){
 		var i = 0, j = -1; // start just off the grid because we will make one step in to point 0,0.
-		var shouldVisitCell, quads = [], SIZE_I, SIZE_J, visited = [], markVisited, buildHoriz, buildVertic, isInside, moveToNext, rectIsFullAndNotVisited, mark, buildQuad;
+		var shouldVisitCell, quads = [], SIZE_I, SIZE_J, visited, markVisited, buildHoriz, buildVertic, isInside, moveToNext, rectIsFullAndNotVisited, mark, buildQuad;
 		options = _.defaults(options || {}, {
 			"dir":"horiz"
 		});
 		SIZE_I = a.length;
 		SIZE_J = a[0].length;
-		visited = GridUtils.makeEmpty(SIZE_I, SIZE_J, {"visited":false});
+		visited = GridUtils.makeEmpty(SIZE_I, SIZE_J, 0);
 		isInside = function(){
 			return (i < SIZE_I && j < SIZE_J && i >= 0 && j >= 0);
 		};
 		shouldVisitCell = function(){
-			return (isInside() && a[i][j] && a[i][j].type === "wall" && !visited[i][j].visited);
+			return (isInside() && a[i][j] && !visited[i][j]);
 		};
 		moveToNext = function(){
 			var step = function(){
@@ -55,14 +55,14 @@ define(["GridUtils"], function(GridUtils){
 		};
 		rectIsFullAndNotVisited = function(i, j, w, h){
 			return rectPassesTest(i, j, w, h, function(_i, _j){
-				return (a[_i][_j] && a[_i][_j].type === "wall" && !visited[_i][_j].visited);
+				return (a[_i][_j] && !visited[_i][_j]);
 			});
 		};
 		markVisited = function(i, j, w, h){
 			var _i, _j;
 			for(_i = i; _i < i + h; _i++){
 				for(_j = j; _j < j + w; _j++){
-					visited[_i][_j].visited = true;
+					visited[_i][_j] = 1;
 				}
 			}
 		};

@@ -11,7 +11,12 @@ define(["GeomUtils"], function(GeomUtils){
 		for(_i = 0; _i < SIZE_I; _i++){
 			a[_i] = [];
 			for(_j = 0; _j < SIZE_J; _j++){
-				a[_i][_j] = _.extend({}, entry);
+				if(typeof entry === "object"){
+					a[_i][_j] = _.extend({}, entry);
+				}
+				else if(typeof entry === "number"){
+					a[_i][_j] = entry;
+				}
 			}
 		}
 		return a;
@@ -114,20 +119,26 @@ define(["GeomUtils"], function(GeomUtils){
 	};
 
 	GridUtils.getLengthsNeeded = function(a){
-		var _i, _j, SIZE_I = a.length, SIZE_J = a[0].length, val, wallData, lengthsNeeded = {};
+		var _i, _j, SIZE_I = a.length, SIZE_J = a[0].length, texture, wallData, lengthsNeeded = {};
 		for(_i = 0; _i < SIZE_I; _i++){
 			for(_j = 0; _j < SIZE_J; _j++){
-				val = a[_i][_j].val;
-				if(val >= 1){
-					wallData = a[_i][_j].walls;
-					lengthsNeeded[val] = lengthsNeeded[val] || [];
-					lengthsNeeded[val] = lengthsNeeded[val].concat([wallData["n"], wallData["s"], wallData["w"], wallData["e"]]);
-					lengthsNeeded[val] = _.without(lengthsNeeded[val], 0);
-				 	lengthsNeeded[val] = _.uniq(lengthsNeeded[val]);
+				if(a[_i][_j].type === "wall"){
+					texture = a[_i][_j].data.texture;
+					wallData = a[_i][_j].data.walls;
+					lengthsNeeded[texture] = lengthsNeeded[texture] || [];
+					lengthsNeeded[texture] = lengthsNeeded[texture].concat([wallData["n"], wallData["s"], wallData["w"], wallData["e"]]);
+					lengthsNeeded[texture] = _.without(lengthsNeeded[texture], 0);
+				 	lengthsNeeded[texture] = _.uniq(lengthsNeeded[texture]);
 				}
 			}
 		}
 		return lengthsNeeded;
+	};
+	
+	GridUtils.getSolid = function(a){
+		return GridUtils.map(a, function(obj){
+			return (obj.type === "wall" || obj.type === "water") ? 1 : 0;
+		});
 	};
 
 	GridUtils.addFacesInfoToGrid = function(a){
@@ -179,20 +190,6 @@ define(["GeomUtils"], function(GeomUtils){
 			return GridUtils.getAStarPath(pos, grid, playerPos);
 			console.log(strategy, pos, grid);
 		}
-	};
-
-	GridUtils.getSolid = function(grid){
-		var _isSolid = function(val){
-			if(val && (val.type === "wall" || val.type === "water")){
-				return {
-					"val":1
-				}
-			}
-			return {
-				"val":0
-			}
-		};
-		return GridUtils.map(grid, _isSolid);
 	};
 
 	GridUtils.map = function(a, f){

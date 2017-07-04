@@ -12,7 +12,7 @@ define(["GridUtils", "MeshCache", "GreedyMeshAlgo", "Materials"],
 	SceneBuilder.makeScene = function(engine){
 		var scene = new BABYLON.Scene(engine);
 		scene.ambientColor = new BABYLON.Color3(0.8, 0.8, 0.2);
-		scene.fogMode = BABYLON.Scene.FOGMODE_EXP;
+		//scene.fogMode = BABYLON.Scene.FOGMODE_EXP;
 		scene.fogDensity = 0.02;
 		scene.fogStart = 10.0;
 		scene.fogEnd = 40.0;
@@ -146,9 +146,12 @@ define(["GridUtils", "MeshCache", "GreedyMeshAlgo", "Materials"],
 	};
 
 	SceneBuilder.cache = function(scene, data, greedy){
+		console.log("data", JSON.stringify(data, null, 2));
+		console.log("greedy", JSON.stringify(greedy, null, 2));
 		var greedy, lengthsNeeded;
 		MeshCache.clear();
 		lengthsNeeded = GridUtils.getLengthsNeeded(data);
+		console.log("lengthsNeeded", JSON.stringify(lengthsNeeded, null, 2));
 		_.each(greedy.dims, function(size){
 			MeshCache.addBoxToCache(scene, size, SIZE);
 		});
@@ -162,7 +165,8 @@ define(["GridUtils", "MeshCache", "GreedyMeshAlgo", "Materials"],
 
 	SceneBuilder.addFromData = function(scene, grid){
 		var greedy, boxes;
-		greedy = GreedyMeshAlgo.get(grid);
+		var solid = GridUtils.getSolid(grid);
+		greedy = GreedyMeshAlgo.get(solid);
 		GridUtils.addFacesInfoToGrid(grid);
 		SceneBuilder.cache(scene, grid, greedy);
 		boxes = SceneBuilder.addBoxes(greedy.quads);

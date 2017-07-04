@@ -1,3 +1,10 @@
+
+window.SIZE_I = 6;
+window.SIZE_J = 6;
+window.SIZE = 10;
+window.SIZE_MAX = Math.max(SIZE_I, SIZE_J);
+
+
 require(["MeshUtils", "GridUtils", "MeshCache", "SceneBuilder", "GreedyMeshAlgo", "Materials", "GamePad",
 
 "GamePadUtils", "lib/entity-manager",
@@ -21,11 +28,6 @@ require(["MeshUtils", "GridUtils", "MeshCache", "SceneBuilder", "GreedyMeshAlgo"
 	BaddieCollisionProcessor, DATA) {
 
 		"use strict";
-
-		window.SIZE_I = 10;
-		window.SIZE_J = 10;
-		window.SIZE = 10;
-		window.SIZE_MAX = Math.max(SIZE_I, SIZE_J);
 
 		var grid, pfGrid, empty, scene, cameraId, playerId, gamePad, manager, canvas, baddieIds = [], boxes, canHit, processors = [];
 

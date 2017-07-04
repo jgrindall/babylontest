@@ -1,10 +1,5 @@
 define([], function(){
 
-	window.SIZE_I = 10;
-	window.SIZE_J = 10;
-	window.SIZE = 10;
-	window.SIZE_MAX = Math.max(SIZE_I, SIZE_J);
-
 	var i, j, d = [];
 	for(i = 0; i < SIZE_I; i++){
 		d[i] = d[i] || [];
@@ -28,12 +23,35 @@ define([], function(){
 		}
 	}
 
+	d[1][1] = {
+		"type":"water",
+		"data":{
+
+		}
+	};
+	
+	d[1][2] = {
+		"type":"water",
+		"data":{
+
+		}
+	};
+	
+	d[2][1] = {
+		"type":"water",
+		"data":{
+
+		}
+	};
+	
 	d[2][2] = {
 		"type":"water",
 		"data":{
 
 		}
 	};
+	
+	/*
 
 	d[2][3] = {
 		"type":"water",
@@ -47,7 +65,7 @@ define([], function(){
 		"data":{
 
 		}
-	};
+	};*/
 
 	return d;
 
