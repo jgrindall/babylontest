@@ -22,11 +22,32 @@ define([], function(){
 			}
 		}
 	}
+	
+	d[3][8] = {
+		"type":"wall",
+		"data":{
+			"texture": 1 
+		}
+	};
+	
+	d[2][7] = {
+		"type":"wall",
+		"data":{
+			"texture": 1 
+		}
+	};
+	
+	d[4][7] = {
+		"type":"wall",
+		"data":{
+			"texture": 1
+		}
+	};
 
 	d[1][1] = {
 		"type":"water",
 		"data":{
-
+		
 		}
 	};
 	
@@ -53,6 +74,18 @@ define([], function(){
 
 
 	d[6][6] = {
+		"type":"fire",
+		"data":{
+
+		}
+	};
+	d[6][7] = {
+		"type":"fire",
+		"data":{
+
+		}
+	};
+	d[6][8] = {
 		"type":"fire",
 		"data":{
 
