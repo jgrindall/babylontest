@@ -32,6 +32,8 @@ require(["MeshUtils", "GridUtils", "MeshCache", "SceneBuilder", "GreedyMeshAlgo"
 		var grid, pfGrid, empty, scene, cameraId, playerId, gamePad, manager, canvas, baddieIds = [], canHit, processors = [];
 
 		window._DATA = DATA;
+		
+		var NUM_BADDIES = 2;
 
 		canvas = document.querySelector("#renderCanvas");
 
@@ -76,18 +78,8 @@ require(["MeshUtils", "GridUtils", "MeshCache", "SceneBuilder", "GreedyMeshAlgo"
 			window.engine.runRenderLoop(__render);
 		};
 
-		var addWater = function(){
-			SceneBuilder.addWater(scene, );
-			//SceneBuilder.addFire(scene, [5, 5]);
-		};
-
 		var addParticles = function(){
 			//SceneBuilder.addParticles(scene, [5, 5]);
-		};
-
-		var addEnvironment = function(){
-			SceneBuilder.addGround(scene);
-			SceneBuilder.addSky(scene);
 		};
 
 		var setupManager = function(){
@@ -96,7 +88,6 @@ require(["MeshUtils", "GridUtils", "MeshCache", "SceneBuilder", "GreedyMeshAlgo"
 				manager.addComponent(c.name, c);
 			});
 		};
-
 
 		var addBaddies = function(){
 			var _grid = grid;
@@ -134,9 +125,10 @@ require(["MeshUtils", "GridUtils", "MeshCache", "SceneBuilder", "GreedyMeshAlgo"
 			build();
 			addPlayer();
 			addParticles();
-			addEnvironment();
+			SceneBuilder.addGround(scene);
+			SceneBuilder.addSky(scene);
 			addControls();
-			//addBaddies();
+			addBaddies();
 			var octahedron = BABYLON.MeshBuilder.CreatePolyhedron("oct", {type: 1, size: 1}, scene);
 			octahedron.position = new BABYLON.Vector3(30, 7, 30);
 			processors.push(new PlayerMovementProcessor(manager, engine, playerId));

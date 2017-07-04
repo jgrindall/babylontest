@@ -117,11 +117,8 @@ define(["MeshUtils", "Materials"], function(MeshUtils, Materials){
 		console.log("add water to cache", key);
 		if(!cache[key]){
 			plane = BABYLON.MeshBuilder.CreatePlane(key, {height: SIZE*size[0], width:SIZE*size[1]}, scene);
-			plane.rotation = new BABYLON.Vector3(Math.PI/2, 0, 0);
 			cache[key] = plane;
-			plane.convertToUnIndexedMesh();
 			plane.material = Materials.waterMaterial;
-			//plane.setEnabled(false);
 			scene.meshes.pop();
 		}
 	};
@@ -147,11 +144,8 @@ define(["MeshUtils", "Materials"], function(MeshUtils, Materials){
 		console.log("add fire to cache", key);
 		if(!cache[key]){
 			plane = BABYLON.MeshBuilder.CreatePlane(key, {height: SIZE*size[0], width:SIZE*size[1]}, scene);
-			plane.rotation = new BABYLON.Vector3(Math.PI/2, 0, 0);
 			cache[key] = plane;
-			plane.convertToUnIndexedMesh();
 			plane.material = Materials.fireMaterial;
-			//plane.setEnabled(false);
 			scene.meshes.pop();
 		}
 	};

@@ -84,7 +84,6 @@ define(["GeomUtils"], function(GeomUtils){
 	};
 
 	GridUtils.extendWalls = function(a){
-		console.log("extend", a);
 		var _i, _j, SIZE_I = a.length, SIZE_J = a[0].length;
 		var addInDir = function(dir, _i, _j, di, dj){
 			var steps = 1, wallCheck, walls = a[_i][_j].data.walls;
@@ -110,7 +109,6 @@ define(["GeomUtils"], function(GeomUtils){
 				addInDir("e", _i, _j, 1, 0);
 			}
 		}
-		console.log("extended", a);
 	};
 
 	GridUtils.getLengthsNeeded = function(a){
