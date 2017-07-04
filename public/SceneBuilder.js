@@ -31,7 +31,7 @@ define(["GridUtils", "MeshCache", "GreedyMeshAlgo", "Materials"],
 
 	SceneBuilder.addFire = function(){};
 
-	SceneBuilder.addWater2 = function(scene, pos){
+	/*SceneBuilder.addWater2 = function(scene, pos){
 		var y = SIZE/2, container, billboard, babylonPos;
 		babylonPos = GridUtils.ijToBabylon(pos[0], pos[1]);
 		container = MeshCache.getBillboardBoxFromCache();
@@ -75,6 +75,7 @@ define(["GridUtils", "MeshCache", "GreedyMeshAlgo", "Materials"],
 
 		return container;
 	};
+	*/
 
 	SceneBuilder.makeCamera = function(scene){
 		var camera = new BABYLON.FreeCamera("FreeCamera", new BABYLON.Vector3(SIZE_I*SIZE/2, 200, SIZE_J*SIZE/2), scene);
@@ -149,7 +150,6 @@ define(["GridUtils", "MeshCache", "GreedyMeshAlgo", "Materials"],
 		var greedy, lengthsNeeded;
 		MeshCache.clear();
 		lengthsNeeded = GridUtils.getLengthsNeeded(data);
-		console.log("lengthsNeeded", JSON.stringify(lengthsNeeded, null, 2));
 		_.each(greedy.dims, function(size){
 			MeshCache.addBoxToCache(scene, size, SIZE);
 		});
@@ -160,13 +160,13 @@ define(["GridUtils", "MeshCache", "GreedyMeshAlgo", "Materials"],
 		MeshCache.addBillboardPlaneToCache(scene, 4);
 		MeshCache.addBillboardPlaneToCache(scene, 5);
 	};
-	
+
 	SceneBuilder.cacheWater = function(scene, dims){
 		_.each(dims, function(size){
 			MeshCache.addWaterToCache(scene, size);
 		});
 	};
-	
+
 	SceneBuilder.cacheFire = function(scene, dims){
 		_.each(dims, function(size){
 			MeshCache.addFireToCache(scene, size);
@@ -191,11 +191,10 @@ define(["GridUtils", "MeshCache", "GreedyMeshAlgo", "Materials"],
 		SceneBuilder.cacheFire(scene, greedyFire.dims);
 		SceneBuilder.addFire(greedyFire.quads);
 	};
-	
+
 	SceneBuilder.addWater = function(quads){
 		var TOP_LEFT = {"x":0, "z":SIZE_I * SIZE};
 		_.each(quads, function(quad){
-			console.log("add water", quads);
 			var size = (quad[2] >= quad[3]) ? [quad[2], quad[3]] : [quad[3], quad[2]];
 			var plane = MeshCache.getWaterFromCache(size);
 			var x = TOP_LEFT.x + (quad[1] + quad[2]/2)*SIZE;
@@ -206,11 +205,10 @@ define(["GridUtils", "MeshCache", "GreedyMeshAlgo", "Materials"],
 			plane.freezeWorldMatrix();
 		});
 	};
-	
+
 	SceneBuilder.addFire = function(quads){
 		var TOP_LEFT = {"x":0, "z":SIZE_I * SIZE};
 		_.each(quads, function(quad){
-			console.log("add water", quads);
 			var size = (quad[2] >= quad[3]) ? [quad[2], quad[3]] : [quad[3], quad[2]];
 			var plane = MeshCache.getFireFromCache(size);
 			var x = TOP_LEFT.x + (quad[1] + quad[2]/2)*SIZE;
@@ -228,7 +226,7 @@ define(["GridUtils", "MeshCache", "GreedyMeshAlgo", "Materials"],
 		console.log("baddie babylon pos", babylonPos);
 		mat = Math.random() < 0.5 ? 4 : 5;
 		billboard = MeshCache.getBaddieFromCache(mat);
-		billboard.position = new BABYLON.Vector3(babylonPos.x + SIZE/2, y, babylonPos.z - SIZE/2);
+		billboard.position = new BABYLON.Vector3(babylonPos.x, y, babylonPos.z);
 		return billboard;
 	};
 
@@ -241,7 +239,7 @@ define(["GridUtils", "MeshCache", "GreedyMeshAlgo", "Materials"],
 		var player = BABYLON.MeshBuilder.CreateBox("player", {height: SIZE*0.75, width:SIZE*0.75, depth:SIZE*0.75}, scene);
 		player.material = mat;
 		player.checkCollisions = true;
-		player.position = new BABYLON.Vector3(babylonPos.x + SIZE/2, y, babylonPos.z - SIZE/2);
+		player.position = new BABYLON.Vector3(babylonPos.x, y, babylonPos.z);
 		player.ellipsoid = new BABYLON.Vector3(SIZE/4, SIZE/4, SIZE/4);
 		return player;
 	};

@@ -1,6 +1,6 @@
 
-window.SIZE_I = 16;
-window.SIZE_J = 16;
+window.SIZE_I = 8;
+window.SIZE_J = 8;
 window.SIZE = 10;
 window.SIZE_MAX = Math.max(SIZE_I, SIZE_J);
 
@@ -32,7 +32,7 @@ require(["MeshUtils", "GridUtils", "MeshCache", "SceneBuilder", "GreedyMeshAlgo"
 		var grid, solid, empty, scene, cameraId, playerId, gamePad, manager, canvas, baddieIds = [], canHit, processors = [];
 
 		window._DATA = DATA;
-		
+
 		var NUM_BADDIES = 1;
 
 		canvas = document.querySelector("#renderCanvas");
@@ -92,7 +92,7 @@ require(["MeshUtils", "GridUtils", "MeshCache", "SceneBuilder", "GreedyMeshAlgo"
 
 		var addBaddies = function(){
 			var _grid = grid;
-			_.each(_.range(1, 1 + NUM_BADDIES), function(i){
+			_.each(_.range(0, NUM_BADDIES), function(i){
 				var id, v;
 				id = manager.createEntity(['MessageComponent', 'PossessionsComponent', 'MeshComponent', 'BaddieStrategyComponent']);
 				var pos = empty[i + 1]
@@ -122,9 +122,15 @@ require(["MeshUtils", "GridUtils", "MeshCache", "SceneBuilder", "GreedyMeshAlgo"
 			setupManager();
 			makeCamera();
 			solid = GridUtils.getSolid(grid);
+
+			console.log("solid", solid);
+
+			console.log("A*", new PF.AStarFinder().findPath(1, 1, 7, 7, new PF.Grid(solid)));
+
 			empty = _.shuffle(GridUtils.getMatchingLocations(grid, function(obj){
 				return obj.type === "empty";
 			}));
+			empty = [[1, 1], [7, 7]];
 			build();
 			addPlayer();
 			addParticles();

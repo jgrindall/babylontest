@@ -71,15 +71,16 @@ define(["GeomUtils"], function(GeomUtils){
 	GridUtils.ijToBabylon = function(i, j){
 		var topLeft = {"x":0, "z":SIZE_I * SIZE};
 		return {
-			x:topLeft.x + j*SIZE,
-			z:topLeft.z - i*SIZE
+			x:topLeft.x + j*SIZE + SIZE/2,
+			z:topLeft.z - i*SIZE - SIZE/2
 		};
 	};
 
 	GridUtils.babylonToIJ = function(pos){
+		var topLeft = {"x":0, "z":SIZE_I * SIZE};
 		return {
-			x:Math.floor(pos.x / SIZE),
-			z:Math.floor(pos.z / SIZE)
+			j:Math.floor(pos.x / SIZE),
+			i:Math.floor((topLeft.z - pos.z) / SIZE)
 		};
 	};
 
@@ -127,7 +128,7 @@ define(["GeomUtils"], function(GeomUtils){
 		}
 		return lengthsNeeded;
 	};
-	
+
 	GridUtils.getByType = function(a, typeArr){
 		if(!_.isArray(typeArr)){
 			typeArr = [typeArr];
@@ -136,7 +137,7 @@ define(["GeomUtils"], function(GeomUtils){
 			return (typeArr.indexOf(obj.type) >= 0) ? 1 : 0;
 		});
 	};
-	
+
 	GridUtils.getSolid = function(a){
 		return GridUtils.getByType(a, ["water", "wall"]);
 	};
@@ -187,12 +188,12 @@ define(["GeomUtils"], function(GeomUtils){
 			};
 		}
 	};
-	
+
 	GridUtils.getAStarPath = function(pos, grid, playerPos){
 		// TODO - cache new PF.AStarFinder()??
 		// TODO - web worker?
 		var i, points, numPoints, sections = [], _addDir;
-		points = new PF.AStarFinder().findPath(pos.x, pos.z, playerPos.x, playerPos.z, grid.clone());
+		points = new PF.AStarFinder().findPath(pos.i, pos.j, playerPos.i, playerPos.j, grid.clone());
 		if(!points || points.length <= 1){
 			return null; // no path
 		}

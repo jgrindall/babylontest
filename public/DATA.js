@@ -16,27 +16,27 @@ define([], function(){
 				d[i][j] = {
 					"type":"empty",
 					"data":{
-						
+
 					}
 				};
 			}
 		}
 	}
-	
+	/*
 	d[3][8] = {
 		"type":"wall",
 		"data":{
-			"texture": 1 
+			"texture": 1
 		}
 	};
-	
+
 	d[2][7] = {
 		"type":"wall",
 		"data":{
-			"texture": 1 
+			"texture": 1
 		}
 	};
-	
+
 	d[4][7] = {
 		"type":"wall",
 		"data":{
@@ -47,24 +47,24 @@ define([], function(){
 	d[1][1] = {
 		"type":"water",
 		"data":{
-		
+
 		}
 	};
-	
+
 	d[1][2] = {
 		"type":"water",
 		"data":{
 
 		}
 	};
-	
+
 	d[2][1] = {
 		"type":"water",
 		"data":{
 
 		}
 	};
-	
+
 	d[2][2] = {
 		"type":"water",
 		"data":{
@@ -91,6 +91,7 @@ define([], function(){
 
 		}
 	};
+	*/
 
 	return d;
 

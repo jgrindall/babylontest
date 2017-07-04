@@ -2,7 +2,7 @@ define(["GeomUtils", "GridUtils"], function(GeomUtils, GridUtils){
 
 	"use strict";
 
-	var SF = 0.5;
+	var SF = 0.35;
 
 	var _pathIsUnit = function(strategy, path){
 		if(strategy === "north-south"){
@@ -46,7 +46,7 @@ define(["GeomUtils", "GridUtils"], function(GeomUtils, GridUtils){
 		}
 		position.z += sComp.vel.z*SF;
 	};
-	
+
 	BaddieMovementProcessor.prototype.moveHunt = function(id, sComp){
 		var meshComp = this.manager.getComponentDataForEntity('MeshComponent', id);
 		var position = meshComp.mesh.position;
@@ -58,43 +58,45 @@ define(["GeomUtils", "GridUtils"], function(GeomUtils, GridUtils){
 		var _nextSection = function(){
 			console.log("next section");
 			position.x = section.end.x;
-			position.z = section.end.y;
+			position.z = section.end.z;
 			sComp.path.currentNum++;
 		};
-		if(section.dir === "n"){
-			if(position.z < section.end.z){
-				sComp.vel.x = 0;
-				sComp.vel.z = 1;
+		if(section){
+			if(section.dir === "n"){
+				if(position.z < section.end.z){
+					sComp.vel.x = 0;
+					sComp.vel.z = 1;
+				}
+				else{
+					_nextSection();
+				}
 			}
-			else{
-				_nextSection();
+			else if(section.dir === "s"){
+				if(position.z > section.end.z){
+					sComp.vel.x = 0;
+					sComp.vel.z = -1;
+				}
+				else{
+					_nextSection();
+				}
 			}
-		}
-		else if(section.dir === "s"){
-			if(position.z > section.end.z){
-				sComp.vel.x = 0;
-				sComp.vel.z = -1;
+			else if(section.dir === "w"){
+				if(position.x > section.end.x){
+					sComp.vel.x = -1;
+					sComp.vel.z = 0;
+				}
+				else{
+					_nextSection();
+				}
 			}
-			else{
-				_nextSection();
-			}
-		}
-		else if(section.dir === "w"){
-			if(position.x > section.end.x){
-				sComp.vel.x = -1;
-				sComp.vel.z = 0;
-			}
-			else{
-				_nextSection();
-			}
-		}
-		else if(section.dir === "e"){
-			if(position.x < section.end.x){
-				sComp.vel.x = -1;
-				sComp.vel.z = 0;
-			}
-			else{
-				_nextSection();
+			else if(section.dir === "e"){
+				if(position.x < section.end.x){
+					sComp.vel.x = -1;
+					sComp.vel.z = 0;
+				}
+				else{
+					_nextSection();
+				}
 			}
 		}
 		console.log("move", sComp.vel);

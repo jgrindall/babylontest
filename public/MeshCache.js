@@ -11,7 +11,7 @@ define(["MeshUtils", "Materials"], function(MeshUtils, Materials){
 		cache = {};
 		cacheI = 0;
 	};
-	
+
 	MeshCache.cache = function(scene, mesh, key, options){
 		mesh.setEnabled(false);
 		cache[key] = mesh;
@@ -110,11 +110,10 @@ define(["MeshUtils", "Materials"], function(MeshUtils, Materials){
 			throw new Error("not found " + key);
 		}
 	};
-	
+
 	MeshCache.addWaterToCache = function(scene, size){
 		var key, plane;
 		key = "water" + "_" + size[0] + "_" + size[1];
-		console.log("add water to cache", key);
 		if(!cache[key]){
 			plane = BABYLON.MeshBuilder.CreatePlane(key, {height: SIZE*size[0], width:SIZE*size[1]}, scene);
 			plane.rotate(new BABYLON.Vector3(1, 0, 0), Math.PI / 2, BABYLON.Space.Local);
@@ -123,10 +122,9 @@ define(["MeshUtils", "Materials"], function(MeshUtils, Materials){
 			scene.meshes.pop();
 		}
 	};
-	
+
 	MeshCache.getFireFromCache = function(size){
 		var cached, plane, key = "fire" + "_" + size[0] + "_" + size[1];
-		console.log("get fire from cache", key);
 		cached = cache[key];
 		if(cached){
 			cacheI++;
@@ -137,11 +135,10 @@ define(["MeshUtils", "Materials"], function(MeshUtils, Materials){
 			throw new Error("not found " + key);
 		}
 	};
-	
+
 	MeshCache.addFireToCache = function(scene, size){
 		var key, plane;
 		key = "fire" + "_" + size[0] + "_" + size[1];
-		console.log("add fire to cache", key);
 		if(!cache[key]){
 			plane = BABYLON.MeshBuilder.CreatePlane(key, {height: SIZE*size[0], width:SIZE*size[1]}, scene);
 			plane.rotate(new BABYLON.Vector3(1, 0, 0), Math.PI / 2, BABYLON.Space.Local);
@@ -150,10 +147,9 @@ define(["MeshUtils", "Materials"], function(MeshUtils, Materials){
 			scene.meshes.pop();
 		}
 	};
-	
+
 	MeshCache.getWaterFromCache = function(size){
 		var cached, plane, key = "water" + "_" + size[0] + "_" + size[1];
-		console.log("get water from cache", key);
 		cached = cache[key];
 		if(cached){
 			cacheI++;
