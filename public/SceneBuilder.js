@@ -12,7 +12,7 @@ define(["GridUtils", "MeshCache", "GreedyMeshAlgo", "Materials", "Textures"],
 	SceneBuilder.makeScene = function(engine){
 		var scene = new BABYLON.Scene(engine);
 		scene.ambientColor = new BABYLON.Color3(0.8, 0.8, 0.2);
-		scene.fogMode = BABYLON.Scene.FOGMODE_EXP;
+		//scene.fogMode = BABYLON.Scene.FOGMODE_EXP;
 		scene.fogDensity = 0.02;
 		scene.fogStart = 10.0;
 		scene.fogEnd = 40.0;
@@ -26,6 +26,9 @@ define(["GridUtils", "MeshCache", "GreedyMeshAlgo", "Materials", "Textures"],
 		light0.groundColor = new BABYLON.Color3(0.6, 0.6, 0.6);
 		light0.intensity = 0.75;
 		light1.intensity = 0.75;
+
+
+
 		return scene;
 	};
 
@@ -79,6 +82,7 @@ define(["GridUtils", "MeshCache", "GreedyMeshAlgo", "Materials", "Textures"],
 
 	SceneBuilder.makeCamera = function(scene){
 		var camera = new BABYLON.FreeCamera("FreeCamera", new BABYLON.Vector3(SIZE_I*SIZE/2, 200, SIZE_J*SIZE/2), scene);
+		//var postProcess = new BABYLON.RefractionPostProcess("Refraction", "assets/normal.png", new BABYLON.Color3(1.0, 1.0, 1.0), 0.5, 0.5, 1.0, camera);
 		return camera;
 	};
 
@@ -202,7 +206,7 @@ define(["GridUtils", "MeshCache", "GreedyMeshAlgo", "Materials", "Textures"],
 	};
 
 	SceneBuilder.addPlayer = function(pos, scene){
-		var y = SIZE/3;
+		var y = SIZE/2;
 		var mat = new BABYLON.StandardMaterial("Mat", scene);
 		mat.diffuseColor = new BABYLON.Color3(0.7, 0, 0.7); // purple
 		var babylonPos = GridUtils.ijToBabylon(pos[0], pos[1]);
@@ -236,7 +240,6 @@ define(["GridUtils", "MeshCache", "GreedyMeshAlgo", "Materials", "Textures"],
 		ground.rotation = new BABYLON.Vector3(Math.PI/2, 0, 0);
 		img.onload = function(){
 			var c = document.createElement("canvas");
-			$("body").append(c);
 			c.width = img.width;
 			c.height = img.height;
 			var scaleX = img.width / SIZE_J;
