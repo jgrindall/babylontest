@@ -11,12 +11,12 @@ define(["GridUtils", "MeshCache", "GreedyMeshAlgo", "Materials", "Textures"],
 
 	SceneBuilder.makeScene = function(engine){
 		var scene = new BABYLON.Scene(engine);
-		scene.ambientColor = new BABYLON.Color3(0.8, 0.8, 0.2);
-		//scene.fogMode = BABYLON.Scene.FOGMODE_EXP;
-		scene.fogDensity = 0.02;
-		scene.fogStart = 10.0;
-		scene.fogEnd = 40.0;
-		scene.fogColor = new BABYLON.Color3(0.2, 0.2, 0.3);
+		scene.ambientColor = new BABYLON.Color3(0.8, 0.8, 0.8);
+		scene.fogMode = BABYLON.Scene.FOGMODE_EXP;
+		scene.fogDensity = 0.025;
+		scene.fogStart = 30.0;
+		scene.fogEnd = 70.0;
+		scene.fogColor = new BABYLON.Color4(0.5, 0.5, 0.5, 0.5);
 		scene.gravity = new BABYLON.Vector3(0, 0, 0);
 		scene.collisionsEnabled = true;
 		var light0 = new BABYLON.HemisphericLight("Hemi0", new BABYLON.Vector3(0, 1, 0), scene);
