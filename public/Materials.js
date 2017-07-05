@@ -49,7 +49,7 @@ define(["lib/Deferred_", "Base64", "Textures"], function(Deferred, Base64, Textu
 			Materials.waterMaterial.diffuseColor = BLUE1;
 			Materials.waterMaterial.opacityTexture = waterTexture;
 			Materials.waterMaterial.bumpTexture =  waterTexture;
-			waterTexture.speed  = new BABYLON.Vector2(0.2, 0.5);
+			waterTexture.speed  = new BABYLON.Vector2(0.2, 0.2);
 			waterTexture.fireColors = [
 				BLUE2,
 				LTBLUE,

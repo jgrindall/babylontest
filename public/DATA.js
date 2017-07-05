@@ -23,7 +23,7 @@ define([], function(){
 		}
 	}
 
-	d[4][3] = {
+	/*d[4][3] = {
 		"type":"wall",
 		"data":{
 			"texture": 1
@@ -73,6 +73,64 @@ define([], function(){
 	};
 
 
+	d[12][14] = {
+		"type":"wall",
+		"data":{
+			"texture": 1
+		}
+	};
+
+	d[13][14] = {
+		"type":"wall",
+		"data":{
+			"texture": 1
+		}
+	};
+
+	d[14][14] = {
+		"type":"wall",
+		"data":{
+			"texture": 1
+		}
+	};
+
+	d[15][14] = {
+		"type":"wall",
+		"data":{
+			"texture": 1
+		}
+	};
+
+*/
+
+	d[5][12] = {
+		"type":"water",
+		"data":{
+
+		}
+	};
+
+	d[6][12] = {
+		"type":"water",
+		"data":{
+
+		}
+	};
+
+	d[7][12] = {
+		"type":"water",
+		"data":{
+
+		}
+	};
+
+	d[8][12] = {
+		"type":"water",
+		"data":{
+
+		}
+	};
+
 
 	d[9][12] = {
 		"type":"water",
@@ -95,12 +153,35 @@ define([], function(){
 		}
 	};
 
+	d[10][10] = {
+		"type":"water",
+		"data":{
+
+		}
+	};
+
+	d[10][9] = {
+		"type":"water",
+		"data":{
+
+		}
+	};
+
+	d[10][8] = {
+		"type":"water",
+		"data":{
+
+		}
+	};
+
 	d[11][12] = {
 		"type":"water",
 		"data":{
 
 		}
 	};
+
+	/*
 
 	d[12][12] = {
 		"type":"water",
@@ -140,6 +221,8 @@ define([], function(){
 
 		}
 	};
+
+	*/
 
 	var objects = [
 		{

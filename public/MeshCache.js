@@ -34,7 +34,7 @@ define(["MeshUtils", "Materials"], function(MeshUtils, Materials){
 				mesh = BABYLON.MeshBuilder.CreatePlane(key, {height: SIZE, width:SIZE*len}, scene);
 				mesh.convertToUnIndexedMesh();
 				mesh.material = Materials.base64Material;
-				MeshUtils.setUVOffsetAndScale(mesh, 0, 1 - (material/Materials.NUM_MATS), 1, 1/Materials.NUM_MATS);
+				MeshUtils.setUVOffsetAndScale(mesh, 0, 1 - (material/Materials.NUM_MATS), len, 1/Materials.NUM_MATS);
 				MeshCache.cache(scene, mesh, key);
 			}
 		});

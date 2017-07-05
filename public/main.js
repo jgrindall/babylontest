@@ -1,6 +1,6 @@
 
 window.SIZE_I = 18;
-window.SIZE_J = 18;
+window.SIZE_J = 24;
 window.SIZE = 10;
 window.SIZE_MAX = Math.max(SIZE_I, SIZE_J);
 
@@ -41,7 +41,7 @@ require(["MeshUtils", "GridUtils", "MeshCache", "SceneBuilder", "GreedyMeshAlgo"
 
 		window._OBJECTS = DATA.objects;
 
-		var NUM_BADDIES = 5;
+		var NUM_BADDIES = 14;
 
 		canvas = document.querySelector("#renderCanvas");
 
@@ -105,12 +105,12 @@ require(["MeshUtils", "GridUtils", "MeshCache", "SceneBuilder", "GreedyMeshAlgo"
 				console.log("add baddie", pos);
 				v = manager.getComponentDataForEntity('BaddieStrategyComponent', id);
 				var ns = Math.random();
-				if(ns < 0.33){
+				if(ns < 0.5){
 					v.vel = {'x':0, 'z':1};
 					v.strategy = "north-south";
 					v.path = GridUtils.getPath(v.strategy, pos, grid, empty[i]);
 				}
-				else if(ns < 0.67){
+				else if(ns < 1.67){
 					v.vel = {'x':1, 'z':0};
 					v.strategy = "west-east";
 					v.path = GridUtils.getPath(v.strategy, pos, grid, empty[i]);
