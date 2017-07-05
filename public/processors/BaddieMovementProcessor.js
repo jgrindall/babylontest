@@ -50,9 +50,7 @@ define(["GeomUtils", "GridUtils"], function(GeomUtils, GridUtils){
 	BaddieMovementProcessor.prototype.moveHunt = function(id, sComp){
 		var meshComp = this.manager.getComponentDataForEntity('MeshComponent', id);
 		var position = meshComp.mesh.position;
-		console.log("pos", position);
 		var section = sComp.path.sections[sComp.path.currentNum];
-		console.log("section", section);
 		sComp.vel.x = 0;
 		sComp.vel.z = 0;
 		var _nextSection = function(){
@@ -99,7 +97,6 @@ define(["GeomUtils", "GridUtils"], function(GeomUtils, GridUtils){
 				}
 			}
 		}
-		console.log("move", sComp.vel);
 		position.x += sComp.vel.x*SF;
 		position.z += sComp.vel.z*SF;
 	};

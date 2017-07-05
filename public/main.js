@@ -147,7 +147,7 @@ require(["MeshUtils", "GridUtils", "MeshCache", "SceneBuilder", "GreedyMeshAlgo"
 			processors.push(new BaddieMovementProcessor(manager, baddieIds));
 			processors.push(new BaddieCollisionProcessor(manager, playerId, baddieIds));
 			processors.push(new UpdateHuntProcessor(manager, baddieIds, playerId, g.solid));
-			processors.push(new UpdateHUDProcessor(manager, engine, scene, hud, g.solid));
+			processors.push(new UpdateHUDProcessor(manager, engine, scene, hud, playerId, g.greedy));
 			_.each(processors, function(p){
 				manager.addProcessor(p);
 			});

@@ -1,13 +1,14 @@
-define([], function(){
+define(["GridUtils"], function(GridUtils){
 
 	var FRICTION = 0.7;
 
-	var UpdateHUDProcessor = function(manager, engine, scene, hud, solid){
+	var UpdateHUDProcessor = function(manager, engine, scene, hud, playerId, greedy){
 		this.hud = hud;
+		this.playerId = playerId;
 		this.engine = engine;
 		this.manager = manager;
 		this.scene = scene;
-		this.solid = solid;
+		this.greedy = greedy;
 		this.init();
 	};
 
@@ -16,7 +17,7 @@ define([], function(){
 	};
 	
 	UpdateHUDProcessor.prototype.getWalls = function () {
-		return [];
+		return this.greedy.quads;
 	};
 	
 	UpdateHUDProcessor.prototype.getWater = function () {
@@ -28,7 +29,10 @@ define([], function(){
 	};
 	
 	UpdateHUDProcessor.prototype.getPlayer = function () {
-		return [];
+		var position = this.manager.getComponentDataForEntity('MeshComponent', this.playerId).mesh.position;
+		return {
+			"position":GridUtils.babylonToIJ(position)
+		}
 	};
 	
 	UpdateHUDProcessor.prototype.getBaddies = function () {
@@ -49,3 +53,6 @@ define([], function(){
 	return UpdateHUDProcessor;
 
 });
+
+
+
