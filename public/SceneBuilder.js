@@ -242,10 +242,9 @@ define(["GridUtils", "MeshCache", "GreedyMeshAlgo", "Materials", "Textures"],
 			c.height = img.height;
 			var scaleX = img.width / SIZE_J;
 			var scaleY = img.height / SIZE_I;
-			console.log('images', img.width, img.height, SIZE_I, SIZE_J, scaleX, scaleY);
 			c.getContext("2d").drawImage(img, 0, 0);
-			var base64 = Textures.flipCanvas(c).toDataURL();
-			ground.material.diffuseTexture = new BABYLON.Texture("data:b642", scene, false, false, BABYLON.Texture.BILINEAR_SAMPLINGMODE, null, null, base64, true);
+			var base64 = c.toDataURL();
+			ground.material.diffuseTexture = new BABYLON.Texture("data:b642", scene, false, true, BABYLON.Texture.BILINEAR_SAMPLINGMODE, null, null, base64, true);
 		};
 		img.src = "assets/groundMat.jpg";
 	};
@@ -266,12 +265,9 @@ define(["GridUtils", "MeshCache", "GreedyMeshAlgo", "Materials", "Textures"],
 			c.height = img.height;
 			var scaleX = img.width / SIZE_J;
 			var scaleY = img.height / SIZE_I;
-			console.log('images', img.width, img.height, SIZE_I, SIZE_J, scaleX, scaleY);
 			c.getContext("2d").drawImage(img, 0, 0);
 			c.getContext("2d").fillStyle = "#4dc9ff";
 			_.each(waterQuads, function(quad){
-				console.log(quad);
-				console.log(scaleX*quad[1], scaleY*quad[0], scaleX*quad[2], scaleY*quad[3]);
 				c.getContext("2d").fillRect(scaleX*quad[1], scaleY*quad[0], scaleX*quad[2], scaleY*quad[3]);
 			});
 			c.getContext("2d").fillStyle = "#FFA500";
