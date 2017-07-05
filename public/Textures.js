@@ -47,8 +47,8 @@ define(["lib/Deferred_", "Base64"], function(Deferred, Base64){
 	};
 
 	Textures.getTextureFromCanvas = function(canvas, scene){
-		var url = Textures.flipCanvas(canvas).toDataURL();
-		return new BABYLON.Texture("data:b64", scene, false, false, BABYLON.Texture.BILINEAR_SAMPLINGMODE, null, null, url, true);
+		var url = canvas.toDataURL();
+		return new BABYLON.Texture("data:b64", scene, false, true, BABYLON.Texture.PLANAR_MODE, null, null, url, true);
 	};
 
 	return Textures;

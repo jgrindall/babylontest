@@ -12,7 +12,7 @@ define(["GridUtils", "MeshCache", "GreedyMeshAlgo", "Materials", "Textures"],
 	SceneBuilder.makeScene = function(engine){
 		var scene = new BABYLON.Scene(engine);
 		scene.ambientColor = new BABYLON.Color3(0.8, 0.8, 0.2);
-		//scene.fogMode = BABYLON.Scene.FOGMODE_EXP;
+		scene.fogMode = BABYLON.Scene.FOGMODE_EXP;
 		scene.fogDensity = 0.02;
 		scene.fogStart = 10.0;
 		scene.fogEnd = 40.0;
@@ -228,28 +228,33 @@ define(["GridUtils", "MeshCache", "GreedyMeshAlgo", "Materials", "Textures"],
 		var img = new Image();
 		var waterQuads = g.greedyWater.quads;
 		var fireQuads = g.greedyFire.quads;
-		var ground = BABYLON.Mesh.CreatePlane("ground", SIZE_MAX*SIZE, scene);
+		var groundWidth = SIZE_J*SIZE;
+		var groundHeight = SIZE_I*SIZE;
+		var ground = BABYLON.MeshBuilder.CreatePlane("ground", {height: groundHeight, width:groundWidth}, scene);
 		ground.material = new BABYLON.StandardMaterial("groundMat", scene);
-		ground.position = new BABYLON.Vector3(SIZE_MAX*SIZE/2, 0, SIZE_MAX*SIZE/2);
+		ground.position = new BABYLON.Vector3(groundWidth/2, 0, groundHeight/2);
 		ground.rotation = new BABYLON.Vector3(Math.PI/2, 0, 0);
 		img.onload = function(){
 			var c = document.createElement("canvas");
+			$("body").append(c);
 			c.width = img.width;
 			c.height = img.height;
 			var scaleX = img.width / SIZE_J;
 			var scaleY = img.height / SIZE_I;
+			console.log('images', img.width, img.height, SIZE_I, SIZE_J, scaleX, scaleY);
 			c.getContext("2d").drawImage(img, 0, 0);
 			c.getContext("2d").fillStyle = "#4dc9ff";
 			_.each(waterQuads, function(quad){
+				console.log(quad);
+				console.log(scaleX*quad[1], scaleY*quad[0], scaleX*quad[2], scaleY*quad[3]);
 				c.getContext("2d").fillRect(scaleX*quad[1], scaleY*quad[0], scaleX*quad[2], scaleY*quad[3]);
 			});
 			c.getContext("2d").fillStyle = "#FFA500";
 			_.each(fireQuads, function(quad){
 				c.getContext("2d").fillRect(scaleX*quad[1], scaleY*quad[0], scaleX*quad[2], scaleY*quad[3]);
 			});
-			c = Textures.flipCanvas(c);
 			var base64 = c.toDataURL();
-			ground.material.diffuseTexture = new BABYLON.Texture("data:b642", scene, false, false, BABYLON.Texture.BILINEAR_SAMPLINGMODE, null, null, base64, true);
+			ground.material.diffuseTexture = new BABYLON.Texture("data:b642", scene, false, true, BABYLON.Texture.BILINEAR_SAMPLINGMODE, null, null, base64, true);
 		};
 		img.src = "assets/groundMat.jpg";
 	};
