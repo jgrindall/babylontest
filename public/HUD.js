@@ -27,9 +27,25 @@ define(["GridUtils"], function(GridUtils){
 		});
 	};
 	
+	HUD.prototype.drawWater = function(){
+		var ctx = this.ctx;
+		ctx.fillStyle = "#0077ee";
+		_.each(this.data.water, function(wall){
+			ctx.fillRect(wall[1]*HUD_SIZE, wall[0]*HUD_SIZE, wall[2]*HUD_SIZE, wall[3]*HUD_SIZE);
+		});
+	};
+	
+	HUD.prototype.drawFire = function(){
+		var ctx = this.ctx;
+		ctx.fillStyle = "#cc44dd";
+		_.each(this.data.fire, function(wall){
+			ctx.fillRect(wall[1]*HUD_SIZE, wall[0]*HUD_SIZE, wall[2]*HUD_SIZE, wall[3]*HUD_SIZE);
+		});
+	};
+	
 	HUD.prototype.addPlayer = function(){
 		var p = this.data.player.position;
-		this.ctx.fillStyle = "#222299";
+		this.ctx.fillStyle = "#22dd99";
 		this.ctx.fillRect(p.j*HUD_SIZE, p.i*HUD_SIZE, 1*HUD_SIZE, 1*HUD_SIZE);
 	};
 	
@@ -60,6 +76,8 @@ define(["GridUtils"], function(GridUtils){
 		this.ctx.clearRect(0, 0, 300, 200);
 		this.data = data;
 		this.drawWalls();
+		this.drawWater();
+		this.drawFire();
 		this.addPlayer();
 		this.addBaddies();
 	};

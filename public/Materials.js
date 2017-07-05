@@ -6,6 +6,8 @@ define(["lib/Deferred_", "Base64", "Textures"], function(Deferred, Base64, Textu
 	var BLUE2 =  new BABYLON.Color4(0.12, 0.5, 1.0, 0.5);
 	var BLUE3 =  new BABYLON.Color4(0.15, 0.2, 0.9, 0.2);
 	var BLUE4 =  new BABYLON.Color4(0.12, 0.5, 1.0, 0.7);
+	var LTBLUE = new BABYLON.Color4(0.8, 0.25, 0.33, 0.99);
+	var WHITE =  new BABYLON.Color4(0.99, 0.95, 0.99, 0.99);
 	
 	var Materials = {};
 
@@ -45,14 +47,14 @@ define(["lib/Deferred_", "Base64", "Textures"], function(Deferred, Base64, Textu
 			Materials.waterMaterial.diffuseColor = BLUE1;
 			Materials.waterMaterial.opacityTexture = waterTexture;
 			Materials.waterMaterial.bumpTexture =  waterTexture;
-			waterTexture.speed  = new BABYLON.Vector2(0, 0.8);
+			waterTexture.speed  = new BABYLON.Vector2(0.2, 0.5);
 			waterTexture.fireColors = [
 				BLUE2,
-				BLUE3,
+				LTBLUE,
 				BLUE4,
-				BLUE2,
+				WHITE,
 				BLUE3,
-				BLUE4
+				WHITE
 			];
 			Materials.fireMaterial = new BABYLON.StandardMaterial("fire", scene);
 			Materials.fireMaterial.diffuseTexture = fireTexture;

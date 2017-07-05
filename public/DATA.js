@@ -73,13 +73,43 @@ define([], function(){
 	};
 	
 	
-	/*
-	d[1][1] = {
+	
+	d[9][12] = {
 		"type":"water",
 		"data":{
 
 		}
 	};
+	
+	d[10][12] = {
+		"type":"water",
+		"data":{
+
+		}
+	};
+	
+	d[11][12] = {
+		"type":"water",
+		"data":{
+
+		}
+	};
+	
+	d[12][12] = {
+		"type":"water",
+		"data":{
+
+		}
+	};
+	
+	d[13][12] = {
+		"type":"water",
+		"data":{
+
+		}
+	};
+	
+	/*
 
 	d[1][2] = {
 		"type":"water",

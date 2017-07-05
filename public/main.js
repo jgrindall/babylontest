@@ -135,7 +135,7 @@ require(["MeshUtils", "GridUtils", "MeshCache", "SceneBuilder", "GreedyMeshAlgo"
 			makeCamera();
 			SceneBuilder.addFromData(scene, manager.getComponentDataForEntity('GridComponent', gridId));
 			addPlayer();
-			SceneBuilder.addGround(scene);
+			SceneBuilder.addGround(scene, g);
 			SceneBuilder.addSky(scene);
 			addControls();
 			addHUD();
@@ -147,7 +147,7 @@ require(["MeshUtils", "GridUtils", "MeshCache", "SceneBuilder", "GreedyMeshAlgo"
 			processors.push(new BaddieMovementProcessor(manager, baddieIds));
 			processors.push(new BaddieCollisionProcessor(manager, playerId, baddieIds));
 			processors.push(new UpdateHuntProcessor(manager, baddieIds, playerId, g.solid));
-			processors.push(new UpdateHUDProcessor(manager, engine, scene, hud, playerId, baddieIds, g.greedy));
+			processors.push(new UpdateHUDProcessor(manager, engine, scene, hud, playerId, baddieIds, g));
 			_.each(processors, function(p){
 				manager.addProcessor(p);
 			});

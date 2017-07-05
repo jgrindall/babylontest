@@ -1,6 +1,6 @@
-define(["GridUtils", "MeshCache", "GreedyMeshAlgo", "Materials"],
+define(["GridUtils", "MeshCache", "GreedyMeshAlgo", "Materials", "Textures"],
 
-	function(GridUtils, MeshCache, GreedyMeshAlgo, Materials){
+	function(GridUtils, MeshCache, GreedyMeshAlgo, Materials, Textures){
 
 	"use strict";
 
@@ -160,7 +160,7 @@ define(["GridUtils", "MeshCache", "GreedyMeshAlgo", "Materials"],
 			plane = MeshCache.getWaterFromCache(size);
 			plane.position.x = TOP_LEFT.x + (quad[1] + quad[2]/2)*SIZE;;
 			plane.position.z = TOP_LEFT.z - (quad[0] + quad[3]/2)*SIZE;;
-			plane.position.y = 0.1;
+			plane.position.y = 0.05;
 			plane.freezeWorldMatrix();
 		});
 	};
@@ -212,8 +212,9 @@ define(["GridUtils", "MeshCache", "GreedyMeshAlgo", "Materials"],
 		skybox.material = skyboxMaterial;
 	};
 
-	SceneBuilder.addGround = function(scene){
+	SceneBuilder.addGround = function(scene, g){
 		var img = new Image();
+		var quads = g.greedyWater.quads;
 		var ground = BABYLON.Mesh.CreatePlane("ground", SIZE_MAX*SIZE, scene);
 		ground.material = new BABYLON.StandardMaterial("groundMat", scene);
 		ground.position = new BABYLON.Vector3(SIZE_MAX*SIZE/2, 0, SIZE_MAX*SIZE/2);
@@ -222,8 +223,15 @@ define(["GridUtils", "MeshCache", "GreedyMeshAlgo", "Materials"],
 			var c = document.createElement("canvas");
 			c.width = img.width;
 			c.height = img.height;
+			var scaleX = img.width / SIZE_J;
+			var scaleY = img.height / SIZE_I;
+			console.log("draw grass into", 0, 0);
 			c.getContext("2d").drawImage(img, 0, 0);
-			// also draw a blue rect for the water
+			c.getContext("2d").fillStyle = "#0000ff";
+			_.each(quads, function(quad){
+				c.getContext("2d").fillRect(scaleX*quad[1], scaleY*quad[0], scaleX*quad[2], scaleY*quad[3]);
+			});
+			c = Textures.flipCanvas(c);
 			var base64 = c.toDataURL();
 			ground.material.diffuseTexture = new BABYLON.Texture("data:b642", scene, false, false, BABYLON.Texture.BILINEAR_SAMPLINGMODE, null, null, base64, true);
 		};

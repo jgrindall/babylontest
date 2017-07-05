@@ -1,7 +1,7 @@
 define(["GridUtils"], function(GridUtils){
 	"use strict";
 	
-	var FREQUENCY = 500; // do not execute every tick
+	var FREQUENCY = 750; // do not execute every tick
 	
 	var UpdateHuntProcessor = function(manager, baddieIds, playerId, solid){
 		this.num = 0;
