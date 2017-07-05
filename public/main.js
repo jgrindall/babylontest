@@ -1,6 +1,6 @@
 
-window.SIZE_I = 8;
-window.SIZE_J = 8;
+window.SIZE_I = 18;
+window.SIZE_J = 18;
 window.SIZE = 10;
 window.SIZE_MAX = Math.max(SIZE_I, SIZE_J);
 
@@ -147,7 +147,7 @@ require(["MeshUtils", "GridUtils", "MeshCache", "SceneBuilder", "GreedyMeshAlgo"
 			processors.push(new BaddieMovementProcessor(manager, baddieIds));
 			processors.push(new BaddieCollisionProcessor(manager, playerId, baddieIds));
 			processors.push(new UpdateHuntProcessor(manager, baddieIds, playerId, g.solid));
-			processors.push(new UpdateHUDProcessor(manager, engine, scene, hud, playerId, g.greedy));
+			processors.push(new UpdateHUDProcessor(manager, engine, scene, hud, playerId, baddieIds, g.greedy));
 			_.each(processors, function(p){
 				manager.addProcessor(p);
 			});

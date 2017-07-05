@@ -2,9 +2,10 @@ define(["GridUtils"], function(GridUtils){
 
 	var FRICTION = 0.7;
 
-	var UpdateHUDProcessor = function(manager, engine, scene, hud, playerId, greedy){
+	var UpdateHUDProcessor = function(manager, engine, scene, hud, playerId, baddieIds, greedy){
 		this.hud = hud;
 		this.playerId = playerId;
+		this.baddieIds = baddieIds;
 		this.engine = engine;
 		this.manager = manager;
 		this.scene = scene;
@@ -36,7 +37,14 @@ define(["GridUtils"], function(GridUtils){
 	};
 	
 	UpdateHUDProcessor.prototype.getBaddies = function () {
-		return [];
+		var manager = this.manager;
+		return _.map(this.baddieIds, function(id){
+			var position = manager.getComponentDataForEntity('MeshComponent', id).mesh.position;
+			return {
+				"path":manager.getComponentDataForEntity('BaddieStrategyComponent', id).path,
+				"position":GridUtils.babylonToIJ(position)
+			};
+		});
 	};
 
 	UpdateHUDProcessor.prototype.update = function () {
