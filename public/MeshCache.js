@@ -39,11 +39,11 @@ define(["MeshUtils", "Materials"], function(MeshUtils, Materials){
 			}
 		});
 	};
-	
+
 	MeshCache.addObjectToCache = function(scene, material){
 		var key = "object_" + material, mesh, h;
 		if(!cache[key]){
-			mesh = BABYLON.MeshBuilder.CreatePlane(key, {height: SIZE*0.5, width:SIZE*0.5}, scene);
+			mesh = BABYLON.MeshBuilder.CreatePlane(key, {height: SIZE*0.33, width:SIZE*0.33}, scene);
 			mesh.convertToUnIndexedMesh();
 			mesh.material = Materials.base64Material;
 			mesh.billboardMode = BABYLON.Mesh.BILLBOARDMODE_ALL;
@@ -51,13 +51,12 @@ define(["MeshUtils", "Materials"], function(MeshUtils, Materials){
 			MeshCache.cache(scene, mesh, key);
 		}
 	};
-	
+
 	MeshCache.getObjectFromCache = function(scene, material){
 		var cached, mesh, key = "object_" + material;
 		cached = cache[key];
 		if(cached){
 			mesh = cached.createInstance("object index: " + cacheI);
-			//mesh.material = cached.material;
 			mesh.billboardMode = BABYLON.Mesh.BILLBOARDMODE_ALL;
 			cacheI++;
 			return mesh;

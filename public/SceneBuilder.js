@@ -125,12 +125,11 @@ define(["GridUtils", "MeshCache", "GreedyMeshAlgo", "Materials", "Textures"],
 		}
 		return walls;
 	};
-	
-	SceneBuilder.addObject = function(pos, scene){
-		var y = SIZE/2, container, mesh, babylonPos, mat;
+
+	SceneBuilder.addObject = function(pos, scene, texture){
+		var y = SIZE/4, container, mesh, babylonPos, mat;
 		babylonPos = GridUtils.ijToBabylon(pos[0], pos[1]);
-		mat = 5;
-		mesh = MeshCache.getObjectFromCache(scene, mat);
+		mesh = MeshCache.getObjectFromCache(scene, texture);
 		mesh.position = new BABYLON.Vector3(babylonPos.x, y, babylonPos.z);
 		return mesh;
 	};
@@ -167,9 +166,12 @@ define(["GridUtils", "MeshCache", "GreedyMeshAlgo", "Materials", "Textures"],
 			var size, plane;
 			size = (quad[2] >= quad[3]) ? [quad[2], quad[3]] : [quad[3], quad[2]];
 			plane = MeshCache.getWaterFromCache(size);
-			plane.position.x = TOP_LEFT.x + (quad[1] + quad[2]/2)*SIZE;;
-			plane.position.z = TOP_LEFT.z - (quad[0] + quad[3]/2)*SIZE;;
-			plane.position.y = 0.05;
+			plane.position.x = TOP_LEFT.x + (quad[1] + quad[2]/2)*SIZE;
+			plane.position.z = TOP_LEFT.z - (quad[0] + quad[3]/2)*SIZE;
+			plane.position.y = 0.001;
+			if(quad[3] < quad[2]){
+				plane.rotate(new BABYLON.Vector3(0, 0, 1), Math.PI/2, BABYLON.Space.Local);
+			}
 			plane.freezeWorldMatrix();
 		});
 	};
@@ -180,9 +182,12 @@ define(["GridUtils", "MeshCache", "GreedyMeshAlgo", "Materials", "Textures"],
 			var size, plane;
 			size = (quad[2] >= quad[3]) ? [quad[2], quad[3]] : [quad[3], quad[2]];
 			plane = MeshCache.getFireFromCache(size);
-			plane.position.x = TOP_LEFT.x + (quad[1] + quad[2]/2)*SIZE;;
-			plane.position.z = TOP_LEFT.z - (quad[0] + quad[3]/2)*SIZE;;
-			plane.position.y = 0.1;
+			if(quad[3] < quad[2]){
+				plane.rotate(new BABYLON.Vector3(0, 0, 1), Math.PI/2, BABYLON.Space.Local);
+			}
+			plane.position.x = TOP_LEFT.x + (quad[1] + quad[2]/2)*SIZE;
+			plane.position.z = TOP_LEFT.z - (quad[0] + quad[3]/2)*SIZE;
+			plane.position.y = 0.001;
 			plane.freezeWorldMatrix();
 		});
 	};
@@ -190,7 +195,6 @@ define(["GridUtils", "MeshCache", "GreedyMeshAlgo", "Materials", "Textures"],
 	SceneBuilder.addBaddie = function(pos, i, scene){
 		var y = SIZE/2, container, billboard, babylonPos, mat;
 		babylonPos = GridUtils.ijToBabylon(pos[0], pos[1]);
-		console.log("baddie babylon pos", babylonPos);
 		mat = Math.random() < 0.5 ? 4 : 5;
 		billboard = MeshCache.getBaddieFromCache(mat);
 		billboard.position = new BABYLON.Vector3(babylonPos.x, y, babylonPos.z);
@@ -198,11 +202,10 @@ define(["GridUtils", "MeshCache", "GreedyMeshAlgo", "Materials", "Textures"],
 	};
 
 	SceneBuilder.addPlayer = function(pos, scene){
-		var y = SIZE/4;
+		var y = SIZE/3;
 		var mat = new BABYLON.StandardMaterial("Mat", scene);
 		mat.diffuseColor = new BABYLON.Color3(0.7, 0, 0.7); // purple
 		var babylonPos = GridUtils.ijToBabylon(pos[0], pos[1]);
-		console.log("player babylon pos", babylonPos);
 		var player = BABYLON.MeshBuilder.CreateBox("player", {height: SIZE*0.75, width:SIZE*0.75, depth:SIZE*0.75}, scene);
 		player.material = mat;
 		player.checkCollisions = true;
@@ -235,9 +238,8 @@ define(["GridUtils", "MeshCache", "GreedyMeshAlgo", "Materials", "Textures"],
 			c.height = img.height;
 			var scaleX = img.width / SIZE_J;
 			var scaleY = img.height / SIZE_I;
-			console.log("draw grass into", 0, 0);
 			c.getContext("2d").drawImage(img, 0, 0);
-			c.getContext("2d").fillStyle = "#0000ff";
+			c.getContext("2d").fillStyle = "#4dc9ff";
 			_.each(waterQuads, function(quad){
 				c.getContext("2d").fillRect(scaleX*quad[1], scaleY*quad[0], scaleX*quad[2], scaleY*quad[3]);
 			});

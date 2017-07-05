@@ -188,7 +188,7 @@ define([], function(){
 			};
 		}
 	};
-	
+
 	GridUtils.transpose = function(a){
 		var _i, _j, SIZE_I = a.length, SIZE_J = a[0].length, trans = GridUtils.makeEmpty(SIZE_J, SIZE_I);
 		for(_i = 0; _i < SIZE_I; _i++){
@@ -227,7 +227,6 @@ define([], function(){
 			}
 		};
 		_.each(sections, _addDir);
-		console.log("SECTIONS", sections);
 		return {
 			"sections":sections,
 			"currentNum":0

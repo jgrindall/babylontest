@@ -21,24 +21,24 @@ require(["MeshUtils", "GridUtils", "MeshCache", "SceneBuilder", "GreedyMeshAlgo"
 
 "processors/PlayerMovementProcessor", "processors/BaddieMovementProcessor", "processors/UpdateHuntProcessor",
 
-"processors/BaddieCollisionProcessor", "DATA", "HUD"],
+"processors/BaddieCollisionProcessor", "processors/ObjectCollisionProcessor", "DATA", "HUD"],
 
 	function(MeshUtils, GridUtils, MeshCache, SceneBuilder, GreedyMeshAlgo, Materials, GamePad, GamePadUtils, EntityManager,
 
 	HealthComponent, SpeedComponent, MessageComponent, MeshComponent, BaddieStrategyComponent, GridComponent, GridComponentExtended,
-	
+
 	GridCache,
 
 	CameraComponent, PossessionsComponent, CameraMatchPlayerProcessor, UpdateHUDProcessor, PlayerMovementProcessor, BaddieMovementProcessor, UpdateHuntProcessor,
 
-	BaddieCollisionProcessor, DATA, HUD) {
+	BaddieCollisionProcessor, ObjectCollisionProcessor, DATA, HUD) {
 
 		"use strict";
 
 		var scene, cameraId, playerId, gamePad, manager, canvas, baddieIds = [], objectIds = [], processors = [], hud, gridId;
 
 		window._DATA = DATA.landscape;
-		
+
 		window._OBJECTS = DATA.objects;
 
 		var NUM_BADDIES = 5;
@@ -49,7 +49,7 @@ require(["MeshUtils", "GridUtils", "MeshCache", "SceneBuilder", "GreedyMeshAlgo"
 			gamePad = new GamePad("zone_joystick");
 			GamePadUtils.linkGamePadToId(manager, gamePad, playerId);
 		};
-		
+
 		var addHUD = function(){
 			hud = new HUD();
 		};
@@ -121,7 +121,7 @@ require(["MeshUtils", "GridUtils", "MeshCache", "SceneBuilder", "GreedyMeshAlgo"
 				baddieIds.push(id);
 			});
 		};
-		
+
 		var makeGrid = function(){
 			var g;
 			gridId = manager.createEntity(['GridComponent']);
@@ -131,18 +131,17 @@ require(["MeshUtils", "GridUtils", "MeshCache", "SceneBuilder", "GreedyMeshAlgo"
 			GridComponentExtended(g);
 			GridCache(g, scene);
 		};
-		
+
 		var addObjects = function(){
 			var objects = manager.getComponentDataForEntity('GridComponent', gridId).objects;
 			_.each(objects, function(obj){
-				console.log("add object", obj);
 				var id = manager.createEntity(['MeshComponent']);
 				var pos = obj.data.position;
-				manager.getComponentDataForEntity('MeshComponent', id).mesh = SceneBuilder.addObject(pos, scene);
+				manager.getComponentDataForEntity('MeshComponent', id).mesh = SceneBuilder.addObject(pos, scene, obj.data.texture);
 				objectIds.push(id);
 			});
 		};
-		
+
 		var init = function(){
 			setupManager();
 			makeGrid();
@@ -162,6 +161,7 @@ require(["MeshUtils", "GridUtils", "MeshCache", "SceneBuilder", "GreedyMeshAlgo"
 			processors.push(new CameraMatchPlayerProcessor(manager, engine, playerId, cameraId));
 			processors.push(new BaddieMovementProcessor(manager, baddieIds));
 			processors.push(new BaddieCollisionProcessor(manager, playerId, baddieIds));
+			processors.push(new ObjectCollisionProcessor(manager, playerId, objectIds));
 			processors.push(new UpdateHuntProcessor(manager, baddieIds, playerId, g.solid));
 			processors.push(new UpdateHUDProcessor(manager, engine, scene, hud, playerId, baddieIds, objectIds, g));
 			_.each(processors, function(p){

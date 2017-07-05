@@ -29,21 +29,21 @@ define([], function(){
 			"texture": 1
 		}
 	};
-	
+
 	d[4][4] = {
 		"type":"wall",
 		"data":{
 			"texture": 1
 		}
 	};
-	
+
 	d[4][5] = {
 		"type":"wall",
 		"data":{
 			"texture": 1
 		}
 	};
-	
+
 	d[4][6] = {
 		"type":"wall",
 		"data":{
@@ -57,51 +57,58 @@ define([], function(){
 			"texture": 1
 		}
 	};
-	
+
 	d[4][8] = {
 		"type":"wall",
 		"data":{
 			"texture": 1
 		}
 	};
-	
+
 	d[4][9] = {
 		"type":"wall",
 		"data":{
 			"texture": 1
 		}
 	};
-	
-	
-	
+
+
+
 	d[9][12] = {
 		"type":"water",
 		"data":{
 
 		}
 	};
-	
+
 	d[10][12] = {
 		"type":"water",
 		"data":{
 
 		}
 	};
-	
+
+	d[10][11] = {
+		"type":"water",
+		"data":{
+
+		}
+	};
+
 	d[11][12] = {
 		"type":"water",
 		"data":{
 
 		}
 	};
-	
+
 	d[12][12] = {
 		"type":"water",
 		"data":{
 
 		}
 	};
-	
+
 	d[13][12] = {
 		"type":"water",
 		"data":{
@@ -121,7 +128,13 @@ define([], function(){
 
 		}
 	};
-	d[13][4] = {
+	d[11][4] = {
+		"type":"fire",
+		"data":{
+
+		}
+	};
+	d[12][5] = {
 		"type":"fire",
 		"data":{
 
@@ -132,7 +145,7 @@ define([], function(){
 		{
 			"type":"object",
 			"data":{
-				"texture":5,
+				"texture":6,
 				"position":[
 					3,
 					10
@@ -142,15 +155,15 @@ define([], function(){
 		{
 			"type":"object",
 			"data":{
-				"texture":5,
+				"texture":6,
 				"position":[
-					4,
-					12
+					15,
+					7
 				]
 			}
 		}
 	];
-	
+
 	return {
 		"landscape":d,
 		"objects":objects
