@@ -125,6 +125,15 @@ define(["GridUtils", "MeshCache", "GreedyMeshAlgo", "Materials", "Textures"],
 		}
 		return walls;
 	};
+	
+	SceneBuilder.addObject = function(pos, scene){
+		var y = SIZE/2, container, mesh, babylonPos, mat;
+		babylonPos = GridUtils.ijToBabylon(pos[0], pos[1]);
+		mat = 5;
+		mesh = MeshCache.getObjectFromCache(scene, mat);
+		mesh.position = new BABYLON.Vector3(babylonPos.x, y, babylonPos.z);
+		return mesh;
+	};
 
 	SceneBuilder.addBoxes = function(quads){
 		var y = SIZE/2, TOP_LEFT = {"x":0, "z":SIZE_I * SIZE};

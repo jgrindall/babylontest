@@ -12,14 +12,17 @@ define(["MeshCache", "GridUtils"], function(MeshCache, GridUtils){
 		});
 		// cache bits and bobs
 		MeshCache.addBillboardBoxToCache(scene);
-		MeshCache.addBillboardPlaneToCache(scene, 4);
-		MeshCache.addBillboardPlaneToCache(scene, 5);
+		MeshCache.addBaddieToCache(scene, 4);
+		MeshCache.addBaddieToCache(scene, 5);
 		// cache water and fire
 		_.each(g.greedyWater.dims, function(size){
 			MeshCache.addWaterToCache(scene, size);
 		});
 		_.each(g.greedyFire.dims, function(size){
 			MeshCache.addFireToCache(scene, size);
+		});
+		_.each(g.objects, function(obj){
+			MeshCache.addObjectToCache(scene, obj.data.texture);
 		});
 	};
 	

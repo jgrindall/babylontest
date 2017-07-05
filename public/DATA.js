@@ -128,6 +128,32 @@ define([], function(){
 		}
 	};
 
-	return d;
+	var objects = [
+		{
+			"type":"object",
+			"data":{
+				"texture":5,
+				"position":[
+					3,
+					10
+				]
+			}
+		},
+		{
+			"type":"object",
+			"data":{
+				"texture":5,
+				"position":[
+					4,
+					12
+				]
+			}
+		}
+	];
+	
+	return {
+		"landscape":d,
+		"objects":objects
+	};
 
 });

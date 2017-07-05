@@ -35,11 +35,13 @@ require(["MeshUtils", "GridUtils", "MeshCache", "SceneBuilder", "GreedyMeshAlgo"
 
 		"use strict";
 
-		var scene, cameraId, playerId, gamePad, manager, canvas, baddieIds = [], processors = [], hud, gridId;
+		var scene, cameraId, playerId, gamePad, manager, canvas, baddieIds = [], objectIds = [], processors = [], hud, gridId;
 
-		window._DATA = DATA;
+		window._DATA = DATA.landscape;
+		
+		window._OBJECTS = DATA.objects;
 
-		var NUM_BADDIES = 1;
+		var NUM_BADDIES = 5;
 
 		canvas = document.querySelector("#renderCanvas");
 
@@ -94,6 +96,7 @@ require(["MeshUtils", "GridUtils", "MeshCache", "SceneBuilder", "GreedyMeshAlgo"
 
 		var addBaddies = function(){
 			var empty = manager.getComponentDataForEntity('GridComponent', gridId).empty;
+			var grid = manager.getComponentDataForEntity('GridComponent', gridId).grid;
 			_.each(_.range(0, NUM_BADDIES), function(i){
 				var id, v;
 				id = manager.createEntity(['MessageComponent', 'PossessionsComponent', 'MeshComponent', 'BaddieStrategyComponent']);
@@ -102,18 +105,19 @@ require(["MeshUtils", "GridUtils", "MeshCache", "SceneBuilder", "GreedyMeshAlgo"
 				console.log("add baddie", pos);
 				v = manager.getComponentDataForEntity('BaddieStrategyComponent', id);
 				var ns = Math.random();
-				if(ns < -0.33){
+				if(ns < 0.33){
 					v.vel = {'x':0, 'z':1};
 					v.strategy = "north-south";
+					v.path = GridUtils.getPath(v.strategy, pos, grid, empty[i]);
 				}
-				else if(ns < -0.67){
+				else if(ns < 0.67){
 					v.vel = {'x':1, 'z':0};
 					v.strategy = "west-east";
+					v.path = GridUtils.getPath(v.strategy, pos, grid, empty[i]);
 				}
 				else{
 					v.strategy = "hunt";
 				}
-				//v.path = GridUtils.getPath(v.strategy, pos, grid, empty[0]);
 				baddieIds.push(id);
 			});
 		};
@@ -123,23 +127,35 @@ require(["MeshUtils", "GridUtils", "MeshCache", "SceneBuilder", "GreedyMeshAlgo"
 			gridId = manager.createEntity(['GridComponent']);
 			g = manager.getComponentDataForEntity('GridComponent', gridId);
 			g.grid = window._DATA;
+			g.objects = window._OBJECTS;
 			GridComponentExtended(g);
 			GridCache(g, scene);
+		};
+		
+		var addObjects = function(){
+			var objects = manager.getComponentDataForEntity('GridComponent', gridId).objects;
+			_.each(objects, function(obj){
+				console.log("add object", obj);
+				var id = manager.createEntity(['MeshComponent']);
+				var pos = obj.data.position;
+				manager.getComponentDataForEntity('MeshComponent', id).mesh = SceneBuilder.addObject(pos, scene);
+				objectIds.push(id);
+			});
 		};
 		
 		var init = function(){
 			setupManager();
 			makeGrid();
 			var g = manager.getComponentDataForEntity('GridComponent', gridId);
-			//scene.debugLayer.show();
 			makeCamera();
-			SceneBuilder.addFromData(scene, manager.getComponentDataForEntity('GridComponent', gridId));
+			SceneBuilder.addFromData(scene, g);
 			addPlayer();
 			SceneBuilder.addGround(scene, g);
 			SceneBuilder.addSky(scene);
 			addControls();
 			addHUD();
 			addBaddies();
+			addObjects();
 			//var octahedron = BABYLON.MeshBuilder.CreatePolyhedron("oct", {type: 1, size: 1}, scene);
 			//octahedron.position = new BABYLON.Vector3(30, 7, 30);
 			processors.push(new PlayerMovementProcessor(manager, engine, playerId));
@@ -147,7 +163,7 @@ require(["MeshUtils", "GridUtils", "MeshCache", "SceneBuilder", "GreedyMeshAlgo"
 			processors.push(new BaddieMovementProcessor(manager, baddieIds));
 			processors.push(new BaddieCollisionProcessor(manager, playerId, baddieIds));
 			processors.push(new UpdateHuntProcessor(manager, baddieIds, playerId, g.solid));
-			processors.push(new UpdateHUDProcessor(manager, engine, scene, hud, playerId, baddieIds, g));
+			processors.push(new UpdateHUDProcessor(manager, engine, scene, hud, playerId, baddieIds, objectIds, g));
 			_.each(processors, function(p){
 				manager.addProcessor(p);
 			});

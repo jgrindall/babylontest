@@ -12,6 +12,8 @@ define(["lib/Deferred_", "Base64", "Textures"], function(Deferred, Base64, Textu
 	var Materials = {};
 
 	Materials.NUM_MATS = 5;
+	
+	Materials.ONE_OVER = 1/Materials.NUM_MATS;
 
 	Materials.destroy = function(){
 		

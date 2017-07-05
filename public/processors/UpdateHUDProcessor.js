@@ -2,12 +2,13 @@ define(["GridUtils"], function(GridUtils){
 
 	var FRICTION = 0.7;
 
-	var UpdateHUDProcessor = function(manager, engine, scene, hud, playerId, baddieIds, g){
+	var UpdateHUDProcessor = function(manager, engine, scene, hud, playerId, baddieIds, objectIds, g){
 		this.hud = hud;
 		this.playerId = playerId;
 		this.baddieIds = baddieIds;
 		this.engine = engine;
 		this.manager = manager;
+		this.objectIds = objectIds;
 		this.scene = scene;
 		this.g = g;
 		this.init();
@@ -46,6 +47,16 @@ define(["GridUtils"], function(GridUtils){
 			};
 		});
 	};
+	
+	UpdateHUDProcessor.prototype.getObjects = function () {
+		var manager = this.manager;
+		return _.map(this.objectIds, function(id){
+			var position = manager.getComponentDataForEntity('MeshComponent', id).mesh.position;
+			return {
+				"position":GridUtils.babylonToIJ(position)
+			};
+		});
+	};
 
 	UpdateHUDProcessor.prototype.update = function () {
 		var data = {
@@ -53,7 +64,8 @@ define(["GridUtils"], function(GridUtils){
 			"water":this.getWater(),
 			"fire":this.getFire(),
 			"player":this.getPlayer(),
-			"baddies":this.getBaddies()
+			"baddies":this.getBaddies(),
+			"objects":this.getObjects()
 		};
 		this.hud.update(data);
 	};

@@ -49,6 +49,15 @@ define(["GridUtils"], function(GridUtils){
 		this.ctx.fillRect(p.j*HUD_SIZE, p.i*HUD_SIZE, 1*HUD_SIZE, 1*HUD_SIZE);
 	};
 	
+	HUD.prototype.addObjects = function(){
+		var ctx = this.ctx;
+		ctx.fillStyle = "#ffff33";
+		_.each(this.data.objects, function(obj){
+			var p = obj.position;
+			ctx.fillRect(p.j*HUD_SIZE, p.i*HUD_SIZE, 1*HUD_SIZE, 1*HUD_SIZE);
+		});
+	};
+	
 	HUD.prototype.addBaddies = function(){
 		var ctx = this.ctx;
 		ctx.fillStyle = "#dd2222";
@@ -80,6 +89,7 @@ define(["GridUtils"], function(GridUtils){
 		this.drawFire();
 		this.addPlayer();
 		this.addBaddies();
+		this.addObjects();
 	};
 	
 	return HUD;
