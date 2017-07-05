@@ -127,7 +127,7 @@ define(["GridUtils", "MeshCache", "GreedyMeshAlgo", "Materials"],
 	};
 
 	SceneBuilder.addBoxes = function(quads){
-		var y = SIZE/2, boxes = [], TOP_LEFT = {"x":0, "z":SIZE_I * SIZE};
+		var y = SIZE/2, TOP_LEFT = {"x":0, "z":SIZE_I * SIZE};
 		_.each(quads, function(quad){
 			var size, box, x, z;
 			size = (quad[2] >= quad[3]) ? [quad[2], quad[3]] : [quad[3], quad[2]];
@@ -142,65 +142,24 @@ define(["GridUtils", "MeshCache", "GreedyMeshAlgo", "Materials"],
 			box.position.z = z;
 			box.position.y = y;
 			box.freezeWorldMatrix();
-			boxes.push(box);
 		});
 	};
 
-	SceneBuilder.cache = function(scene, data, greedy){
-		var greedy, lengthsNeeded;
-		MeshCache.clear();
-		lengthsNeeded = GridUtils.getLengthsNeeded(data);
-		_.each(greedy.dims, function(size){
-			MeshCache.addBoxToCache(scene, size, SIZE);
-		});
-		_.each(lengthsNeeded, function(lengths, key){
-			MeshCache.addPlanesToCache(scene, lengths, key, SIZE);
-		});
-		MeshCache.addBillboardBoxToCache(scene);
-		MeshCache.addBillboardPlaneToCache(scene, 4);
-		MeshCache.addBillboardPlaneToCache(scene, 5);
-	};
-
-	SceneBuilder.cacheWater = function(scene, dims){
-		_.each(dims, function(size){
-			MeshCache.addWaterToCache(scene, size);
-		});
-	};
-
-	SceneBuilder.cacheFire = function(scene, dims){
-		_.each(dims, function(size){
-			MeshCache.addFireToCache(scene, size);
-		});
-	};
-
-	SceneBuilder.addFromData = function(scene, grid){
-		// add walls, water, fire
-		var greedy, solid, water, greedyWater, fire, greedyFire;
-		solid = GridUtils.getSolid(grid);
-		greedy = GreedyMeshAlgo.get(solid);
-		GridUtils.addFacesInfoToGrid(grid);
-		SceneBuilder.cache(scene, grid, greedy);
-		SceneBuilder.addBoxes(greedy.quads);
-		SceneBuilder.addWalls(grid);
-		water = GridUtils.getByType(grid, "water");
-		greedyWater = GreedyMeshAlgo.get(water);
-		SceneBuilder.cacheWater(scene, greedyWater.dims);
-		SceneBuilder.addWater(greedyWater.quads);
-		fire = GridUtils.getByType(grid, "fire");
-		greedyFire = GreedyMeshAlgo.get(fire);
-		SceneBuilder.cacheFire(scene, greedyFire.dims);
-		SceneBuilder.addFire(greedyFire.quads);
+	SceneBuilder.addFromData = function(scene, g){
+		SceneBuilder.addBoxes(g.greedy.quads);
+		SceneBuilder.addWalls(g.grid);
+		SceneBuilder.addWater(g.greedyWater.quads);
+		SceneBuilder.addFire(g.greedyFire.quads);
 	};
 
 	SceneBuilder.addWater = function(quads){
 		var TOP_LEFT = {"x":0, "z":SIZE_I * SIZE};
 		_.each(quads, function(quad){
-			var size = (quad[2] >= quad[3]) ? [quad[2], quad[3]] : [quad[3], quad[2]];
-			var plane = MeshCache.getWaterFromCache(size);
-			var x = TOP_LEFT.x + (quad[1] + quad[2]/2)*SIZE;
-			var z = TOP_LEFT.z - (quad[0] + quad[3]/2)*SIZE;
-			plane.position.x = x;
-			plane.position.z = z;
+			var size, plane;
+			size = (quad[2] >= quad[3]) ? [quad[2], quad[3]] : [quad[3], quad[2]];
+			plane = MeshCache.getWaterFromCache(size);
+			plane.position.x = TOP_LEFT.x + (quad[1] + quad[2]/2)*SIZE;;
+			plane.position.z = TOP_LEFT.z - (quad[0] + quad[3]/2)*SIZE;;
 			plane.position.y = 0.1;
 			plane.freezeWorldMatrix();
 		});
@@ -209,12 +168,11 @@ define(["GridUtils", "MeshCache", "GreedyMeshAlgo", "Materials"],
 	SceneBuilder.addFire = function(quads){
 		var TOP_LEFT = {"x":0, "z":SIZE_I * SIZE};
 		_.each(quads, function(quad){
-			var size = (quad[2] >= quad[3]) ? [quad[2], quad[3]] : [quad[3], quad[2]];
-			var plane = MeshCache.getFireFromCache(size);
-			var x = TOP_LEFT.x + (quad[1] + quad[2]/2)*SIZE;
-			var z = TOP_LEFT.z - (quad[0] + quad[3]/2)*SIZE;
-			plane.position.x = x;
-			plane.position.z = z;
+			var size, plane;
+			size = (quad[2] >= quad[3]) ? [quad[2], quad[3]] : [quad[3], quad[2]];
+			plane = MeshCache.getFireFromCache(size);
+			plane.position.x = TOP_LEFT.x + (quad[1] + quad[2]/2)*SIZE;;
+			plane.position.z = TOP_LEFT.z - (quad[0] + quad[3]/2)*SIZE;;
 			plane.position.y = 0.1;
 			plane.freezeWorldMatrix();
 		});
