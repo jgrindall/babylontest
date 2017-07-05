@@ -13,10 +13,10 @@ define(["GridUtils", "MeshCache", "GreedyMeshAlgo", "Materials", "Textures"],
 		var scene = new BABYLON.Scene(engine);
 		scene.ambientColor = new BABYLON.Color3(0.8, 0.8, 0.8);
 		scene.fogMode = BABYLON.Scene.FOGMODE_EXP;
-		scene.fogDensity = 0.025;
-		scene.fogStart = 30.0;
-		scene.fogEnd = 70.0;
-		scene.fogColor = new BABYLON.Color4(0.5, 0.5, 0.5, 0.5);
+		scene.fogDensity = 0.0075;
+		scene.fogStart = 20.0;
+		scene.fogEnd = 320.0;
+		scene.fogColor = new BABYLON.Color4(0.4, 0.4, 0.4, 0.25);
 		scene.gravity = new BABYLON.Vector3(0, 0, 0);
 		scene.collisionsEnabled = true;
 		var light0 = new BABYLON.HemisphericLight("Hemi0", new BABYLON.Vector3(0, 1, 0), scene);
@@ -229,6 +229,7 @@ define(["GridUtils", "MeshCache", "GreedyMeshAlgo", "Materials", "Textures"],
 	};
 
 	SceneBuilder.addCeil = function(scene, g){
+		return;
 		var img = new Image();
 		var groundWidth = SIZE_J*SIZE;
 		var groundHeight = SIZE_I*SIZE;
@@ -244,9 +245,9 @@ define(["GridUtils", "MeshCache", "GreedyMeshAlgo", "Materials", "Textures"],
 			var scaleY = img.height / SIZE_I;
 			c.getContext("2d").drawImage(img, 0, 0);
 			var base64 = c.toDataURL();
-			ground.material.diffuseTexture = new BABYLON.Texture("data:b642", scene, false, true, BABYLON.Texture.BILINEAR_SAMPLINGMODE, null, null, base64, true);
+			ground.material.diffuseTexture = new BABYLON.Texture("data:b6423", scene, false, true, BABYLON.Texture.BILINEAR_SAMPLINGMODE, null, null, base64, true);
 		};
-		img.src = "assets/groundMat.jpg";
+		img.src = "assets/roof.jpg";
 	};
 
 	SceneBuilder.addGround = function(scene, g){

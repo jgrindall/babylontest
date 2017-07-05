@@ -1,6 +1,6 @@
 
-window.SIZE_I = 18;
-window.SIZE_J = 24;
+window.SIZE_I = 38;
+window.SIZE_J = 44;
 window.SIZE = 10;
 window.SIZE_MAX = Math.max(SIZE_I, SIZE_J);
 
