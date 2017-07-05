@@ -36,11 +36,14 @@ define(["GridUtils"], function(GridUtils){
 	HUD.prototype.addBaddies = function(){
 		var ctx = this.ctx;
 		ctx.fillStyle = "#dd2222";
+		ctx.lineStyle = "#dddddd";
 		_.each(this.data.baddies, function(baddie){
 			var p = baddie.position;
 			ctx.fillRect(p.j*HUD_SIZE, p.i*HUD_SIZE, 1*HUD_SIZE, 1*HUD_SIZE);
 			var path = baddie.path;
-			console.log(path);
+			if(!path){
+				return;
+			}
 			_.each(path.sections, function(section){
 				var start, end;
 				start = GridUtils.babylonToIJ(section.start);

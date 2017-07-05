@@ -54,7 +54,6 @@ define(["GeomUtils", "GridUtils"], function(GeomUtils, GridUtils){
 		sComp.vel.x = 0;
 		sComp.vel.z = 0;
 		var _nextSection = function(){
-			console.log("next section");
 			position.x = section.end.x;
 			position.z = section.end.z;
 			sComp.path.currentNum++;
@@ -89,7 +88,7 @@ define(["GeomUtils", "GridUtils"], function(GeomUtils, GridUtils){
 			}
 			else if(section.dir === "e"){
 				if(position.x < section.end.x){
-					sComp.vel.x = -1;
+					sComp.vel.x = 1;
 					sComp.vel.z = 0;
 				}
 				else{

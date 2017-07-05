@@ -1,4 +1,4 @@
-define(["GeomUtils"], function(GeomUtils){
+define([], function(){
 	/* helper functions */
 
 	"use strict";
@@ -187,6 +187,16 @@ define(["GeomUtils"], function(GeomUtils){
 				"xmax":j1 * SIZE + SIZE/2
 			};
 		}
+	};
+	
+	GridUtils.transpose = function(a){
+		var _i, _j, SIZE_I = a.length, SIZE_J = a[0].length, trans = GridUtils.makeEmpty(SIZE_J, SIZE_I);
+		for(_i = 0; _i < SIZE_I; _i++){
+			for(_j = 0; _j < SIZE_J; _j++){
+				trans[_j][_i] = a[_i][_j];
+			}
+		}
+		return trans;
 	};
 
 	GridUtils.getAStarPath = function(pos, grid, playerPos){

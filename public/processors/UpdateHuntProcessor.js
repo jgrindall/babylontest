@@ -9,7 +9,8 @@ define(["GridUtils"], function(GridUtils){
 		this.manager = manager;
 		this.playerId = playerId;
 		console.log("solid", solid);
-		this.pfGrid = new PF.Grid(solid);
+		this.pfGrid = new PF.Grid(GridUtils.transpose(solid));
+		console.log("new grid", solid);
 		this.init();
 	};
 

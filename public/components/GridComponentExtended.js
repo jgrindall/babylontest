@@ -6,7 +6,7 @@ define(["GridUtils", "GreedyMeshAlgo"], function(GridUtils, GreedyMeshAlgo){
 		g.empty = _.shuffle(GridUtils.getMatchingLocations(g.grid, function(obj){
 			return obj.type === "empty";
 		}));
-		g.empty = [[1, 1], [6, 6]];
+		g.empty = [[6, 6], [1, 1]];
 		g.solid = GridUtils.getSolid(g.grid);
 		g.greedy = GreedyMeshAlgo.get(g.solid);
 		g.greedyWater = GreedyMeshAlgo.get(GridUtils.getByType(g.grid, "water"));
