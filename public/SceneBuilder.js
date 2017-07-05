@@ -214,7 +214,8 @@ define(["GridUtils", "MeshCache", "GreedyMeshAlgo", "Materials", "Textures"],
 
 	SceneBuilder.addGround = function(scene, g){
 		var img = new Image();
-		var quads = g.greedyWater.quads;
+		var waterQuads = g.greedyWater.quads;
+		var fireQuads = g.greedyFire.quads;
 		var ground = BABYLON.Mesh.CreatePlane("ground", SIZE_MAX*SIZE, scene);
 		ground.material = new BABYLON.StandardMaterial("groundMat", scene);
 		ground.position = new BABYLON.Vector3(SIZE_MAX*SIZE/2, 0, SIZE_MAX*SIZE/2);
@@ -228,7 +229,11 @@ define(["GridUtils", "MeshCache", "GreedyMeshAlgo", "Materials", "Textures"],
 			console.log("draw grass into", 0, 0);
 			c.getContext("2d").drawImage(img, 0, 0);
 			c.getContext("2d").fillStyle = "#0000ff";
-			_.each(quads, function(quad){
+			_.each(waterQuads, function(quad){
+				c.getContext("2d").fillRect(scaleX*quad[1], scaleY*quad[0], scaleX*quad[2], scaleY*quad[3]);
+			});
+			c.getContext("2d").fillStyle = "#FFA500";
+			_.each(fireQuads, function(quad){
 				c.getContext("2d").fillRect(scaleX*quad[1], scaleY*quad[0], scaleX*quad[2], scaleY*quad[3]);
 			});
 			c = Textures.flipCanvas(c);

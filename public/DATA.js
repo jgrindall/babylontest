@@ -108,50 +108,25 @@ define([], function(){
 
 		}
 	};
-	
-	/*
 
-	d[1][2] = {
-		"type":"water",
-		"data":{
-
-		}
-	};
-
-	d[2][1] = {
-		"type":"water",
-		"data":{
-
-		}
-	};
-
-	d[2][2] = {
-		"type":"water",
-		"data":{
-
-		}
-	};
-
-
-	d[6][6] = {
+	d[12][3] = {
 		"type":"fire",
 		"data":{
 
 		}
 	};
-	d[6][7] = {
+	d[12][4] = {
 		"type":"fire",
 		"data":{
 
 		}
 	};
-	d[6][8] = {
+	d[13][4] = {
 		"type":"fire",
 		"data":{
 
 		}
 	};
-	*/
 
 	return d;
 
