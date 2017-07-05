@@ -228,6 +228,28 @@ define(["GridUtils", "MeshCache", "GreedyMeshAlgo", "Materials", "Textures"],
 		skybox.material = skyboxMaterial;
 	};
 
+	SceneBuilder.addCeil = function(scene, g){
+		var img = new Image();
+		var groundWidth = SIZE_J*SIZE;
+		var groundHeight = SIZE_I*SIZE;
+		var ground = BABYLON.MeshBuilder.CreatePlane("ground", {height: groundHeight, width:groundWidth, sideOrientation:BABYLON.Mesh.BACKSIDE}, scene);
+		ground.material = new BABYLON.StandardMaterial("groundMat", scene);
+		ground.position = new BABYLON.Vector3(groundWidth/2, SIZE, groundHeight/2);
+		ground.rotation = new BABYLON.Vector3(Math.PI/2, 0, 0);
+		img.onload = function(){
+			var c = document.createElement("canvas");
+			c.width = img.width;
+			c.height = img.height;
+			var scaleX = img.width / SIZE_J;
+			var scaleY = img.height / SIZE_I;
+			console.log('images', img.width, img.height, SIZE_I, SIZE_J, scaleX, scaleY);
+			c.getContext("2d").drawImage(img, 0, 0);
+			var base64 = Textures.flipCanvas(c).toDataURL();
+			ground.material.diffuseTexture = new BABYLON.Texture("data:b642", scene, false, false, BABYLON.Texture.BILINEAR_SAMPLINGMODE, null, null, base64, true);
+		};
+		img.src = "assets/groundMat.jpg";
+	};
+
 	SceneBuilder.addGround = function(scene, g){
 		var img = new Image();
 		var waterQuads = g.greedyWater.quads;

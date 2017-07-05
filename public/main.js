@@ -150,6 +150,7 @@ require(["MeshUtils", "GridUtils", "MeshCache", "SceneBuilder", "GreedyMeshAlgo"
 			SceneBuilder.addFromData(scene, g);
 			addPlayer();
 			SceneBuilder.addGround(scene, g);
+			SceneBuilder.addCeil(scene, g);
 			SceneBuilder.addSky(scene);
 			addControls();
 			addHUD();
