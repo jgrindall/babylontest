@@ -197,10 +197,10 @@ define(["GridUtils", "MeshCache", "GreedyMeshAlgo", "Materials", "Textures"],
 	};
 
 	SceneBuilder.addBaddie = function(pos, i, scene){
-		var y = SIZE/2, container, billboard, babylonPos, mat;
+		var y = SIZE/2, container, billboard, babylonPos, texture;
 		babylonPos = GridUtils.ijToBabylon(pos[0], pos[1]);
-		mat = Math.random() < 0.5 ? 4 : 5;
-		billboard = MeshCache.getBaddieFromCache(mat);
+		texture = Math.random() < 0.5 ? "bird" : "baddie";
+		billboard = MeshCache.getBaddieFromCache(texture);
 		billboard.position = new BABYLON.Vector3(babylonPos.x, y, babylonPos.z);
 		return billboard;
 	};

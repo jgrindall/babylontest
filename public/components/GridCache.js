@@ -1,5 +1,5 @@
 define(["MeshCache", "GridUtils"], function(MeshCache, GridUtils){
-	
+
 	var GridCache = function(g, scene){
 		MeshCache.clear();
 		// cache the boxes
@@ -12,8 +12,8 @@ define(["MeshCache", "GridUtils"], function(MeshCache, GridUtils){
 		});
 		// cache bits and bobs
 		MeshCache.addBillboardBoxToCache(scene);
-		MeshCache.addBaddieToCache(scene, 4);
-		MeshCache.addBaddieToCache(scene, 5);
+		MeshCache.addBaddieToCache(scene, "bird");
+		MeshCache.addBaddieToCache(scene, "baddie");
 		// cache water and fire
 		_.each(g.greedyWater.dims, function(size){
 			MeshCache.addWaterToCache(scene, size);
@@ -25,8 +25,8 @@ define(["MeshCache", "GridUtils"], function(MeshCache, GridUtils){
 			MeshCache.addObjectToCache(scene, obj.data.texture);
 		});
 	};
-	
+
 	return GridCache;
-	
+
 });
 

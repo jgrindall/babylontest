@@ -41,6 +41,8 @@ require(["MeshUtils", "GridUtils", "MeshCache", "SceneBuilder", "GreedyMeshAlgo"
 
 		window._OBJECTS = DATA.objects;
 
+		window._TEXTURES = DATA.textures;
+
 		var NUM_BADDIES = 14;
 
 		canvas = document.querySelector("#renderCanvas");
@@ -175,7 +177,7 @@ require(["MeshUtils", "GridUtils", "MeshCache", "SceneBuilder", "GreedyMeshAlgo"
 
 		var launch = function(){
 			makeScene();
-			Materials.makeMaterials(scene, init);
+			Materials.makeMaterials(scene, window._TEXTURES, init);
 		};
 
 		setTimeout(function(){

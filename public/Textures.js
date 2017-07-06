@@ -1,4 +1,4 @@
-define(["lib/Deferred_", "Base64"], function(Deferred, Base64){
+define(["lib/Deferred_"], function(Deferred){
 
 	var Textures = {};
 
