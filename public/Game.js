@@ -60,8 +60,31 @@ define(["MeshUtils", "GridUtils", "MeshCache", "SceneBuilder", "TerrainBuilder",
 			TerrainBuilder.addSky(this.scene);
 		};
 
-		Game.prototype.addCharacters = function(){
-			//
+		Game.prototype.addBaddies = function(){
+			var manager = this.manager, scene = this.scene;
+			var gridComponent = this.manager.getComponentDataForEntity('GridComponent', this.gridId), baddieIds = this.baddieIds;
+			_.each(_.range(0, window._NUM_BADDIES), function(i){
+				var id, v;
+				id = manager.createEntity(['MessageComponent', 'PossessionsComponent', 'MeshComponent', 'BaddieStrategyComponent']);
+				var pos = gridComponent.empty[i + 1];
+				manager.getComponentDataForEntity('MeshComponent', id).mesh = CharacterBuilder.addBaddie(pos, scene);
+				v = manager.getComponentDataForEntity('BaddieStrategyComponent', id);
+				var ns = Math.random();
+				if(ns < 0.5){
+					v.vel = {'x':0, 'z':1};
+					v.strategy = "north-south";
+					v.path = GridUtils.getPath(v.strategy, pos, gridComponent.grid, gridComponent.empty[i]);
+				}
+				else if(ns < 0.67){
+					v.vel = {'x':1, 'z':0};
+					v.strategy = "west-east";
+					v.path = GridUtils.getPath(v.strategy, pos, gridComponent.grid, gridComponent.empty[i]);
+				}
+				else{
+					v.strategy = "hunt";
+				}
+				baddieIds.push(id);
+			});
 		};
 
 		Game.prototype.addPlayer = function(){
@@ -71,7 +94,13 @@ define(["MeshUtils", "GridUtils", "MeshCache", "SceneBuilder", "TerrainBuilder",
 		};
 
 		Game.prototype.addObjects = function(){
-			//
+			var manager = this.manager, scene = this.scene, objectIds = this.objectIds;
+			var objects = this.manager.getComponentDataForEntity('GridComponent', this.gridId).objects;
+			_.each(objects, function(obj){
+				var id = manager.createEntity(['MeshComponent']);
+				manager.getComponentDataForEntity('MeshComponent', id).mesh = ObjectBuilder.addObject( obj.data.position, scene, obj.data.texture);
+				objectIds.push(id);
+			});
 		};
 
 		Game.prototype.makeScene = function(){
@@ -113,7 +142,7 @@ define(["MeshUtils", "GridUtils", "MeshCache", "SceneBuilder", "TerrainBuilder",
 			this.makeScene();
 			this.makeTerrain();
 			this.addPlayer();
-			this.addCharacters();
+			this.addBaddies();
 			this.addObjects();
 			this.addControls();
 			this.startProcessors();
@@ -126,54 +155,3 @@ define(["MeshUtils", "GridUtils", "MeshCache", "SceneBuilder", "TerrainBuilder",
 	}
 );
 
-
-
-/*
-//addBaddies();
-			//addObjects();
-			//var octahedron = BABYLON.MeshBuilder.CreatePolyhedron("oct", {type: 1, size: 1}, scene);
-			//octahedron.position = new BABYLON.Vector3(30, 7, 30);
-
-
-
-
-
-		var addBaddies = function(){
-			var empty = manager.getComponentDataForEntity('GridComponent', gridId).empty;
-			var grid = manager.getComponentDataForEntity('GridComponent', gridId).grid;
-			_.each(_.range(0, NUM_BADDIES), function(i){
-				var id, v;
-				id = manager.createEntity(['MessageComponent', 'PossessionsComponent', 'MeshComponent', 'BaddieStrategyComponent']);
-				var pos = empty[i + 1]
-				manager.getComponentDataForEntity('MeshComponent', id).mesh = CharacterBuilder.addBaddie(pos, scene);
-				v = manager.getComponentDataForEntity('BaddieStrategyComponent', id);
-				var ns = Math.random();
-				if(ns < 0.5){
-					v.vel = {'x':0, 'z':1};
-					v.strategy = "north-south";
-					v.path = GridUtils.getPath(v.strategy, pos, grid, empty[i]);
-				}
-				else if(ns < 1.67){
-					v.vel = {'x':1, 'z':0};
-					v.strategy = "west-east";
-					v.path = GridUtils.getPath(v.strategy, pos, grid, empty[i]);
-				}
-				else{
-					v.strategy = "hunt";
-				}
-				baddieIds.push(id);
-			});
-		};
-
-		var addObjects = function(){
-			var objects = manager.getComponentDataForEntity('GridComponent', gridId).objects;
-			_.each(objects, function(obj){
-				var id = manager.createEntity(['MeshComponent']);
-				var pos = obj.data.position;
-				manager.getComponentDataForEntity('MeshComponent', id).mesh = ObjectBuilder.addObject(pos, scene, obj.data.texture);
-				objectIds.push(id);
-			});
-		};
-
-
-*/
