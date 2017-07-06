@@ -18,7 +18,7 @@ define([], function(){
 		if(!type){
 			return;
 		}
-		data = FogSettings["type"];
+		data = FogSettings[type];
 		if(data){
 			scene.fogMode = BABYLON.Scene.FOGMODE_EXP;
 			scene.fogDensity = 0.0075;
