@@ -1,6 +1,6 @@
-define(["GridUtils", "MeshCache", "GreedyMeshAlgo", "Materials", "Textures", "LightBuilder", "EffectBuilder"],
+define(["GridUtils", "GreedyMeshAlgo", "Materials", "Textures", "LightBuilder", "EffectBuilder"],
 
-	function(GridUtils, MeshCache, GreedyMeshAlgo, Materials, Textures, LightBuilder, EffectBuilder){
+	function(GridUtils, GreedyMeshAlgo, Materials, Textures, LightBuilder, EffectBuilder){
 
 	"use strict";
 
@@ -8,11 +8,11 @@ define(["GridUtils", "MeshCache", "GreedyMeshAlgo", "Materials", "Textures", "Li
 
 	};
 
-	CharacterBuilder.addBaddie = function(pos, i, scene){
+	CharacterBuilder.addBaddie = function(pos, i, scene, meshCache){
 		var y = SIZE/2, container, billboard, babylonPos, texture;
 		babylonPos = GridUtils.ijToBabylon(pos[0], pos[1]);
 		texture = Math.random() < 0.5 ? "bird" : "baddie";
-		billboard = MeshCache.getBaddieFromCache(texture);
+		billboard = meshCache.getBaddieFromCache(texture);
 		billboard.position = new BABYLON.Vector3(babylonPos.x, y, babylonPos.z);
 		return billboard;
 	};

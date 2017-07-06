@@ -17,7 +17,10 @@ require(["Game", "DATA"],
 		window._LIGHTS = DATA.lights;
 		window._EFFECTS = DATA.effects;
 		window.engine = new BABYLON.Engine(document.querySelector("#renderCanvas"), false, null, false);
-		new Game(engine);
+		var g = new Game(engine);
+		setTimeout(function(){
+			g.destroy();
+		}, 5000);
 
 	}
 );

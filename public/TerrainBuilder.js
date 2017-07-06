@@ -4,8 +4,8 @@ define(["GridUtils", "MeshCache", "GreedyMeshAlgo", "Materials", "Textures", "Li
 
 	"use strict";
 
-	var _getWallAt = function(start, dir, key, len){
-		var plane = MeshCache.getPlaneFromCache(len, key);
+	var _getWallAt = function(start, dir, key, len, meshCache){
+		var plane = meshCache.getPlaneFromCache(len, key);
 		var TOP_LEFT = {"x":0, "z":SIZE_I * SIZE}, y = SIZE/2;
 		if(dir === "s"){
 			plane.position.x = TOP_LEFT.x + (start[1] + len/2)*SIZE;
@@ -49,12 +49,12 @@ define(["GridUtils", "MeshCache", "GreedyMeshAlgo", "Materials", "Textures", "Li
 		return walls;
 	};
 
-	var _addBoxes = function(quads){
+	var _addBoxes = function(quads, meshCache){
 		var y = SIZE/2, TOP_LEFT = {"x":0, "z":SIZE_I * SIZE};
 		_.each(quads, function(quad){
 			var size, box, x, z;
 			size = (quad[2] >= quad[3]) ? [quad[2], quad[3]] : [quad[3], quad[2]];
-			box = MeshCache.getBoxFromCache(size);
+			box = meshCache.getBoxFromCache(size);
 			x = TOP_LEFT.x + (quad[1] + quad[2]/2)*SIZE;
 			z = TOP_LEFT.z - (quad[0] + quad[3]/2)*SIZE;
 			if(quad[2] < quad[3]){
@@ -68,12 +68,12 @@ define(["GridUtils", "MeshCache", "GreedyMeshAlgo", "Materials", "Textures", "Li
 		});
 	};
 
-	var _addWater = function(quads){
+	var _addWater = function(quads, meshCache){
 		var TOP_LEFT = {"x":0, "z":SIZE_I * SIZE};
 		_.each(quads, function(quad){
 			var size, plane;
 			size = (quad[2] >= quad[3]) ? [quad[2], quad[3]] : [quad[3], quad[2]];
-			plane = MeshCache.getWaterFromCache(size);
+			plane = meshCache.getWaterFromCache(size);
 			plane.position.x = TOP_LEFT.x + (quad[1] + quad[2]/2)*SIZE;
 			plane.position.z = TOP_LEFT.z - (quad[0] + quad[3]/2)*SIZE;
 			plane.position.y = 0.001;
@@ -84,12 +84,12 @@ define(["GridUtils", "MeshCache", "GreedyMeshAlgo", "Materials", "Textures", "Li
 		});
 	};
 
-	var _addFire = function(quads){
+	var _addFire = function(quads, meshCache){
 		var TOP_LEFT = {"x":0, "z":SIZE_I * SIZE};
 		_.each(quads, function(quad){
 			var size, plane;
 			size = (quad[2] >= quad[3]) ? [quad[2], quad[3]] : [quad[3], quad[2]];
-			plane = MeshCache.getFireFromCache(size);
+			plane = meshCache.getFireFromCache(size);
 			if(quad[3] < quad[2]){
 				plane.rotate(new BABYLON.Vector3(0, 0, 1), Math.PI/2, BABYLON.Space.Local);
 			}
@@ -110,11 +110,11 @@ define(["GridUtils", "MeshCache", "GreedyMeshAlgo", "Materials", "Textures", "Li
 	};
 
 	var TerrainBuilder = {
-		addFromData: function(scene, gridComponent){
-			_addBoxes(gridComponent.greedy.quads);
-			_addWalls(gridComponent.grid);
-			_addWater(gridComponent.greedyWater.quads);
-			_addFire(gridComponent.greedyFire.quads);
+		addFromData: function(scene, gridComponent, meshCache){
+			_addBoxes(gridComponent.greedy.quads, meshCache);
+			_addWalls(gridComponent.grid, meshCache);
+			_addWater(gridComponent.greedyWater.quads, meshCache);
+			_addFire(gridComponent.greedyFire.quads, meshCache);
 		},
 		addCeil :function(scene){
 			return;

@@ -26,6 +26,7 @@ define(["MeshUtils", "GridUtils", "MeshCache", "SceneBuilder", "TerrainBuilder",
 		"use strict";
 
 		var Game = function(engine){
+			this.renderFn = this.render.bind(this);
 			this.engine = engine;
 			this.processors = [];
 			this.scene = SceneBuilder.makeScene(this.engine);
@@ -35,6 +36,7 @@ define(["MeshUtils", "GridUtils", "MeshCache", "SceneBuilder", "TerrainBuilder",
 			this.baddieIds = [];
 			this.objectIds = [];
 			this.cameraId = null;
+			this.meshCache = new MeshCache();
 			Components.addTo(this.manager);
 			Materials.makeMaterials(this.scene, window._TEXTURES, this.init.bind(this));
 		};
@@ -54,20 +56,20 @@ define(["MeshUtils", "GridUtils", "MeshCache", "SceneBuilder", "TerrainBuilder",
 
 		Game.prototype.makeTerrain = function(){
 			var gridComponent = this.manager.getComponentDataForEntity('GridComponent', this.gridId);
-			TerrainBuilder.addFromData(this.scene, gridComponent);
-			TerrainBuilder.addGround(this.scene, gridComponent);
-			TerrainBuilder.addCeil(this.scene);
-			TerrainBuilder.addSky(this.scene);
+			TerrainBuilder.addFromData(this.scene, gridComponent, this.meshCache);
+			TerrainBuilder.addGround(this.scene, gridComponent, this.meshCache);
+			TerrainBuilder.addCeil(this.scene, this.meshCache);
+			TerrainBuilder.addSky(this.scene, this.meshCache);
 		};
 
 		Game.prototype.addBaddies = function(){
-			var manager = this.manager, scene = this.scene;
+			var manager = this.manager, scene = this.scene, meshCache = this.meshCache;
 			var gridComponent = this.manager.getComponentDataForEntity('GridComponent', this.gridId), baddieIds = this.baddieIds;
 			_.each(_.range(0, window._NUM_BADDIES), function(i){
 				var id, v;
 				id = manager.createEntity(['MessageComponent', 'PossessionsComponent', 'MeshComponent', 'BaddieStrategyComponent']);
 				var pos = gridComponent.empty[i + 1];
-				manager.getComponentDataForEntity('MeshComponent', id).mesh = CharacterBuilder.addBaddie(pos, scene);
+				manager.getComponentDataForEntity('MeshComponent', id).mesh = CharacterBuilder.addBaddie(pos, scene, meshCache);
 				v = manager.getComponentDataForEntity('BaddieStrategyComponent', id);
 				var ns = Math.random();
 				if(ns < 0.5){
@@ -90,15 +92,15 @@ define(["MeshUtils", "GridUtils", "MeshCache", "SceneBuilder", "TerrainBuilder",
 		Game.prototype.addPlayer = function(){
 			var gridComponent = this.manager.getComponentDataForEntity('GridComponent', this.gridId);
 			this.playerId = this.manager.createEntity(['MessageComponent', 'PossessionsComponent', 'SpeedComponent', 'MeshComponent']);
-			this.manager.getComponentDataForEntity('MeshComponent', this.playerId).mesh = CharacterBuilder.addPlayer(gridComponent.empty[0], this.scene);
+			this.manager.getComponentDataForEntity('MeshComponent', this.playerId).mesh = CharacterBuilder.addPlayer(gridComponent.empty[0], this.scene, this.meshCache);
 		};
 
 		Game.prototype.addObjects = function(){
-			var manager = this.manager, scene = this.scene, objectIds = this.objectIds;
+			var manager = this.manager, scene = this.scene, objectIds = this.objectIds, meshCache = this.meshCache;
 			var objects = this.manager.getComponentDataForEntity('GridComponent', this.gridId).objects;
 			_.each(objects, function(obj){
 				var id = manager.createEntity(['MeshComponent']);
-				manager.getComponentDataForEntity('MeshComponent', id).mesh = ObjectBuilder.addObject( obj.data.position, scene, obj.data.texture);
+				manager.getComponentDataForEntity('MeshComponent', id).mesh = ObjectBuilder.addObject( obj.data.position, scene, obj.data.texture, meshCache);
 				objectIds.push(id);
 			});
 		};
@@ -146,7 +148,17 @@ define(["MeshUtils", "GridUtils", "MeshCache", "SceneBuilder", "TerrainBuilder",
 			this.addObjects();
 			this.addControls();
 			this.startProcessors();
-			this.engine.runRenderLoop(this.render.bind(this));
+			this.engine.runRenderLoop(this.renderFn);
+		};
+
+		Game.prototype.destroy = function(){
+			alert("destroy");
+			this.engine.stopRenderLoop(this.renderFn);
+			this.meshCache.clear();
+			_.each(this.processors, manager.removeProcessor);
+			this.scene.dispose();
+			scene.dispose();
+			//Materials.destroy();
 		};
 
 		console.log("reurn Game", Game);
