@@ -13,11 +13,11 @@ define(["FogSettings"], function(FogSettings){
 		return new BABYLON.Color4(a[0], a[1], a[2], a[3]);
 	};
 
-	var EffectBuilder = function(){
+	var EffectBuilder = {
 		build:function(scene, effectsData){
 			scene.ambientColor = _color3FromArray(effectsData.ambientColor);
 			FogSettings.add(scene, effectsData.fog);
-			scene.gravity = _vector3FromArray(effectsData.gracvtity);
+			scene.gravity = _vector3FromArray(effectsData.gravity);
 		}
 	};
 

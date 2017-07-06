@@ -257,14 +257,13 @@ define([], function(){
 			"position":[0, 1, 0],
 			"specular": [0.6, 0.6, 0.6],
 			"groundColor": [0.6, 0.6, 0.6],
-			"intensity": 0.75;
-
+			"intensity": 0.75
 		},
 		{
 			"type":"point",
 			"diffuse":[0.2, 0.2, 0.2],
 			"position":[2, 150, -2],
-			"intensity": 0.75]
+			"intensity": 0.75
 		}
 	];
 
@@ -282,7 +281,7 @@ define([], function(){
 		"objects":objects,
 		"lights":lights,
 		"effects":{
-			"ambientColor": [0.8, 0.8, 0.8]
+			"ambientColor": [0.8, 0.8, 0.8],
 			"fog": "thick",
 			"gravity": [0, 0, 0]
 		}

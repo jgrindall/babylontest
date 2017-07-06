@@ -9,7 +9,7 @@ define([], function(){
 		return new BABYLON.Color3(a[0], a[1], a[2]);
 	};
 
-	var LightBuilder = function(){
+	var LightBuilder = {
 		build:function(scene, lights){
 			_.each(lights, function(lightData){
 				var light;
@@ -23,10 +23,10 @@ define([], function(){
 				if(lightData.diffuse){
 					light.diffuse = _color3FromArray(lightData.diffuse);
 				}
-				if(lightData.diffuse){
+				if(lightData.specular){
 					light.specular = _color3FromArray(lightData.specular);
 				}
-				if(lightData.diffuse){
+				if(lightData.groundColor){
 					light.groundColor = _color3FromArray(lightData.groundColor);
 				}
 			});

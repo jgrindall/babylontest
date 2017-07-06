@@ -7,10 +7,10 @@ define([], function(){
 
 	FogSettings["thick"] = {
 		"fogMode": BABYLON.Scene.FOGMODE_EXP,
-		"fogDensity": 0.0075;
-		"fogStart": 20.0;
-		"fogEnd": 320.0;
-		"fogColor": new BABYLON.Color4(0.4, 0.4, 0.4, 0.25);
+		"fogDensity": 0.0075,
+		"fogStart": 20.0,
+		"fogEnd": 320.0,
+		"fogColor": new BABYLON.Color4(0.4, 0.4, 0.4, 0.25)
 	};
 
 	FogSettings.add = function(scene, type){
