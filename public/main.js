@@ -38,10 +38,10 @@ require(["MeshUtils", "GridUtils", "MeshCache", "SceneBuilder", "GreedyMeshAlgo"
 		var scene, cameraId, playerId, gamePad, manager, canvas, baddieIds = [], objectIds = [], processors = [], hud, gridId;
 
 		window._DATA = DATA.landscape;
-
 		window._OBJECTS = DATA.objects;
-
 		window._TEXTURES = DATA.textures;
+		window._LIGHTS = DATA.lights;
+		window._EFFECTS = DATA.effects;
 
 		var NUM_BADDIES = 14;
 

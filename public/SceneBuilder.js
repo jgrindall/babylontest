@@ -1,9 +1,8 @@
-define(["GridUtils", "MeshCache", "GreedyMeshAlgo", "Materials", "Textures"],
+define(["GridUtils", "MeshCache", "GreedyMeshAlgo", "Materials", "Textures", "LightBuilder", "EffectBuilder"],
 
-	function(GridUtils, MeshCache, GreedyMeshAlgo, Materials, Textures){
+	function(GridUtils, MeshCache, GreedyMeshAlgo, Materials, Textures, LightBuilder, EffectBuilder){
 
 	"use strict";
-
 
 	var SceneBuilder = {
 
@@ -11,24 +10,9 @@ define(["GridUtils", "MeshCache", "GreedyMeshAlgo", "Materials", "Textures"],
 
 	SceneBuilder.makeScene = function(engine){
 		var scene = new BABYLON.Scene(engine);
-		scene.ambientColor = new BABYLON.Color3(0.8, 0.8, 0.8);
-		scene.fogMode = BABYLON.Scene.FOGMODE_EXP;
-		scene.fogDensity = 0.0075;
-		scene.fogStart = 20.0;
-		scene.fogEnd = 320.0;
-		scene.fogColor = new BABYLON.Color4(0.4, 0.4, 0.4, 0.25);
-		scene.gravity = new BABYLON.Vector3(0, 0, 0);
 		scene.collisionsEnabled = true;
-		var light0 = new BABYLON.HemisphericLight("Hemi0", new BABYLON.Vector3(0, 1, 0), scene);
-		var light1 = new BABYLON.PointLight("Omni", new BABYLON.Vector3(2, 150, -2), scene);
-		light1.diffuse = new BABYLON.Color3(0.2, 0.2, 0.2);
-		light0.specular = new BABYLON.Color3(0.6, 0.6, 0.6);
-		light0.groundColor = new BABYLON.Color3(0.6, 0.6, 0.6);
-		light0.intensity = 0.75;
-		light1.intensity = 0.75;
-
-
-
+		LightBuilder.build(scene, window._LIGHTS);
+		EffectBuilder.build(scene, window._EFFECTS);
 		return scene;
 	};
 
@@ -207,11 +191,8 @@ define(["GridUtils", "MeshCache", "GreedyMeshAlgo", "Materials", "Textures"],
 
 	SceneBuilder.addPlayer = function(pos, scene){
 		var y = SIZE/2;
-		var mat = new BABYLON.StandardMaterial("Mat", scene);
-		mat.diffuseColor = new BABYLON.Color3(0.7, 0, 0.7); // purple
 		var babylonPos = GridUtils.ijToBabylon(pos[0], pos[1]);
 		var player = BABYLON.MeshBuilder.CreateBox("player", {height: SIZE*0.75, width:SIZE*0.75, depth:SIZE*0.75}, scene);
-		player.material = mat;
 		player.checkCollisions = true;
 		player.position = new BABYLON.Vector3(babylonPos.x, y, babylonPos.z);
 		player.ellipsoid = new BABYLON.Vector3(SIZE/4, SIZE/4, SIZE/4);
