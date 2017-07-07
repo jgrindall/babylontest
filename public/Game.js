@@ -36,9 +36,10 @@ define(["MeshUtils", "GridUtils", "MeshCache", "SceneBuilder", "TerrainBuilder",
 			this.baddieIds = [];
 			this.objectIds = [];
 			this.cameraId = null;
-			this.meshCache = new MeshCache();
+			this.materialsCache = new Materials();
+			this.meshCache = new MeshCache(this.materialsCache);
 			Components.addTo(this.manager);
-			Materials.makeMaterials(this.scene, window._TEXTURES, this.init.bind(this));
+			this.materialsCache.makeMaterials(this.scene, window._TEXTURES, this.init.bind(this));
 		};
 
 		Game.prototype.loadJSON = function(){
@@ -149,19 +150,23 @@ define(["MeshUtils", "GridUtils", "MeshCache", "SceneBuilder", "TerrainBuilder",
 			this.addControls();
 			this.startProcessors();
 			this.engine.runRenderLoop(this.renderFn);
+			this.trigger("loaded");
 		};
 
 		Game.prototype.destroy = function(){
-			alert("destroy");
+			// /So I dispose the textures of the material first, then the material itself and afterwards I dispose the mesh.
 			this.engine.stopRenderLoop(this.renderFn);
+			this.materialsCache.destroy();
 			this.meshCache.clear();
-			_.each(this.processors, manager.removeProcessor);
+			this.hud.destroy();
+			this.gamePad.destroy();
+			_.each(this.processors, this.manager.removeProcessor.bind(this.manager));
 			this.scene.dispose();
-			scene.dispose();
-			//Materials.destroy();
+			this.manager = null;
+			// remove component from entity and remove components
 		};
 
-		console.log("reurn Game", Game);
+		_.extend(Game.prototype, Backbone.Events);
 
 		return Game;
 	}

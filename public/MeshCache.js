@@ -1,24 +1,35 @@
 define(["MeshUtils", "Materials"], function(MeshUtils, Materials){
 
-	var MeshCache = function(){
-		this.clear();
+	var MeshCache = function(materialsCache){
+		this.materialsCache = materialsCache;
+		this._cache = {};
+		this._cacheI = 0;
 	};
 
 	MeshCache.prototype.clear = function(){
-		this.cache = {};
-		this.cacheI = 0;
+		this.materialsCache = null;
+		_.each(this._cache, function(mesh, key){
+			mesh.material = null;
+			mesh.dispose();
+		});
+		this._cache = {};
+		this._cacheI = 0;
 	};
 
 	MeshCache.prototype.add = function(scene, mesh, key, options){
 		mesh.setEnabled(false);
-		this.cache[key] = mesh;
+		this._cache[key] = mesh;
 		scene.meshes.pop(); // remove it from the display list because it was added automatically
+	};
+
+	MeshCache.prototype.get = function(){
+
 	};
 
 	MeshCache.prototype.addBoxToCache = function(scene, size, SIZE){
 		var key = "box" + "_" + size[0] + "_" + size[1], mesh;
-		if(!this.cache[key]){
-			mesh = BABYLON.MeshBuilder.CreateBox(key, {height: SIZE, width:SIZE*size[0], depth:SIZE*size[1]}, scene);
+		if(!this._cache[key]){
+			mesh = BABYLON.MeshBuilder.CreateBox(key, {"height": SIZE, width:SIZE*size[0], "depth":SIZE*size[1]}, scene);
 			mesh.convertToUnIndexedMesh();
 			this.add(scene, mesh, key);
 		}
@@ -28,10 +39,10 @@ define(["MeshUtils", "Materials"], function(MeshUtils, Materials){
 		var _this = this;
 		_.each(lengths, function(len){
 			var key = "plane_" + texture + "_" + len, mesh;
-			if(!_this.cache[key]){
-				mesh = BABYLON.MeshBuilder.CreatePlane(key, {height: SIZE, width:SIZE*len}, scene);
+			if(!_this._cache[key]){
+				mesh = BABYLON.MeshBuilder.CreatePlane(key, {"height": SIZE, "width":SIZE*len}, scene);
 				mesh.convertToUnIndexedMesh();
-				Materials.applyToMesh(mesh, len, texture);
+				_this.materialsCache.applyToMesh(mesh, len, texture);
 				_this.add(scene, mesh, key);
 			}
 		});
@@ -39,10 +50,10 @@ define(["MeshUtils", "Materials"], function(MeshUtils, Materials){
 
 	MeshCache.prototype.addObjectToCache = function(scene, texture){
 		var key = "object_" + texture, mesh, h;
-		if(!this.cache[key]){
-			mesh = BABYLON.MeshBuilder.CreatePlane(key, {height: SIZE*0.33, width:SIZE*0.33}, scene);
+		if(!this._cache[key]){
+			mesh = BABYLON.MeshBuilder.CreatePlane(key, {"height": SIZE*0.33, "width":SIZE*0.33}, scene);
 			mesh.convertToUnIndexedMesh();
-			Materials.applyToMesh(mesh, 1, texture);
+			this.materialsCache.applyToMesh(mesh, 1, texture);
 			mesh.billboardMode = BABYLON.Mesh.BILLBOARDMODE_ALL;
 			this.add(scene, mesh, key);
 		}
@@ -50,11 +61,11 @@ define(["MeshUtils", "Materials"], function(MeshUtils, Materials){
 
 	MeshCache.prototype.getObjectFromCache = function(scene, texture){
 		var cached, mesh, key = "object_" + texture;
-		cached = this.cache[key];
+		cached = this._cache[key];
 		if(cached){
-			mesh = cached.createInstance("object index: " + this.cacheI);
+			mesh = cached.createInstance("object index: " + this._cacheI);
 			mesh.billboardMode = BABYLON.Mesh.BILLBOARDMODE_ALL;
-			this.cacheI++;
+			this._cacheI++;
 			return mesh;
 		}
 		else{
@@ -65,8 +76,8 @@ define(["MeshUtils", "Materials"], function(MeshUtils, Materials){
 	MeshCache.prototype.addBillboardBoxToCache = function(scene){
 		var key, mesh;
 		key = "billboardbox";
-		if(!this.cache[key]){
-			mesh = BABYLON.MeshBuilder.CreateBox(key, {height: SIZE, width:SIZE, depth:SIZE}, scene);
+		if(!this._cache[key]){
+			mesh = BABYLON.MeshBuilder.CreateBox(key, {"height": SIZE, "width":SIZE, "depth":SIZE}, scene);
 			mesh.convertToUnIndexedMesh();
 			mesh.checkCollisions = true;
 			this.add(scene, mesh, key);
@@ -75,10 +86,10 @@ define(["MeshUtils", "Materials"], function(MeshUtils, Materials){
 
 	MeshCache.prototype.addBaddieToCache = function(scene, texture){
 		var key = "billboardplane_" + texture, mesh;
-		if(!this.cache[key]){
-			mesh = BABYLON.MeshBuilder.CreatePlane(key, {height: SIZE*0.75, width:SIZE*0.75}, scene);
+		if(!this._cache[key]){
+			mesh = BABYLON.MeshBuilder.CreatePlane(key, {"height": SIZE*0.75, "width":SIZE*0.75}, scene);
 			mesh.convertToUnIndexedMesh();
-			Materials.applyToMesh(mesh, 1, texture);
+			this.materialsCache.applyToMesh(mesh, 1, texture);
 			mesh.billboardMode = BABYLON.Mesh.BILLBOARDMODE_ALL;
 			this.add(scene, mesh, key);
 		}
@@ -86,10 +97,10 @@ define(["MeshUtils", "Materials"], function(MeshUtils, Materials){
 
 	MeshCache.prototype.getBoxFromCache = function(size){
 		var cached, mesh, key = "box_" + size[0] + "_" + size[1];
-		cached = this.cache[key];
+		cached = this._cache[key];
 		if(cached){
-			mesh = cached.createInstance("box index: " + this.cacheI);
-			this.cacheI++;
+			mesh = cached.createInstance("box index: " + this._cacheI);
+			this._cacheI++;
 			mesh.checkCollisions = true;
 			return mesh;
 		}
@@ -100,10 +111,10 @@ define(["MeshUtils", "Materials"], function(MeshUtils, Materials){
 
 	MeshCache.prototype.getPlaneFromCache = function(size, texture){
 		var cached, mesh, key = "plane_" + texture + "_" + size;
-		cached = this.cache[key];
+		cached = this._cache[key];
 		if(cached){
-			this.cacheI++;
-			mesh = cached.createInstance("index: " + this.cacheI);
+			this._cacheI++;
+			mesh = cached.createInstance("index: " + this._cacheI);
 	 		mesh.material = cached.material;
 			return mesh;
 		}
@@ -114,10 +125,10 @@ define(["MeshUtils", "Materials"], function(MeshUtils, Materials){
 
 	MeshCache.prototype.getBillboardBoxFromCache = function(){
 		var cached, mesh, key = "billboardbox";
-		cached = this.cache[key];
+		cached = this._cache[key];
 		if(cached){
 			mesh = cached.createInstance("box index: " + cacheI);
-			this.cacheI++;
+			this._cacheI++;
 			mesh.checkCollisions = true;
 			return mesh;
 		}
@@ -129,18 +140,18 @@ define(["MeshUtils", "Materials"], function(MeshUtils, Materials){
 	MeshCache.prototype.addWaterToCache = function(scene, size){
 		var key, mesh;
 		key = "water" + "_" + size[0] + "_" + size[1];
-		if(!this.cache[key]){
-			mesh = BABYLON.MeshBuilder.CreatePlane(key, {height: SIZE*size[0], width:SIZE*size[1]}, scene);
+		if(!this._cache[key]){
+			mesh = BABYLON.MeshBuilder.CreatePlane(key, {"height": SIZE*size[0], "width":SIZE*size[1]}, scene);
 			mesh.rotate(new BABYLON.Vector3(1, 0, 0), Math.PI / 2, BABYLON.Space.Local);
-			this.cache[key] = mesh;
-			mesh.material = Materials.waterMaterial;
+			this._cache[key] = mesh;
+			mesh.material = this.materialsCache.waterMaterial;
 			scene.meshes.pop();
 		}
 	};
 
 	MeshCache.prototype.getFireFromCache = function(size){
 		var cached, mesh, key = "fire" + "_" + size[0] + "_" + size[1];
-		cached = this.cache[key];
+		cached = this._cache[key];
 		if(cached){
 			cacheI++;
 			mesh = cached.createInstance("index: " + cacheI);
@@ -154,21 +165,21 @@ define(["MeshUtils", "Materials"], function(MeshUtils, Materials){
 	MeshCache.prototype.addFireToCache = function(scene, size){
 		var key, mesh;
 		key = "fire" + "_" + size[0] + "_" + size[1];
-		if(!this.cache[key]){
-			mesh = BABYLON.MeshBuilder.CreatePlane(key, {height: SIZE*size[0], width:SIZE*size[1]}, scene);
+		if(!this._cache[key]){
+			mesh = BABYLON.MeshBuilder.CreatePlane(key, {"height": SIZE*size[0], "width":SIZE*size[1]}, scene);
 			mesh.rotate(new BABYLON.Vector3(1, 0, 0), Math.PI / 2, BABYLON.Space.Local);
-			this.cache[key] = mesh;
-			mesh.material = Materials.fireMaterial;
+			this._cache[key] = mesh;
+			mesh.material = this.materialsCache.fireMaterial;
 			scene.meshes.pop();
 		}
 	};
 
 	MeshCache.prototype.getWaterFromCache = function(size){
 		var cached, mesh, key = "water" + "_" + size[0] + "_" + size[1];
-		cached = this.cache[key];
+		cached = this._cache[key];
 		if(cached){
-			this.cacheI++;
-			return cached.createInstance("index: " + this.cacheI);
+			this._cacheI++;
+			return cached.createInstance("index: " + this._cacheI);
 		}
 		else{
 			throw new Error("not found " + key);
@@ -177,11 +188,11 @@ define(["MeshUtils", "Materials"], function(MeshUtils, Materials){
 
 	MeshCache.prototype.getBaddieFromCache = function(key){
 		var cached, mesh, key = "billboardplane_" + key;
-		cached = this.cache[key];
+		cached = this._cache[key];
 		if(cached){
-			mesh = cached.createInstance("index: " + this.cacheI);
+			mesh = cached.createInstance("index: " + this._cacheI);
 			mesh.billboardMode = BABYLON.Mesh.BILLBOARDMODE_ALL;
-			this.cacheI++;
+			this._cacheI++;
 			return mesh;
 		}
 		else{

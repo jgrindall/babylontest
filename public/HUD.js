@@ -18,6 +18,10 @@ define(["GridUtils"], function(GridUtils){
 		});
 		$("body").append(this.canvas);
 	};
+
+	HUD.prototype.destroy = function(){
+		this.$canvas.remove();
+	};
 	
 	HUD.prototype.drawWalls = function(){
 		var ctx = this.ctx;
