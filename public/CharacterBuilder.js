@@ -8,7 +8,7 @@ define(["GridUtils", "GreedyMeshAlgo", "Materials", "Textures", "LightBuilder", 
 
 	};
 
-	CharacterBuilder.addBaddie = function(pos, i, scene, meshCache){
+	CharacterBuilder.addBaddie = function(pos, scene, meshCache){
 		var y = SIZE/2, container, billboard, babylonPos, texture;
 		babylonPos = GridUtils.ijToBabylon(pos[0], pos[1]);
 		texture = Math.random() < 0.5 ? "bird" : "baddie";

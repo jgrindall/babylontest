@@ -34,14 +34,14 @@ define(["GridUtils", "MeshCache", "GreedyMeshAlgo", "Materials", "Textures", "Li
 		return plane;
 	};
 
-	var _addWalls = function(a){
+	var _addWalls = function(a, meshCache){
 		var _i, _j, SIZE_I = a.length, SIZE_J = a[0].length, walls = [];
 		for(_i = 0; _i < SIZE_I; _i++){
 			for(_j = 0; _j < SIZE_J; _j++){
 				_.each(["n", "s", "w", "e"], function(dir){
 					var wallData = a[_i][_j].data.walls;
 					if(wallData[dir] >= 1){
-						walls.push(_getWallAt([_i, _j], dir, a[_i][_j].data.texture, wallData[dir]));
+						walls.push(_getWallAt([_i, _j], dir, a[_i][_j].data.texture, wallData[dir], meshCache));
 					}
 				});
 			}

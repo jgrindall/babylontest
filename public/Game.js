@@ -51,7 +51,7 @@ define(["MeshUtils", "GridUtils", "MeshCache", "SceneBuilder", "TerrainBuilder",
 			gridComponent = this.manager.getComponentDataForEntity('GridComponent', this.gridId);
 			gridComponent.grid = window._DATA;
 			gridComponent.objects = window._OBJECTS;
-			GridBuilder.build(this.scene, gridComponent);
+			GridBuilder.build(this.scene, gridComponent, this.meshCache);
 		};
 
 		Game.prototype.makeTerrain = function(){
