@@ -1,8 +1,18 @@
 define(["GridUtils"], function(GridUtils){
 	"use strict";
 
-	var Possessions = function(options){
+	var _count = function(arr){
+		var c = {};
+		_.each(arr, function(obj){
+			c[obj.data.texture] = c[obj.data.texture] || 0;
+			c[obj.data.texture]++;
+		});
+		return c;
+	};
+
+	var Possessions = function(materialsCache){
 		this.$el = $("<div/>");
+		this.materialsCache = materialsCache;
 		this.$el.css({
 			"border":"2px solid black",
 			"position":"fixed",
@@ -21,7 +31,16 @@ define(["GridUtils"], function(GridUtils){
 	};
 
 	Possessions.prototype.update = function(arr){
-		this.$el.append("<p>" + JSON.stringify(arr, null, 2) + "</p>");
+		this.$el.empty();
+		var _this = this;
+		var count = _count(arr);
+		_.each(count, function(count, val){
+			var img = new Image();
+			var base64 = _this.materialsCache.getBase64ForKey(val);
+			console.log(base64, count);
+			img.src = base64;
+			_this.$el.append(img).append("x " + count);
+		});
 	};
 
 	return Possessions;

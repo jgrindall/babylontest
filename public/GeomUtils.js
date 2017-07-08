@@ -19,7 +19,6 @@ define([], function(){
 	};
 
 	GeomUtils.roundRect = function(ctx, x, y, width, height, radius, fill, stroke) {
-		console.log("rr", ctx, x, y, width, height, radius, fill, stroke);
 	 	if (typeof stroke == "undefined" ) {
 	    	stroke = true;
 	  	}

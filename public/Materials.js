@@ -2,8 +2,9 @@ define(["lib/Deferred_", "Textures", "MeshUtils", "MaterialConsts"], function(De
 
 	"use strict";
 
-	var Materials = function(){
-		this.keys = [];
+	var Materials = function(textures){
+		this.keys = _.sortBy(_.keys(textures), _.identity);
+		this.textures = textures;
 	};
 
 	Materials.prototype.destroy = function(){
@@ -17,9 +18,8 @@ define(["lib/Deferred_", "Textures", "MeshUtils", "MaterialConsts"], function(De
 		this.base64Material.dispose();
 	};
 
-	Materials.prototype.makeMaterials = function(scene, textures, callback){
+	Materials.prototype.makeMaterials = function(scene, callback){
 		var _this = this;
-		this.keys = _.sortBy(_.keys(textures), _.identity);
 		this.redMaterial = new BABYLON.StandardMaterial("red", scene);
 		this.redMaterial.diffuseColor = BABYLON.Color3.Red();
 		this.redMaterial.alpha = 0.7;
@@ -39,7 +39,7 @@ define(["lib/Deferred_", "Textures", "MeshUtils", "MaterialConsts"], function(De
 		this.fireMaterial.opacityTexture = fireTexture;
 		Textures
 		.createCanvasFromURLArray(_.map(this.keys, function(key){
-			return textures[key];
+			return _this.textures[key];
 		}))
 		.then(function(canvas){
 			_this.base64Material = new BABYLON.StandardMaterial("base64Material", scene);
@@ -48,6 +48,10 @@ define(["lib/Deferred_", "Textures", "MeshUtils", "MaterialConsts"], function(De
 			_this.base64Material.freeze();
 			callback();
 		});
+	};
+
+	Materials.prototype.getBase64ForKey = function(key){
+		return this.textures[key];
 	};
 
 	Materials.prototype.applyToMesh = function(mesh, len, texture){

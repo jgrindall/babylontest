@@ -24,7 +24,7 @@ require(["Game", "DATA"],
 		launch = function(){
 			var g = new Game(engine);
 			g.on("loaded", function(){
-				//
+				//g.destroy();
 			});
 		};
 

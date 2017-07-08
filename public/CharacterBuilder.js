@@ -8,13 +8,18 @@ define(["GridUtils", "GreedyMeshAlgo", "Materials", "Textures", "LightBuilder", 
 
 	};
 
-	CharacterBuilder.addBaddie = function(pos, scene, meshCache){
+	CharacterBuilder.addBaddie = function(pos, scene, meshCache, manager, id, obj, gridComponent, playerPos){
 		var y = SIZE/2, container, billboard, babylonPos, texture;
+		var meshComp = manager.getComponentDataForEntity('MeshComponent', id);
+		var strategyComp = manager.getComponentDataForEntity('BaddieStrategyComponent', id);
 		babylonPos = GridUtils.ijToBabylon(pos[0], pos[1]);
 		texture = Math.random() < 0.5 ? "bird" : "baddie";
 		billboard = meshCache.getBaddieFromCache(texture);
 		billboard.position = new BABYLON.Vector3(babylonPos.x, y, babylonPos.z);
-		return billboard;
+		meshComp.mesh = billboard;
+		strategyComp.strategy = obj.data.strategy;
+		strategyComp.vel = {'x':1, 'z':0};
+		strategyComp.path = GridUtils.getPath(obj.data.strategy, obj.data.position, gridComponent.grid, playerPos);
 	};
 
 	CharacterBuilder.addPlayer = function(pos, scene){

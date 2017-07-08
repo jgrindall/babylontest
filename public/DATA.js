@@ -243,6 +243,16 @@ define([], function(){
 					7
 				]
 			}
+		},
+		{
+			"type":"object",
+			"data":{
+				"texture":"bird",
+				"position":[
+					8,
+					8
+				]
+			}
 		}
 	];
 
@@ -272,6 +282,28 @@ define([], function(){
 					7
 				],
 				"strategy":"north-south"
+			}
+		},
+		{
+			"type":"baddie",
+			"data":{
+				"texture":"baddie",
+				"position":[
+					3,
+					3
+				],
+				"strategy":"west-east"
+			}
+		},
+		{
+			"type":"baddie",
+			"data":{
+				"texture":"baddie",
+				"position":[
+					7,
+					2
+				],
+				"strategy":"hunt"
 			}
 		}
 	];

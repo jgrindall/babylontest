@@ -9,17 +9,21 @@ define(["MeshUtils", "GridUtils", "MeshCache", "SceneBuilder", "TerrainBuilder",
 
 "components/CameraComponent", "components/PossessionsComponent", "processors/CameraMatchPlayerProcessor",
 
-"processors/UpdateHUDProcessor", "Possessions",
+"processors/UpdateHUDProcessor", "Possessions", "Health",
 
 "processors/PlayerMovementProcessor", "processors/BaddieMovementProcessor", "processors/UpdateHuntProcessor",
 
 "processors/BaddieCollisionProcessor", "processors/ObjectCollisionProcessor", "DATA", "HUD"],
 
-	function(MeshUtils, GridUtils, MeshCache, SceneBuilder, TerrainBuilder, CharacterBuilder, GridBuilder, ObjectBuilder, GreedyMeshAlgo, Materials, GamePad, GamePadUtils, EntityManager,
+	function(MeshUtils, GridUtils, MeshCache, SceneBuilder, TerrainBuilder, CharacterBuilder, GridBuilder, ObjectBuilder,
+
+		GreedyMeshAlgo, Materials, GamePad, GamePadUtils, EntityManager,
 
 	HealthComponent, SpeedComponent, Components, MessageComponent, MeshComponent, BaddieStrategyComponent, GridComponent,
 
-	CameraComponent, PossessionsComponent, CameraMatchPlayerProcessor, UpdateHUDProcessor, Possessions, PlayerMovementProcessor, BaddieMovementProcessor, UpdateHuntProcessor,
+	CameraComponent, PossessionsComponent, CameraMatchPlayerProcessor, UpdateHUDProcessor, Possessions, Health,
+
+	PlayerMovementProcessor, BaddieMovementProcessor, UpdateHuntProcessor,
 
 	BaddieCollisionProcessor, ObjectCollisionProcessor, DATA, HUD) {
 
@@ -32,7 +36,6 @@ define(["MeshUtils", "GridUtils", "MeshCache", "SceneBuilder", "TerrainBuilder",
 			this.processors = [];
 			this.listener = {
 				emit:function(type, id, componentName){
-					//console.log(arguments);
 					if(type === "a"){
 						var possComp = _this.manager.getComponentDataForEntity('PossessionsComponent', _this.playerId);
 						_this.possessions.update(possComp.possessions);
@@ -46,10 +49,10 @@ define(["MeshUtils", "GridUtils", "MeshCache", "SceneBuilder", "TerrainBuilder",
 			this.baddieIds = [];
 			this.objectIds = [];
 			this.cameraId = null;
-			this.materialsCache = new Materials();
+			this.materialsCache = new Materials(window._TEXTURES);
 			this.meshCache = new MeshCache(this.materialsCache);
 			Components.addTo(this.manager);
-			this.materialsCache.makeMaterials(this.scene, window._TEXTURES, this.init.bind(this));
+			this.materialsCache.makeMaterials(this.scene, this.init.bind(this));
 		};
 
 		Game.prototype.loadJSON = function(){
@@ -75,14 +78,13 @@ define(["MeshUtils", "GridUtils", "MeshCache", "SceneBuilder", "TerrainBuilder",
 		};
 
 		Game.prototype.addBaddies = function(){
+			var gridComponent = this.manager.getComponentDataForEntity('GridComponent', this.gridId);
 			var manager = this.manager, scene = this.scene, baddieIds = this.baddieIds, meshCache = this.meshCache;
-			var baddies = this.manager.getComponentDataForEntity('GridComponent', this.gridId).baddies;
+			var baddies = gridComponent.baddies;
+			var playerPos = gridComponent.empty[0];
 			_.each(baddies, function(obj){
 				var id = manager.createEntity(['MessageComponent', 'PossessionsComponent', 'MeshComponent', 'BaddieStrategyComponent']);
-				manager.getComponentDataForEntity('MeshComponent', id).mesh = CharacterBuilder.addBaddie(obj.data.position, scene, meshCache);
-				manager.getComponentDataForEntity('BaddieStrategyComponent', id).strategy = obj.strategy;
-				manager.getComponentDataForEntity('BaddieStrategyComponent', id).vel = {'x':1, 'z':0};
-				manager.getComponentDataForEntity('BaddieStrategyComponent', id).path = GridUtils.getPath(obj.strategy, obj.data.position, gridComponent.grid, gridComponent.empty[i]);
+				CharacterBuilder.addBaddie(obj.data.position, scene, meshCache, manager, id, obj, gridComponent, playerPos);
 				baddieIds.push(id);
 			});
 		};
@@ -120,20 +122,20 @@ define(["MeshUtils", "GridUtils", "MeshCache", "SceneBuilder", "TerrainBuilder",
 			this.processors.push(new UpdateHuntProcessor(this.manager, this.baddieIds, this.playerId, gridComponent.solid));
 			this.processors.push(new UpdateHUDProcessor(this.manager, this.engine, this.scene, this.hud, this.playerId, this.baddieIds, this.objectIds, gridComponent));
 			_.each(this.processors, manager.addProcessor.bind(manager));
-			alert(manager.processors);
 		};
 
 		Game.prototype.addControls = function(){
 			this.gamePad = new GamePad("zone_joystick");
 			GamePadUtils.linkGamePadToId(this.manager, this.gamePad, this.playerId);
 			this.hud = new HUD();
-			this.possessions = new Possessions();
+			this.possessions = new Possessions(this.materialsCache);
+			this.health = new Health();
 		};
 
 		Game.prototype.render = function(){
 			if(this.scene){
 				this.scene.render();
-				$("p").text(this.engine.getFps().toFixed(0));
+				$("p.fps").text(this.engine.getFps().toFixed(0));
 			}
 			if(this.manager){
 				this.manager.update(this.scene.getLastFrameDuration());

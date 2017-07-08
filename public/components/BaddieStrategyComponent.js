@@ -6,7 +6,7 @@ define([], function(){
 				'x':0,
 				'y':0
 			},
-			'strategy':"north-south",
+			'strategy':"",
 			'path':{
 
 			}
