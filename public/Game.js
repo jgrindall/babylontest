@@ -5,7 +5,7 @@ define(["MeshUtils", "GridUtils", "MeshCache", "SceneBuilder", "TerrainBuilder",
 
 "components/HealthComponent", "components/SpeedComponent", "components/Components", "components/MessageComponent",
 
-"components/MeshComponent", "components/BaddieStrategyComponent", "components/GridComponent",
+"components/MeshComponent", "components/BaddieStrategyComponent",
 
 "components/CameraComponent", "components/PossessionsComponent", "processors/CameraMatchPlayerProcessor",
 
@@ -19,7 +19,7 @@ define(["MeshUtils", "GridUtils", "MeshCache", "SceneBuilder", "TerrainBuilder",
 
 		GreedyMeshAlgo, Materials, GamePad, GamePadUtils, EntityManager,
 
-	HealthComponent, SpeedComponent, Components, MessageComponent, MeshComponent, BaddieStrategyComponent, GridComponent,
+	HealthComponent, SpeedComponent, Components, MessageComponent, MeshComponent, BaddieStrategyComponent,
 
 	CameraComponent, PossessionsComponent, CameraMatchPlayerProcessor, UpdateHUDProcessor, Possessions, Health,
 
@@ -31,6 +31,7 @@ define(["MeshUtils", "GridUtils", "MeshCache", "SceneBuilder", "TerrainBuilder",
 
 		var Game = function(engine){
 			var _this = this;
+			this._paused = false;
 			this.renderFn = this.render.bind(this);
 			this.engine = engine;
 			this.processors = [];
@@ -60,44 +61,36 @@ define(["MeshUtils", "GridUtils", "MeshCache", "SceneBuilder", "TerrainBuilder",
 		};
 
 		Game.prototype.makeGrid = function(){
-			var gridComponent;
-			this.gridId = this.manager.createEntity(['GridComponent']);
-			gridComponent = this.manager.getComponentDataForEntity('GridComponent', this.gridId);
-			gridComponent.grid = window._DATA;
-			gridComponent.objects = window._OBJECTS;
-			gridComponent.baddies = window._BADDIES;
-			GridBuilder.build(this.scene, gridComponent, this.meshCache);
+			this.grid = GridBuilder.build(this.scene, this.meshCache);
 		};
 
 		Game.prototype.makeTerrain = function(){
-			var gridComponent = this.manager.getComponentDataForEntity('GridComponent', this.gridId);
-			TerrainBuilder.addFromData(this.scene, gridComponent, this.meshCache);
-			TerrainBuilder.addGround(this.scene, gridComponent, this.meshCache);
+			TerrainBuilder.addFromData(this.scene, this.grid, this.meshCache);
+			TerrainBuilder.addGround(this.scene, this.grid, this.meshCache);
 			TerrainBuilder.addCeil(this.scene, this.meshCache);
 			TerrainBuilder.addSky(this.scene, this.meshCache);
 		};
 
 		Game.prototype.addBaddies = function(){
-			var gridComponent = this.manager.getComponentDataForEntity('GridComponent', this.gridId);
 			var manager = this.manager, scene = this.scene, baddieIds = this.baddieIds, meshCache = this.meshCache;
-			var baddies = gridComponent.baddies;
-			var playerPos = gridComponent.empty[0];
+			var baddies = this.grid.baddies;
+			var playerPos = this.grid.empty[0];
+			var grid = this.grid;
 			_.each(baddies, function(obj){
 				var id = manager.createEntity(['MessageComponent', 'PossessionsComponent', 'MeshComponent', 'BaddieStrategyComponent']);
-				CharacterBuilder.addBaddie(obj.data.position, scene, meshCache, manager, id, obj, gridComponent, playerPos);
+				CharacterBuilder.addBaddie(obj.data.position, scene, meshCache, manager, id, obj, grid, playerPos);
 				baddieIds.push(id);
 			});
 		};
 
 		Game.prototype.addPlayer = function(){
-			var gridComponent = this.manager.getComponentDataForEntity('GridComponent', this.gridId);
 			this.playerId = this.manager.createEntity(['MessageComponent', 'PossessionsComponent', 'SpeedComponent', 'MeshComponent']);
-			this.manager.getComponentDataForEntity('MeshComponent', this.playerId).mesh = CharacterBuilder.addPlayer(gridComponent.empty[0], this.scene, this.meshCache);
+			this.manager.getComponentDataForEntity('MeshComponent', this.playerId).mesh = CharacterBuilder.addPlayer([2, 13], this.scene, this.meshCache);
 		};
 
 		Game.prototype.addObjects = function(){
 			var manager = this.manager, scene = this.scene, objectIds = this.objectIds, meshCache = this.meshCache;
-			var objects = this.manager.getComponentDataForEntity('GridComponent', this.gridId).objects;
+			var objects = this.grid.objects;
 			_.each(objects, function(obj){
 				var id = manager.createEntity(['MeshComponent', 'ObjectComponent']);
 				manager.getComponentDataForEntity('MeshComponent', id).mesh = ObjectBuilder.addObject(obj.data.position, scene, obj.data.texture, meshCache);
@@ -113,15 +106,24 @@ define(["MeshUtils", "GridUtils", "MeshCache", "SceneBuilder", "TerrainBuilder",
 
 		Game.prototype.startProcessors = function(){
 			var manager = this.manager;
-			var gridComponent = this.manager.getComponentDataForEntity('GridComponent', this.gridId);
 			this.processors.push(new PlayerMovementProcessor(this.manager, this.engine, this.playerId));
 			this.processors.push(new CameraMatchPlayerProcessor(this.manager, this.engine, this.playerId, this.cameraId));
 			this.processors.push(new BaddieMovementProcessor(this.manager, this.baddieIds));
 			this.processors.push(new BaddieCollisionProcessor(this.manager, this.playerId, this.baddieIds));
 			this.processors.push(new ObjectCollisionProcessor(this.manager, this.playerId, this.objectIds));
-			this.processors.push(new UpdateHuntProcessor(this.manager, this.baddieIds, this.playerId, gridComponent.solid));
-			this.processors.push(new UpdateHUDProcessor(this.manager, this.engine, this.scene, this.hud, this.playerId, this.baddieIds, this.objectIds, gridComponent));
+			this.processors.push(new UpdateHuntProcessor(this.manager, this.baddieIds, this.playerId, this.grid.solid));
+			this.processors.push(new UpdateHUDProcessor(this.manager, this.engine, this.scene, this.hud, this.playerId, this.baddieIds, this.objectIds, this.grid));
 			_.each(this.processors, manager.addProcessor.bind(manager));
+		};
+
+		Game.prototype.pause = function(){
+			this.gamePad.pause();
+			this._paused = true;
+		};
+
+		Game.prototype.unpause = function(){
+			this.gamePad.unpause();
+			this._paused = false;
 		};
 
 		Game.prototype.addControls = function(){
@@ -133,6 +135,9 @@ define(["MeshUtils", "GridUtils", "MeshCache", "SceneBuilder", "TerrainBuilder",
 		};
 
 		Game.prototype.render = function(){
+			if(this._paused){
+				return;
+			}
 			if(this.scene){
 				this.scene.render();
 				$("p.fps").text(this.engine.getFps().toFixed(0));
@@ -170,11 +175,6 @@ define(["MeshUtils", "GridUtils", "MeshCache", "SceneBuilder", "TerrainBuilder",
 
 		_.extend(Game.prototype, Backbone.Events);
 
-		window.updateP = function(poss){
-			$("body").append(JSON.stringify(poss, null, 2));
-		};
-
 		return Game;
 	}
 );
-

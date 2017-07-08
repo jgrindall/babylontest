@@ -8,21 +8,25 @@ define(["GridUtils", "GreedyMeshAlgo", "Materials", "Textures", "LightBuilder", 
 
 	};
 
-	GridBuilder.build = function(scene, gridComponent, meshCache){
-		GridUtils.addFacesInfoToGrid(gridComponent.grid);
-		gridComponent.empty = _.shuffle(GridUtils.getMatchingLocations(gridComponent.grid, function(obj){
+	GridBuilder.build = function(scene, meshCache){
+		var g = {};
+		g.grid = window._DATA;
+		g.objects = window._OBJECTS;
+		g.baddies = window._BADDIES;
+		GridUtils.addFacesInfoToGrid(g.grid);
+		g.empty = _.shuffle(GridUtils.getMatchingLocations(g.grid, function(obj){
 			return obj.type === "empty";
 		}));
-		gridComponent.solid = GridUtils.getSolid(gridComponent.grid);
-		gridComponent.greedy = GreedyMeshAlgo.get(gridComponent.solid);
-		gridComponent.greedyWater = GreedyMeshAlgo.get(GridUtils.getByType(gridComponent.grid, "water"));
-		gridComponent.greedyFire = GreedyMeshAlgo.get(GridUtils.getByType(gridComponent.grid, "fire"));
+		g.solid = GridUtils.getSolid(g.grid);
+		g.greedy = GreedyMeshAlgo.get(g.solid);
+		g.greedyWater = GreedyMeshAlgo.get(GridUtils.getByType(g.grid, "water"));
+		g.greedyFire = GreedyMeshAlgo.get(GridUtils.getByType(g.grid, "fire"));
 		// cache the boxes
-		_.each(gridComponent.greedy.dims, function(size){
+		_.each(g.greedy.dims, function(size){
 			meshCache.addBoxToCache(scene, size, SIZE);
 		});
 		// cache the planes for the walls
-		_.each(GridUtils.getLengthsNeeded(gridComponent.grid), function(lengths, key){
+		_.each(GridUtils.getLengthsNeeded(g.grid), function(lengths, key){
 			meshCache.addPlanesToCache(scene, lengths, key, SIZE);
 		});
 		// cache bits and bobs
@@ -30,15 +34,16 @@ define(["GridUtils", "GreedyMeshAlgo", "Materials", "Textures", "LightBuilder", 
 		meshCache.addBaddieToCache(scene, "bird");
 		meshCache.addBaddieToCache(scene, "baddie");
 		// cache water and fire
-		_.each(gridComponent.greedyWater.dims, function(size){
+		_.each(g.greedyWater.dims, function(size){
 			meshCache.addWaterToCache(scene, size);
 		});
-		_.each(gridComponent.greedyFire.dims, function(size){
+		_.each(g.greedyFire.dims, function(size){
 			meshCache.addFireToCache(scene, size);
 		});
-		_.each(gridComponent.objects, function(obj){
+		_.each(g.objects, function(obj){
 			meshCache.addObjectToCache(scene, obj.data.texture);
 		});
+		return g;
 	};
 
 	return GridBuilder;

@@ -8,8 +8,24 @@ define([], function(){
 		this.make(id);
 	};
 
-	GamePad.prototype.make = function(id){
+	GamePad.prototype.pause = function(){
+		this.manager.off();
+	};
+
+	GamePad.prototype.unpause = function(){
 		var update = this.update;
+		this.manager.on("move", function(e, data){
+			var d, a;
+			d = (data.distance / RADIUS);// from 0 to 1
+			a = data.angle.degree;
+			update.emit("change", {d:d, a:a});
+		});
+		this.manager.on("end", function(e, data){
+			update.emit("end");
+		});
+	};
+
+	GamePad.prototype.make = function(id){
 		this.manager = nipplejs.create({
 			zone: document.getElementById(id),
 			mode: 'static',
@@ -20,15 +36,7 @@ define([], function(){
 			},
 			color: 'red'
 		});
-		this.manager.on("move", function(e, data){
-			var d, a;
-			d = (data.distance / RADIUS);// from 0 to 1
-			a = data.angle.degree;
-			update.emit("change", {d:d, a:a});
-		});
-		this.manager.on("end", function(e, data){
-			update.emit("end");
-		});
+		this.unpause();
 	};
 
 	GamePad.prototype.destroy = function(){

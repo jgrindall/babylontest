@@ -1,9 +1,8 @@
 define(["GridUtils"], function(GridUtils){
 	"use strict";
 
-	var Health = function(materialsCache){
+	var Health = function(){
 		this.$el = $("<div/>");
-		this.materialsCache = materialsCache;
 		this.$el.css({
 			"border":"2px solid black",
 			"position":"fixed",

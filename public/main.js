@@ -25,6 +25,12 @@ require(["Game", "DATA"],
 			var g = new Game(engine);
 			g.on("loaded", function(){
 				//g.destroy();
+				setTimeout(function(){
+					//g.pause();
+				}, 5000);
+				setTimeout(function(){
+					//g.unpause();
+				}, 10000);
 			});
 		};
 
