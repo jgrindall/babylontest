@@ -23,7 +23,7 @@ define(["GridUtils"], function(GridUtils){
 		_.each(this.baddieIds, function(id){
 			var sComp, mesh, baddiePos;
 			sComp = manager.getComponentDataForEntity('BaddieStrategyComponent', id);
-			if(sComp.strategy === "hunt"){
+			if(sComp.move === "hunt"){
 				mesh = manager.getComponentDataForEntity('MeshComponent', id).mesh;
 				baddiePos = GridUtils.babylonToIJ(mesh.position);
 				sComp.path = GridUtils.getAStarPath(baddiePos, pfGrid, playerPos);

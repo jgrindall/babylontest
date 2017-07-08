@@ -11,7 +11,7 @@ define(["MeshUtils", "GridUtils", "MeshCache", "SceneBuilder", "TerrainBuilder",
 
 "processors/UpdateHUDProcessor", "Possessions", "Health",
 
-"processors/PlayerMovementProcessor", "processors/BaddieMovementProcessor", "processors/UpdateHuntProcessor",
+"processors/PlayerMovementProcessor", "processors/TerrainCollisionProcessor", "processors/BaddieMovementProcessor", "processors/UpdateHuntProcessor",
 
 "processors/BaddieCollisionProcessor", "processors/ObjectCollisionProcessor", "DATA", "HUD"],
 
@@ -23,7 +23,7 @@ define(["MeshUtils", "GridUtils", "MeshCache", "SceneBuilder", "TerrainBuilder",
 
 	CameraComponent, PossessionsComponent, CameraMatchPlayerProcessor, UpdateHUDProcessor, Possessions, Health,
 
-	PlayerMovementProcessor, BaddieMovementProcessor, UpdateHuntProcessor,
+	PlayerMovementProcessor, TerrainCollisionProcessor, BaddieMovementProcessor, UpdateHuntProcessor,
 
 	BaddieCollisionProcessor, ObjectCollisionProcessor, DATA, HUD) {
 
@@ -114,6 +114,7 @@ define(["MeshUtils", "GridUtils", "MeshCache", "SceneBuilder", "TerrainBuilder",
 			this.processors.push(new CameraMatchPlayerProcessor(this.manager, this.engine, this.playerId, this.cameraId));
 			this.processors.push(new BaddieMovementProcessor(this.manager, this.baddieIds));
 			this.processors.push(new BaddieCollisionProcessor(this.manager, this.playerId, this.baddieIds));
+			this.processors.push(new TerrainCollisionProcessor(this.manager, this.playerId, this.grid.greedyFire));
 			this.processors.push(new ObjectCollisionProcessor(this.manager, this.playerId, this.objectIds));
 			this.processors.push(new UpdateHuntProcessor(this.manager, this.baddieIds, this.playerId, this.grid.solid));
 			this.processors.push(new UpdateHUDProcessor(this.manager, this.engine, this.scene, this.hud, this.playerId, this.baddieIds, this.objectIds, this.grid));

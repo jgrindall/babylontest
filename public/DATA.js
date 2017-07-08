@@ -281,7 +281,9 @@ define([], function(){
 					14,
 					7
 				],
-				"strategy":"north-south"
+				"strategy":{
+					"move":"north-south"
+				}
 			}
 		},
 		{
@@ -292,7 +294,9 @@ define([], function(){
 					3,
 					3
 				],
-				"strategy":"west-east"
+				"strategy":{
+					"move":"north-south"
+				}
 			}
 		},
 		{
@@ -303,7 +307,9 @@ define([], function(){
 					7,
 					2
 				],
-				"strategy":"hunt"
+				"strategy":{
+					"move":"north-south"
+				}
 			}
 		}
 	];
@@ -330,4 +336,3 @@ define([], function(){
 	};
 
 });
-

@@ -8,18 +8,23 @@ define(["GridUtils", "GreedyMeshAlgo", "Materials", "Textures", "LightBuilder", 
 
 	};
 
-	CharacterBuilder.addBaddie = function(pos, scene, meshCache, manager, id, obj, gridComponent, playerPos){
+	CharacterBuilder.addBaddie = function(pos, scene, meshCache, manager, id, obj, grid, playerPos){
 		var y = SIZE/2, container, billboard, babylonPos, texture;
 		var meshComp = manager.getComponentDataForEntity('MeshComponent', id);
 		var strategyComp = manager.getComponentDataForEntity('BaddieStrategyComponent', id);
 		babylonPos = GridUtils.ijToBabylon(pos[0], pos[1]);
-		texture = Math.random() < 0.5 ? "bird" : "baddie";
-		billboard = meshCache.getBaddieFromCache(texture);
+		billboard = meshCache.getBaddieFromCache(obj.data.texture);
 		billboard.position = new BABYLON.Vector3(babylonPos.x, y, babylonPos.z);
 		meshComp.mesh = billboard;
-		strategyComp.strategy = obj.data.strategy;
-		strategyComp.vel = {'x':1, 'z':0};
-		strategyComp.path = GridUtils.getPath(obj.data.strategy, obj.data.position, gridComponent.grid, playerPos);
+		strategyComp.move = obj.data.strategy.move;
+		strategyComp.vel = {'x':0, 'z':0};
+		if(strategyComp.move === "north-south"){
+			strategyComp.vel = {'x':0, 'z':1};
+		}
+		else if(strategyComp.move === "west-east"){
+			strategyComp.vel = {'x':1, 'z':0};
+		}
+		strategyComp.path = GridUtils.getPath(obj.data.strategy.move, obj.data.position, grid.grid, playerPos);
 	};
 
 	CharacterBuilder.addPlayer = function(pos, scene){

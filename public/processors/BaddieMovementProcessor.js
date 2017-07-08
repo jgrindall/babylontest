@@ -103,7 +103,7 @@ define(["GeomUtils", "GridUtils"], function(GeomUtils, GridUtils){
 	BaddieMovementProcessor.prototype.updateBaddie = function (id) {
 		var manager = this.manager;
 		var sComp = manager.getComponentDataForEntity('BaddieStrategyComponent', id);
-		var strategy = sComp.strategy;
+		var strategy = sComp.move;
 		if(strategy === "north-south" && !_pathIsUnit(strategy, sComp.path)){
 			this.moveNorthSouth(id, sComp);
 		}
