@@ -100,8 +100,9 @@ define(["MeshUtils", "GridUtils", "MeshCache", "SceneBuilder", "TerrainBuilder",
 			var manager = this.manager, scene = this.scene, objectIds = this.objectIds, meshCache = this.meshCache;
 			var objects = this.manager.getComponentDataForEntity('GridComponent', this.gridId).objects;
 			_.each(objects, function(obj){
-				var id = manager.createEntity(['MeshComponent']);
+				var id = manager.createEntity(['MeshComponent', 'ObjectComponent']);
 				manager.getComponentDataForEntity('MeshComponent', id).mesh = ObjectBuilder.addObject( obj.data.position, scene, obj.data.texture, meshCache);
+				manager.getComponentDataForEntity('ObjectComponent', id).data = obj;
 				objectIds.push(id);
 			});
 		};
@@ -122,6 +123,7 @@ define(["MeshUtils", "GridUtils", "MeshCache", "SceneBuilder", "TerrainBuilder",
 			this.processors.push(new UpdateHuntProcessor(this.manager, this.baddieIds, this.playerId, gridComponent.solid));
 			this.processors.push(new UpdateHUDProcessor(this.manager, this.engine, this.scene, this.hud, this.playerId, this.baddieIds, this.objectIds, gridComponent));
 			_.each(this.processors, manager.addProcessor.bind(manager));
+			alert(manager.processors);
 		};
 
 		Game.prototype.addControls = function(){
@@ -167,6 +169,10 @@ define(["MeshUtils", "GridUtils", "MeshCache", "SceneBuilder", "TerrainBuilder",
 		};
 
 		_.extend(Game.prototype, Backbone.Events);
+
+		window.updateP = function(poss){
+			$("body").append(JSON.stringify(poss, null, 2));
+		};
 
 		return Game;
 	}

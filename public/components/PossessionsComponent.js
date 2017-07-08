@@ -3,7 +3,7 @@ define([], function(){
 	var PossessionsComponent = {
 		state: {
 		    possessions:[
-				
+
 			]
 		}
 	};

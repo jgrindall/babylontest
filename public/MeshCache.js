@@ -153,8 +153,8 @@ define(["MeshUtils", "Materials"], function(MeshUtils, Materials){
 		var cached, mesh, key = "fire" + "_" + size[0] + "_" + size[1];
 		cached = this._cache[key];
 		if(cached){
-			cacheI++;
-			mesh = cached.createInstance("index: " + cacheI);
+			this._cacheI++;
+			mesh = cached.createInstance("index: " + this._cacheI);
 			return mesh;
 		}
 		else{

@@ -1,31 +1,19 @@
 
-define(["MeshUtils", "GridUtils", "MeshCache", "SceneBuilder", "TerrainBuilder", "CharacterBuilder", "ObjectBuilder", "GreedyMeshAlgo", "Materials", "GamePad",
+define(["components/HealthComponent", "components/ObjectComponent", "components/SpeedComponent",
 
-"GamePadUtils", "lib/entity-manager",
-
-"components/HealthComponent", "components/SpeedComponent", "components/MessageComponent",
+	"components/MessageComponent",
 
 "components/MeshComponent", "components/BaddieStrategyComponent", "components/GridComponent",
 
-"components/CameraComponent", "components/PossessionsComponent", "processors/CameraMatchPlayerProcessor",
+"components/CameraComponent", "components/PossessionsComponent"],
 
-"processors/UpdateHUDProcessor",
+	function(HealthComponent, ObjectComponent, SpeedComponent, MessageComponent, MeshComponent, BaddieStrategyComponent, GridComponent,
 
-"processors/PlayerMovementProcessor", "processors/BaddieMovementProcessor", "processors/UpdateHuntProcessor",
-
-"processors/BaddieCollisionProcessor", "processors/ObjectCollisionProcessor", "DATA", "HUD"],
-
-	function(MeshUtils, GridUtils, MeshCache, SceneBuilder, TerrainBuilder, CharacterBuilder, ObjectBuilder, GreedyMeshAlgo, Materials, GamePad, GamePadUtils, EntityManager,
-
-	HealthComponent, SpeedComponent, MessageComponent, MeshComponent, BaddieStrategyComponent, GridComponent,
-
-	CameraComponent, PossessionsComponent, CameraMatchPlayerProcessor, UpdateHUDProcessor, PlayerMovementProcessor, BaddieMovementProcessor, UpdateHuntProcessor,
-
-	BaddieCollisionProcessor, ObjectCollisionProcessor, DATA, HUD) {
+	CameraComponent, PossessionsComponent) {
 
 		"use strict";
 
-		var ALL = [HealthComponent, MessageComponent, GridComponent, PossessionsComponent, MeshComponent, SpeedComponent, BaddieStrategyComponent, CameraComponent];
+		var ALL = [ObjectComponent, HealthComponent, MessageComponent, GridComponent, PossessionsComponent, MeshComponent, SpeedComponent, BaddieStrategyComponent, CameraComponent];
 
 		var Components = {};
 

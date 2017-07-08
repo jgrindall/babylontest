@@ -183,9 +183,6 @@ define([], function(){
 		}
 	};
 
-	
-
-	/*
 
 	d[12][12] = {
 		"type":"water",
@@ -226,8 +223,6 @@ define([], function(){
 		}
 	};
 
-	*/
-
 	var objects = [
 		{
 			"type":"object",
@@ -244,7 +239,7 @@ define([], function(){
 			"data":{
 				"texture":"key",
 				"position":[
-					15,
+					14,
 					7
 				]
 			}

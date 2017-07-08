@@ -23,12 +23,7 @@ require(["Game", "DATA"],
 		launch = function(){
 			var g = new Game(engine);
 			g.on("loaded", function(){
-				setTimeout(function(){
-					g.destroy();
-				}, 1500);
-				setTimeout(function(){
-					launch();
-				}, 3000);
+				
 			});
 		};
 

@@ -1,6 +1,6 @@
-define(["GridUtils", "MeshCache", "GreedyMeshAlgo", "Materials", "Textures", "LightBuilder", "EffectBuilder"],
+define(["GridUtils", "MeshCache", "GreedyMeshAlgo", "Materials", "Textures", "GeomUtils", "LightBuilder", "EffectBuilder"],
 
-	function(GridUtils, MeshCache, GreedyMeshAlgo, Materials, Textures, LightBuilder, EffectBuilder){
+	function(GridUtils, MeshCache, GreedyMeshAlgo, Materials, Textures, GeomUtils, LightBuilder, EffectBuilder){
 
 	"use strict";
 
@@ -143,7 +143,7 @@ define(["GridUtils", "MeshCache", "GreedyMeshAlgo", "Materials", "Textures", "Li
 			var fireQuads = gridComponent.greedyFire.quads;
 			var groundWidth = SIZE_J*SIZE;
 			var groundHeight = SIZE_I*SIZE;
-			var ground = BABYLON.MeshBuilder.CreatePlane("ground", {height: groundHeight, width:groundWidth}, scene);
+			var ground = BABYLON.MeshBuilder.CreatePlane("ground", {"height": groundHeight, "width":groundWidth}, scene);
 			ground.material = new BABYLON.StandardMaterial("groundMat", scene);
 			ground.position = new BABYLON.Vector3(groundWidth/2, 0, groundHeight/2);
 			ground.rotation = new BABYLON.Vector3(Math.PI/2, 0, 0);
@@ -153,10 +153,11 @@ define(["GridUtils", "MeshCache", "GreedyMeshAlgo", "Materials", "Textures", "Li
 				c.height = img.height;
 				var scaleX = img.width / SIZE_J;
 				var scaleY = img.height / SIZE_I;
+				var RADIUS = 4;
 				c.getContext("2d").drawImage(img, 0, 0);
 				c.getContext("2d").fillStyle = "#4dc9ff";
 				_.each(waterQuads, function(quad){
-					c.getContext("2d").fillRect(scaleX*quad[1], scaleY*quad[0], scaleX*quad[2], scaleY*quad[3]);
+					GeomUtils.roundRect(c.getContext("2d"), scaleX*quad[1] - RADIUS, scaleY*quad[0] - RADIUS, scaleX*quad[2] + 2*RADIUS, scaleY*quad[3] + 2*RADIUS, RADIUS, true, false);
 				});
 				c.getContext("2d").fillStyle = "#FFA500";
 				_.each(fireQuads, function(quad){
@@ -180,3 +181,4 @@ define(["GridUtils", "MeshCache", "GreedyMeshAlgo", "Materials", "Textures", "Li
 	return TerrainBuilder;
 
 });
+
