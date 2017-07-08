@@ -1,8 +1,8 @@
 define(["GridUtils"], function(GridUtils){
 	"use strict";
-	
+
 	var HUD_SIZE = 10;
-	
+
 	var HUD = function(options){
 		this.canvas = document.createElement("canvas");
 		this.canvas.width = 300;
@@ -22,7 +22,7 @@ define(["GridUtils"], function(GridUtils){
 	HUD.prototype.destroy = function(){
 		this.$canvas.remove();
 	};
-	
+
 	HUD.prototype.drawWalls = function(){
 		var ctx = this.ctx;
 		ctx.fillStyle = "#999999";
@@ -30,7 +30,7 @@ define(["GridUtils"], function(GridUtils){
 			ctx.fillRect(wall[1]*HUD_SIZE, wall[0]*HUD_SIZE, wall[2]*HUD_SIZE, wall[3]*HUD_SIZE);
 		});
 	};
-	
+
 	HUD.prototype.drawWater = function(){
 		var ctx = this.ctx;
 		ctx.fillStyle = "#0077ee";
@@ -38,7 +38,7 @@ define(["GridUtils"], function(GridUtils){
 			ctx.fillRect(wall[1]*HUD_SIZE, wall[0]*HUD_SIZE, wall[2]*HUD_SIZE, wall[3]*HUD_SIZE);
 		});
 	};
-	
+
 	HUD.prototype.drawFire = function(){
 		var ctx = this.ctx;
 		ctx.fillStyle = "#cc44dd";
@@ -46,13 +46,13 @@ define(["GridUtils"], function(GridUtils){
 			ctx.fillRect(wall[1]*HUD_SIZE, wall[0]*HUD_SIZE, wall[2]*HUD_SIZE, wall[3]*HUD_SIZE);
 		});
 	};
-	
+
 	HUD.prototype.addPlayer = function(){
 		var p = this.data.player.position;
 		this.ctx.fillStyle = "#22dd99";
 		this.ctx.fillRect(p.j*HUD_SIZE, p.i*HUD_SIZE, 1*HUD_SIZE, 1*HUD_SIZE);
 	};
-	
+
 	HUD.prototype.addObjects = function(){
 		var ctx = this.ctx;
 		ctx.fillStyle = "#ffff33";
@@ -61,7 +61,7 @@ define(["GridUtils"], function(GridUtils){
 			ctx.fillRect(p.j*HUD_SIZE, p.i*HUD_SIZE, 1*HUD_SIZE, 1*HUD_SIZE);
 		});
 	};
-	
+
 	HUD.prototype.addBaddies = function(){
 		var ctx = this.ctx;
 		ctx.fillStyle = "#dd2222";
@@ -95,7 +95,7 @@ define(["GridUtils"], function(GridUtils){
 		this.addBaddies();
 		this.addObjects();
 	};
-	
+
 	return HUD;
 
 });

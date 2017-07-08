@@ -9,7 +9,7 @@ define(["MeshUtils", "GridUtils", "MeshCache", "SceneBuilder", "TerrainBuilder",
 
 "components/CameraComponent", "components/PossessionsComponent", "processors/CameraMatchPlayerProcessor",
 
-"processors/UpdateHUDProcessor",
+"processors/UpdateHUDProcessor", "Possessions",
 
 "processors/PlayerMovementProcessor", "processors/BaddieMovementProcessor", "processors/UpdateHuntProcessor",
 
@@ -19,18 +19,28 @@ define(["MeshUtils", "GridUtils", "MeshCache", "SceneBuilder", "TerrainBuilder",
 
 	HealthComponent, SpeedComponent, Components, MessageComponent, MeshComponent, BaddieStrategyComponent, GridComponent,
 
-	CameraComponent, PossessionsComponent, CameraMatchPlayerProcessor, UpdateHUDProcessor, PlayerMovementProcessor, BaddieMovementProcessor, UpdateHuntProcessor,
+	CameraComponent, PossessionsComponent, CameraMatchPlayerProcessor, UpdateHUDProcessor, Possessions, PlayerMovementProcessor, BaddieMovementProcessor, UpdateHuntProcessor,
 
 	BaddieCollisionProcessor, ObjectCollisionProcessor, DATA, HUD) {
 
 		"use strict";
 
 		var Game = function(engine){
+			var _this = this;
 			this.renderFn = this.render.bind(this);
 			this.engine = engine;
 			this.processors = [];
+			this.listener = {
+				emit:function(type, id, componentName){
+					//console.log(arguments);
+					if(type === "a"){
+						var possComp = _this.manager.getComponentDataForEntity('PossessionsComponent', _this.playerId);
+						_this.possessions.update(possComp.possessions);
+					}
+				}
+			};
 			this.scene = SceneBuilder.makeScene(this.engine);
-			this.manager = new EntityManager();
+			this.manager = new EntityManager(this.listener);
 			this.gridId = null;
 			this.playerId = null;
 			this.baddieIds = [];
@@ -52,6 +62,7 @@ define(["MeshUtils", "GridUtils", "MeshCache", "SceneBuilder", "TerrainBuilder",
 			gridComponent = this.manager.getComponentDataForEntity('GridComponent', this.gridId);
 			gridComponent.grid = window._DATA;
 			gridComponent.objects = window._OBJECTS;
+			gridComponent.baddies = window._BADDIES;
 			GridBuilder.build(this.scene, gridComponent, this.meshCache);
 		};
 
@@ -64,28 +75,14 @@ define(["MeshUtils", "GridUtils", "MeshCache", "SceneBuilder", "TerrainBuilder",
 		};
 
 		Game.prototype.addBaddies = function(){
-			var manager = this.manager, scene = this.scene, meshCache = this.meshCache;
-			var gridComponent = this.manager.getComponentDataForEntity('GridComponent', this.gridId), baddieIds = this.baddieIds;
-			_.each(_.range(0, window._NUM_BADDIES), function(i){
-				var id, v;
-				id = manager.createEntity(['MessageComponent', 'PossessionsComponent', 'MeshComponent', 'BaddieStrategyComponent']);
-				var pos = gridComponent.empty[i + 1];
-				manager.getComponentDataForEntity('MeshComponent', id).mesh = CharacterBuilder.addBaddie(pos, scene, meshCache);
-				v = manager.getComponentDataForEntity('BaddieStrategyComponent', id);
-				var ns = Math.random();
-				if(ns < 0.5){
-					v.vel = {'x':0, 'z':1};
-					v.strategy = "north-south";
-					v.path = GridUtils.getPath(v.strategy, pos, gridComponent.grid, gridComponent.empty[i]);
-				}
-				else if(ns < 0.67){
-					v.vel = {'x':1, 'z':0};
-					v.strategy = "west-east";
-					v.path = GridUtils.getPath(v.strategy, pos, gridComponent.grid, gridComponent.empty[i]);
-				}
-				else{
-					v.strategy = "hunt";
-				}
+			var manager = this.manager, scene = this.scene, baddieIds = this.baddieIds, meshCache = this.meshCache;
+			var baddies = this.manager.getComponentDataForEntity('GridComponent', this.gridId).baddies;
+			_.each(baddies, function(obj){
+				var id = manager.createEntity(['MessageComponent', 'PossessionsComponent', 'MeshComponent', 'BaddieStrategyComponent']);
+				manager.getComponentDataForEntity('MeshComponent', id).mesh = CharacterBuilder.addBaddie(obj.data.position, scene, meshCache);
+				manager.getComponentDataForEntity('BaddieStrategyComponent', id).strategy = obj.strategy;
+				manager.getComponentDataForEntity('BaddieStrategyComponent', id).vel = {'x':1, 'z':0};
+				manager.getComponentDataForEntity('BaddieStrategyComponent', id).path = GridUtils.getPath(obj.strategy, obj.data.position, gridComponent.grid, gridComponent.empty[i]);
 				baddieIds.push(id);
 			});
 		};
@@ -101,7 +98,7 @@ define(["MeshUtils", "GridUtils", "MeshCache", "SceneBuilder", "TerrainBuilder",
 			var objects = this.manager.getComponentDataForEntity('GridComponent', this.gridId).objects;
 			_.each(objects, function(obj){
 				var id = manager.createEntity(['MeshComponent', 'ObjectComponent']);
-				manager.getComponentDataForEntity('MeshComponent', id).mesh = ObjectBuilder.addObject( obj.data.position, scene, obj.data.texture, meshCache);
+				manager.getComponentDataForEntity('MeshComponent', id).mesh = ObjectBuilder.addObject(obj.data.position, scene, obj.data.texture, meshCache);
 				manager.getComponentDataForEntity('ObjectComponent', id).data = obj;
 				objectIds.push(id);
 			});
@@ -130,6 +127,7 @@ define(["MeshUtils", "GridUtils", "MeshCache", "SceneBuilder", "TerrainBuilder",
 			this.gamePad = new GamePad("zone_joystick");
 			GamePadUtils.linkGamePadToId(this.manager, this.gamePad, this.playerId);
 			this.hud = new HUD();
+			this.possessions = new Possessions();
 		};
 
 		Game.prototype.render = function(){
@@ -156,13 +154,13 @@ define(["MeshUtils", "GridUtils", "MeshCache", "SceneBuilder", "TerrainBuilder",
 		};
 
 		Game.prototype.destroy = function(){
-			// /So I dispose the textures of the material first, then the material itself and afterwards I dispose the mesh.
 			this.engine.stopRenderLoop(this.renderFn);
 			this.materialsCache.destroy();
 			this.meshCache.clear();
 			this.hud.destroy();
 			this.gamePad.destroy();
 			_.each(this.processors, this.manager.removeProcessor.bind(this.manager));
+			this.manager = null;
 			this.scene.dispose();
 			this.manager = null;
 			// remove component from entity and remove components

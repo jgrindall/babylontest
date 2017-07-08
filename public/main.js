@@ -13,6 +13,7 @@ require(["Game", "DATA"],
 
 		window._DATA = DATA.landscape;
 		window._OBJECTS = DATA.objects;
+		window._BADDIES = DATA.baddies;
 		window._TEXTURES = DATA.textures;
 		window._LIGHTS = DATA.lights;
 		window._EFFECTS = DATA.effects;
@@ -23,7 +24,7 @@ require(["Game", "DATA"],
 		launch = function(){
 			var g = new Game(engine);
 			g.on("loaded", function(){
-				
+				//
 			});
 		};
 

@@ -263,7 +263,17 @@ define([], function(){
 	];
 
 	var baddies = [
-		
+		{
+			"type":"baddie",
+			"data":{
+				"texture":"baddie",
+				"position":[
+					14,
+					7
+				],
+				"strategy":"north-south"
+			}
+		}
 	];
 
 	return {
