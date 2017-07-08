@@ -41,6 +41,10 @@ define(["MeshUtils", "GridUtils", "MeshCache", "SceneBuilder", "TerrainBuilder",
 						var possComp = _this.manager.getComponentDataForEntity('PossessionsComponent', _this.playerId);
 						_this.possessions.update(possComp.possessions);
 					}
+					else if(type === "b"){
+						var hComp = _this.manager.getComponentDataForEntity('HealthComponent', _this.playerId);
+						_this.health.update(hComp.health);
+					}
 				}
 			};
 			this.scene = SceneBuilder.makeScene(this.engine);
@@ -84,7 +88,7 @@ define(["MeshUtils", "GridUtils", "MeshCache", "SceneBuilder", "TerrainBuilder",
 		};
 
 		Game.prototype.addPlayer = function(){
-			this.playerId = this.manager.createEntity(['MessageComponent', 'PossessionsComponent', 'SpeedComponent', 'MeshComponent']);
+			this.playerId = this.manager.createEntity(['HealthComponent', 'MessageComponent', 'PossessionsComponent', 'SpeedComponent', 'MeshComponent']);
 			this.manager.getComponentDataForEntity('MeshComponent', this.playerId).mesh = CharacterBuilder.addPlayer([2, 13], this.scene, this.meshCache);
 		};
 

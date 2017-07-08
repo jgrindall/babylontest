@@ -1,13 +1,14 @@
 define([], function(){
-	
+
 	var HealthComponent = {
 		state: {
-		       text:"HELLO THERE!!"
+		    health:100,
+			isRegenerating:false
 		}
 	};
-	
+
 	HealthComponent.name = "HealthComponent";
 
 	return HealthComponent;
-	
+
 });

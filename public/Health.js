@@ -10,18 +10,20 @@ define(["GridUtils"], function(GridUtils){
 			"bottom":0,
 			"right":0,
 			"left":0,
-			"height":"100px",
+			"width":"200px",
+			"height":"20px",
 			"z-index":100
 		});
 		$("body").append(this.$el);
+		this.update(100);
 	};
 
 	Health.prototype.destroy = function(){
 		this.$el.remove();
 	};
 
-	Health.prototype.update = function(arr){
-		//
+	Health.prototype.update = function(health){
+		this.$el.text(health);
 	};
 
 	return Health;
