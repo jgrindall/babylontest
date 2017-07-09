@@ -68,8 +68,9 @@ define(["GridUtils", "MeshCache", "GreedyMeshAlgo", "Materials", "Textures", "Ge
 		});
 	};
 
-	var _addWater = function(quads, meshCache){
+	var _addWater = function(scene, quads, meshCache){
 		var TOP_LEFT = {"x":0, "z":SIZE_I * SIZE};
+		var music = new BABYLON.Sound("Violons", "assets/water.wav", scene, function () {}, { loop: true, autoplay: true,  maxDistance: 20 });
 		_.each(quads, function(quad){
 			var size, plane;
 			size = (quad[2] >= quad[3]) ? [quad[2], quad[3]] : [quad[3], quad[2]];
@@ -81,6 +82,9 @@ define(["GridUtils", "MeshCache", "GreedyMeshAlgo", "Materials", "Textures", "Ge
 				plane.rotate(new BABYLON.Vector3(0, 0, 1), Math.PI/2, BABYLON.Space.Local);
 			}
 			plane.freezeWorldMatrix();
+			console.log(plane.getBoundingInfo());
+			console.log(plane.getBoundingInfo().boundingSphere.centerWorld);
+			music.attachToMesh(plane);
 		});
 	};
 
@@ -113,7 +117,7 @@ define(["GridUtils", "MeshCache", "GreedyMeshAlgo", "Materials", "Textures", "Ge
 		addFromData: function(scene, gridComponent, meshCache){
 			_addBoxes(gridComponent.greedy.quads, meshCache);
 			_addWalls(gridComponent.grid, meshCache);
-			_addWater(gridComponent.greedyWater.quads, meshCache);
+			_addWater(scene, gridComponent.greedyWater.quads, meshCache);
 			_addFire(gridComponent.greedyFire.quads, meshCache);
 		},
 		addCeil :function(scene){

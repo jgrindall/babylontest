@@ -61,6 +61,20 @@ define(["MeshUtils", "GridUtils", "MeshCache", "SceneBuilder", "TerrainBuilder",
 			TerrainBuilder.addGround(this.scene, this.grid, this.meshCache);
 			TerrainBuilder.addCeil(this.scene, this.meshCache);
 			TerrainBuilder.addSky(this.scene, this.meshCache);
+
+
+			var fireMaterial2 = new BABYLON.FireMaterial("fire", this.scene);
+		    fireMaterial2.diffuseTexture = new BABYLON.Texture("assets/diffuse.png", this.scene);
+		    fireMaterial2.distortionTexture = new BABYLON.Texture("assets/distortion.png", this.scene);
+		    fireMaterial2.opacityTexture = new BABYLON.Texture("assets/opacity.png", this.scene);
+		    fireMaterial2.opacityTexture.level = 0.5;
+		    fireMaterial2.speed = 5.0;
+
+		    var mesh = BABYLON.MeshBuilder.CreatePlane("fkey", {"height": 4, "width":80}, this.scene);
+			mesh.material = fireMaterial2;
+			//mesh.rotate(new BABYLON.Vector3(1, 0, 0), Math.PI / 2, BABYLON.Space.Local);
+			mesh.position = new BABYLON.Vector3(80, 1, 80);
+
 		};
 
 		Game.prototype.addBaddies = function(){

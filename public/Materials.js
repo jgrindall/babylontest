@@ -37,6 +37,15 @@ define(["lib/Deferred_", "Textures", "MeshUtils", "MaterialConsts"], function(De
 		this.fireMaterial = new BABYLON.StandardMaterial("fire", scene);
 		this.fireMaterial.diffuseTexture = fireTexture;
 		this.fireMaterial.opacityTexture = fireTexture;
+
+		this.fireMaterial2 = new BABYLON.FireMaterial("fire", scene);
+	    this.fireMaterial2.diffuseTexture = new BABYLON.Texture("assets/diffuse.png", scene);
+	    this.fireMaterial2.distortionTexture = new BABYLON.Texture("assets/distortion.png", scene);
+	    this.fireMaterial2.opacityTexture = new BABYLON.Texture("assets/opacity.png", scene);
+	    this.fireMaterial2.opacityTexture.level = 0.5;
+	    this.fireMaterial2.speed = 5.0;
+
+
 		Textures
 		.createCanvasFromURLArray(_.map(this.keys, function(key){
 			return _this.textures[key];

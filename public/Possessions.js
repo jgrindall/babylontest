@@ -37,7 +37,6 @@ define(["GridUtils"], function(GridUtils){
 		_.each(count, function(count, val){
 			var img = new Image();
 			var base64 = _this.materialsCache.getBase64ForKey(val);
-			console.log(base64, count);
 			img.src = base64;
 			_this.$el.append(img).append("x " + count);
 		});
