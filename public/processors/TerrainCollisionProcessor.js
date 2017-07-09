@@ -1,9 +1,10 @@
-define(["TerrainCollectionCommand", "GeomUtils"], function(TerrainCollectionCommand, GeomUtils){
+define(["TerrainCollectionCommand", "GeomUtils", "GridUtils"], function(TerrainCollectionCommand, GeomUtils, GridUtils){
 	"use strict";
 
-	var TerrainCollisionProcessor = function(manager, playerId, greedyFire){
+	var TerrainCollisionProcessor = function(manager, playerId, grid){
 		this.manager = manager;
-		this.greedyFire = greedyFire;
+		this.grid = grid;
+		console.log(this.grid);
 		this.playerId = playerId;
 		this.init();
 	};
@@ -18,18 +19,13 @@ define(["TerrainCollectionCommand", "GeomUtils"], function(TerrainCollectionComm
 			return;
 		}
 		//TODO - better, get the sqr froim the position
-		var quads = this.greedyFire.quads;
 		var playerMesh = this.manager.getComponentDataForEntity('MeshComponent', this.playerId).mesh;
 		var playerPos = playerMesh.position;
-		_.each(quads, function(quad){
-			var r = {'left':0, 'right':10, 'bottom':0, 'top':10};
-			if(GeomUtils.pointInRect(playerPos, r){
-				console.log('hit');
-			}
-			console.log(quad, playerPos);
-		});
-		if(1){
-			//new TerrainCollectionCommand().exec(this.manager, this.playerId, firstBaddieHit);
+		playerPos = GridUtils.babylonToIJ(playerPos);
+		var obj = this.grid[playerPos.i][playerPos.j];
+		console.log();
+		if(obj.type === "fire"){
+			new TerrainCollectionCommand().exec(this.manager, this.playerId, obj);
 		}
 	};
 
