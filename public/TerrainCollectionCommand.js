@@ -5,11 +5,11 @@ define([], function(){
 
 	};
 
-	TerrainCollectionCommand.prototype.exec = function(manager, playerId, obj){
-		manager.getComponentDataForEntity('HealthComponent', playerId).isRegenerating = true;
-		manager.getComponentDataForEntity('HealthComponent', playerId).health -= 2;
-		manager.listener.emit("b", playerId, "HealthComponent");
-		//alert('ouch');
+	TerrainCollectionCommand.prototype.exec = function(game){
+		var hComp = game.manager.getComponentDataForEntity('HealthComponent', game.playerId);
+		hComp.isRegenerating = true;
+		hComp.health -= 2;
+		game.health.update(hComp.health);
 	};
 
 	return TerrainCollectionCommand;

@@ -5,16 +5,17 @@ define([], function(){
 
 	};
 
-	ObjectCollectionCommand.prototype.exec = function(manager, playerId, objectIds, toDeleteIds){
-		var possComp = manager.getComponentDataForEntity('PossessionsComponent', playerId);
+	ObjectCollectionCommand.prototype.exec = function(game, toDeleteIds){
+		var possComp = game.manager.getComponentDataForEntity('PossessionsComponent', game.playerId);
+		var objectIds = game.objectIds;
 		while(toDeleteIds.length >= 1){
 			var objectId = toDeleteIds.pop(), index = objectIds.indexOf(objectId), objectData;
-			objectData = manager.getComponentDataForEntity('ObjectComponent', objectId).data;
-			manager.getComponentDataForEntity('MeshComponent', objectId).mesh.dispose();
-			manager.removeEntity(objectId);
+			objectData = game.manager.getComponentDataForEntity('ObjectComponent', objectId).data;
+			game.manager.getComponentDataForEntity('MeshComponent', objectId).mesh.dispose();
+			game.manager.removeEntity(objectId);
 			objectIds.splice(index, 1);
 			possComp.possessions.push(objectData);
-			manager.listener.emit("a", playerId, "PossessionsComponent");
+			game.possessions.update(possComp.possessions);
 		}
 	};
 

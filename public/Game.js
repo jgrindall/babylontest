@@ -1,7 +1,7 @@
 
 define(["MeshUtils", "GridUtils", "MeshCache", "SceneBuilder", "TerrainBuilder", "CharacterBuilder", "GridBuilder", "ObjectBuilder", "GreedyMeshAlgo", "Materials", "GamePad",
 
-"GamePadUtils", "lib/entity-manager",
+"GamePadUtils", "lib/entity-manager", "Listener",
 
 "components/HealthComponent", "components/SpeedComponent", "components/Components", "components/MessageComponent",
 
@@ -17,7 +17,7 @@ define(["MeshUtils", "GridUtils", "MeshCache", "SceneBuilder", "TerrainBuilder",
 
 	function(MeshUtils, GridUtils, MeshCache, SceneBuilder, TerrainBuilder, CharacterBuilder, GridBuilder, ObjectBuilder,
 
-		GreedyMeshAlgo, Materials, GamePad, GamePadUtils, EntityManager,
+		GreedyMeshAlgo, Materials, GamePad, GamePadUtils, EntityManager, Listener,
 
 	HealthComponent, SpeedComponent, Components, MessageComponent, MeshComponent, BaddieStrategyComponent,
 
@@ -35,20 +35,8 @@ define(["MeshUtils", "GridUtils", "MeshCache", "SceneBuilder", "TerrainBuilder",
 			this.renderFn = this.render.bind(this);
 			this.engine = engine;
 			this.processors = [];
-			this.listener = {
-				emit:function(type, id, componentName){
-					if(type === "a"){
-						var possComp = _this.manager.getComponentDataForEntity('PossessionsComponent', _this.playerId);
-						_this.possessions.update(possComp.possessions);
-					}
-					else if(type === "b"){
-						var hComp = _this.manager.getComponentDataForEntity('HealthComponent', _this.playerId);
-						_this.health.update(hComp.health);
-					}
-				}
-			};
 			this.scene = SceneBuilder.makeScene(this.engine);
-			this.manager = new EntityManager(this.listener);
+			this.manager = new EntityManager(new Listener(this));
 			this.gridId = null;
 			this.playerId = null;
 			this.baddieIds = [];
@@ -171,6 +159,7 @@ define(["MeshUtils", "GridUtils", "MeshCache", "SceneBuilder", "TerrainBuilder",
 			this.meshCache.clear();
 			this.hud.destroy();
 			this.gamePad.destroy();
+			this.manager.listener = null;
 			_.each(this.processors, this.manager.removeProcessor.bind(this.manager));
 			this.manager = null;
 			this.scene.dispose();

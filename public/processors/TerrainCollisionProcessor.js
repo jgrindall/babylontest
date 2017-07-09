@@ -25,7 +25,7 @@ define(["TerrainCollectionCommand", "GeomUtils", "GridUtils"], function(TerrainC
 		var obj = this.grid[playerPos.i][playerPos.j];
 		console.log();
 		if(obj.type === "fire"){
-			new TerrainCollectionCommand().exec(this.manager, this.playerId, obj);
+			this.manager.listener.emit("terrainCollision", {"obj":obj});
 		}
 	};
 

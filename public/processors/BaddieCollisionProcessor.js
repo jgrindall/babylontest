@@ -1,4 +1,4 @@
-define(["BaddieCollectionCommand"], function(BaddieCollectionCommand){
+define([], function(){
 	"use strict";
 
 	var BaddieCollisionProcessor = function(manager, playerId, baddieIds){
@@ -31,7 +31,7 @@ define(["BaddieCollectionCommand"], function(BaddieCollectionCommand){
 		var playerPos = playerMesh.position;
 		var firstBaddieHit = this.getFirstBaddieHit(playerPos);
 		if(firstBaddieHit){
-			new BaddieCollectionCommand().exec(this.manager, this.playerId, firstBaddieHit);
+			this.manager.listener.emit("baddieCollision", {"firstBaddieHit": firstBaddieHit});
 		}
 	};
 

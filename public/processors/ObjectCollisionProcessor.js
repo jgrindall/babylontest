@@ -1,4 +1,4 @@
-define(["ObjectCollectionCommand"], function(ObjectCollectionCommand){
+define([], function(){
 	"use strict";
 
 	var ObjectCollisionProcessor = function(manager, playerId, objectIds){
@@ -26,7 +26,7 @@ define(["ObjectCollectionCommand"], function(ObjectCollectionCommand){
 			}
 		});
 		if(toDeleteIds.length >= 1){
-			new ObjectCollectionCommand().exec(manager, this.playerId, this.objectIds, toDeleteIds);
+			this.manager.listener.emit("objectCollect", {"toDeleteIds": toDeleteIds});
 		}
 	};
 
