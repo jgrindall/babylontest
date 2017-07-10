@@ -69,7 +69,6 @@ define(["GridUtils", "MeshCache", "GreedyMeshAlgo", "Materials", "Textures", "Ge
 	};
 
 	var _addWater = function(scene, quads, meshCache){
-		return;
 		var TOP_LEFT = {"x":0, "z":SIZE_I * SIZE};
 		var music = new BABYLON.Sound("Violons", "assets/water.wav", scene, function () {}, { loop: true, autoplay: true,  maxDistance: 20 });
 		_.each(quads, function(quad){
@@ -90,7 +89,6 @@ define(["GridUtils", "MeshCache", "GreedyMeshAlgo", "Materials", "Textures", "Ge
 	};
 
 	var _addFire = function(quads, meshCache){
-		return;
 		var TOP_LEFT = {"x":0, "z":SIZE_I * SIZE};
 		_.each(quads, function(quad){
 			var size, plane;

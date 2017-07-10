@@ -154,6 +154,8 @@ define(["MeshUtils", "GridUtils", "MeshCache", "SceneBuilder", "TerrainBuilder",
 			this.addControls();
 			this.startProcessors();
 			this.engine.runRenderLoop(this.renderFn);
+			var music = new BABYLON.Sound("Music", "assets/sea.mp3", this.scene, null, { loop: true, autoplay: true });
+			music.setVolume(0.1);
 			this.trigger("loaded");
 		};
 
