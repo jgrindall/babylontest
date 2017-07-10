@@ -28,7 +28,6 @@ define(["lib/Deferred_", "Textures", "MeshUtils", "MaterialConsts"], function(De
 		var fireTexture = new BABYLON.FireProceduralTexture("fire", 8, scene);
 		fireTexture.speed = new BABYLON.Vector2(10, 8);
 		this.waterMaterial = new BABYLON.StandardMaterial("water", scene);
-		this.waterMaterial.ambientColor = MaterialConsts.BLUE1;
 		this.waterMaterial.diffuseColor = MaterialConsts.BLUE1;
 		this.waterMaterial.opacityTexture = waterTexture;
 		this.waterMaterial.bumpTexture =  waterTexture;
@@ -37,6 +36,7 @@ define(["lib/Deferred_", "Textures", "MeshUtils", "MaterialConsts"], function(De
 		this.fireMaterial = new BABYLON.StandardMaterial("fire", scene);
 		this.fireMaterial.diffuseTexture = fireTexture;
 		this.fireMaterial.opacityTexture = fireTexture;
+		this.fireMaterial.ambientColor = new BABYLON.Color4(0.95, 0.1, 0.2, 0.4);
 
 		Textures
 		.createCanvasFromURLArray(_.map(this.keys, function(key){
