@@ -1,6 +1,6 @@
-define(["GridUtils", "MeshCache", "GreedyMeshAlgo", "Materials", "Textures", "GeomUtils", "LightBuilder", "EffectBuilder"],
+define(["GridUtils", "MeshCache", "GreedyMeshAlgo", "Materials", "Textures", "GeomUtils", "ImageUtils", "LightBuilder", "EffectBuilder"],
 
-	function(GridUtils, MeshCache, GreedyMeshAlgo, Materials, Textures, GeomUtils, LightBuilder, EffectBuilder){
+	function(GridUtils, MeshCache, GreedyMeshAlgo, Materials, Textures, GeomUtils, ImageUtils, LightBuilder, EffectBuilder){
 
 	"use strict";
 
@@ -69,6 +69,7 @@ define(["GridUtils", "MeshCache", "GreedyMeshAlgo", "Materials", "Textures", "Ge
 	};
 
 	var _addWater = function(scene, quads, meshCache){
+		return;
 		var TOP_LEFT = {"x":0, "z":SIZE_I * SIZE};
 		var music = new BABYLON.Sound("Violons", "assets/water.wav", scene, function () {}, { loop: true, autoplay: true,  maxDistance: 20 });
 		_.each(quads, function(quad){
@@ -89,6 +90,7 @@ define(["GridUtils", "MeshCache", "GreedyMeshAlgo", "Materials", "Textures", "Ge
 	};
 
 	var _addFire = function(quads, meshCache){
+		return;
 		var TOP_LEFT = {"x":0, "z":SIZE_I * SIZE};
 		_.each(quads, function(quad){
 			var size, plane;
@@ -142,35 +144,36 @@ define(["GridUtils", "MeshCache", "GreedyMeshAlgo", "Materials", "Textures", "Ge
 			img.src = "assets/roof.jpg";
 		},
 		addGround: function(scene, gridComponent){
-			var img = new Image();
-			var waterQuads = gridComponent.greedyWater.quads;
-			var fireQuads = gridComponent.greedyFire.quads;
-			var groundWidth = SIZE_J*SIZE;
-			var groundHeight = SIZE_I*SIZE;
-			var ground = BABYLON.MeshBuilder.CreatePlane("ground", {"height": groundHeight, "width":groundWidth}, scene);
-			ground.material = new BABYLON.StandardMaterial("groundMat", scene);
-			ground.position = new BABYLON.Vector3(groundWidth/2, 0, groundHeight/2);
-			ground.rotation = new BABYLON.Vector3(Math.PI/2, 0, 0);
-			img.onload = function(){
+			ImageUtils
+			.loadURLs(["assets/groundMat.jpg", "assets/Lava-0.png"])
+			.then(function(imgs){
+				var waterQuads = gridComponent.greedyWater.quads;
+				var fireQuads = gridComponent.greedyFire.quads;
+				var groundWidth = SIZE_J*SIZE;
+				var groundHeight = SIZE_I*SIZE;
+				var ground = BABYLON.MeshBuilder.CreatePlane("ground", {"height": groundHeight, "width":groundWidth}, scene);
+				ground.material = new BABYLON.StandardMaterial("groundMat", scene);
+				ground.position = new BABYLON.Vector3(groundWidth/2, 0, groundHeight/2);
+				ground.rotation = new BABYLON.Vector3(Math.PI/2, 0, 0);
 				var c = document.createElement("canvas");
-				c.width = img.width;
-				c.height = img.height;
-				var scaleX = img.width / SIZE_J;
-				var scaleY = img.height / SIZE_I;
-				var RADIUS = 4;
-				c.getContext("2d").drawImage(img, 0, 0);
-				c.getContext("2d").fillStyle = "#4dc9ff";
-				_.each(waterQuads, function(quad){
-					GeomUtils.roundRect(c.getContext("2d"), scaleX*quad[1] - RADIUS, scaleY*quad[0] - RADIUS, scaleX*quad[2] + 2*RADIUS, scaleY*quad[3] + 2*RADIUS, RADIUS, true, false);
-				});
-				c.getContext("2d").fillStyle = "#FFA500";
-				_.each(fireQuads, function(quad){
-					c.getContext("2d").fillRect(scaleX*quad[1], scaleY*quad[0], scaleX*quad[2], scaleY*quad[3]);
-				});
-				var base64 = c.toDataURL();
-				ground.material.diffuseTexture = new BABYLON.Texture("data:b642", scene, false, true, BABYLON.Texture.BILINEAR_SAMPLINGMODE, null, null, base64, true);
-			};
-			img.src = "assets/groundMat.jpg";
+					c.width = imgs[0].width;
+					c.height = imgs[0].height;
+					var scaleX = imgs[0].width / SIZE_J;
+					var scaleY = imgs[0].height / SIZE_I;
+					var RADIUS = 4;
+					c.getContext("2d").drawImage(imgs[0], 0, 0);
+					c.getContext("2d").fillStyle = "#4dc9ff";
+					_.each(waterQuads, function(quad){
+						GeomUtils.roundRect(c.getContext("2d"), scaleX*quad[1] - RADIUS, scaleY*quad[0] - RADIUS, scaleX*quad[2] + 2*RADIUS, scaleY*quad[3] + 2*RADIUS, RADIUS, true, false);
+					});
+					c.getContext("2d").fillStyle = "#FFA500";
+					_.each(fireQuads, function(quad){
+						c.getContext("2d").drawImage(imgs[1], scaleX*quad[1], scaleY*quad[0], scaleX*quad[2], scaleY*quad[3]);
+						//c.getContext("2d").fillRect(scaleX*quad[1], scaleY*quad[0], scaleX*quad[2], scaleY*quad[3]);
+					});
+					var base64 = c.toDataURL();
+					ground.material.diffuseTexture = new BABYLON.Texture("data:b642", scene, false, true, BABYLON.Texture.BILINEAR_SAMPLINGMODE, null, null, base64, true);
+			});
 		},
 		addSky: function(scene){
 			var skybox = BABYLON.MeshBuilder.CreateBox("skyBox", {size:1024}, scene);

@@ -1,4 +1,4 @@
-define(["ObjectCollectionCommand", "BaddieCollectionCommand", "TerrainCollectionCommand"],
+define(["commands/ObjectCollectionCommand", "commands/BaddieCollectionCommand", "commands/TerrainCollectionCommand"],
 
 	function(ObjectCollectionCommand, BaddieCollectionCommand, TerrainCollectionCommand){
 
@@ -12,13 +12,13 @@ define(["ObjectCollectionCommand", "BaddieCollectionCommand", "TerrainCollection
 	Listener.prototype.emit = function(type, options){
 		var manager = this.game.manager, playerId = this.game.playerId;
 		if(type === "objectCollect"){
-			new ObjectCollectionCommand().exec(this.game, options.toDeleteIds);
+			new ObjectCollectionCommand(this.game, options.toDeleteIds).exec();
 		}
 		else if(type === "baddieCollision"){
-			new BaddieCollectionCommand().exec(this.game);
+			new BaddieCollectionCommand(this.game).exec();
 		}
 		else if(type === "terrainCollision"){
-			new TerrainCollectionCommand().exec(this.game);
+			new TerrainCollectionCommand(this.game).exec();
 		}
 	};
 

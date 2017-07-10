@@ -1,6 +1,6 @@
-define(["GridUtils", "GreedyMeshAlgo", "Materials", "Textures", "LightBuilder", "EffectBuilder"],
+define(["GridUtils", "AnimationCache", "GreedyMeshAlgo", "Materials", "Textures", "LightBuilder", "EffectBuilder"],
 
-	function(GridUtils, GreedyMeshAlgo, Materials, Textures, LightBuilder, EffectBuilder){
+	function(GridUtils, AnimationCache, GreedyMeshAlgo, Materials, Textures, LightBuilder, EffectBuilder){
 
 	"use strict";
 
@@ -25,6 +25,7 @@ define(["GridUtils", "GreedyMeshAlgo", "Materials", "Textures", "LightBuilder", 
 			strategyComp.vel = {'x':1, 'z':0};
 		}
 		strategyComp.path = GridUtils.getPath(obj.data.strategy.move, obj.data.position, grid.grid, playerPos);
+		scene.beginDirectAnimation(billboard, [AnimationCache.get("rot")], 0, 20, true);
 	};
 
 	CharacterBuilder.addPlayer = function(pos, scene){

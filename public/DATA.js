@@ -23,40 +23,41 @@ define([], function(){
 		}
 	}
 
-	/*d[4][3] = {
+	d[4][3] = {
 		"type":"wall",
 		"data":{
-			"texture": 1
+			"texture": "bricks"
 		}
 	};
 
 	d[4][4] = {
 		"type":"wall",
 		"data":{
-			"texture": 1
+			"texture": "bricks"
 		}
 	};
 
 	d[4][5] = {
 		"type":"wall",
 		"data":{
-			"texture": 1
+			"texture": "bricks"
 		}
 	};
 
 	d[4][6] = {
 		"type":"wall",
 		"data":{
-			"texture": 1
+			"texture": "crate"
 		}
 	};
 
 	d[4][7] = {
 		"type":"wall",
 		"data":{
-			"texture": 1
+			"texture": "crate"
 		}
 	};
+	/*
 
 	d[4][8] = {
 		"type":"wall",

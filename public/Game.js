@@ -1,7 +1,7 @@
 
 define(["MeshUtils", "GridUtils", "MeshCache", "SceneBuilder", "TerrainBuilder", "CharacterBuilder", "GridBuilder", "ObjectBuilder", "GreedyMeshAlgo", "Materials", "GamePad",
 
-"GamePadUtils", "lib/entity-manager", "Listener",
+"GamePadUtils", "lib/entity-manager", "Listener", "CommandQueue",
 
 "components/HealthComponent", "components/SpeedComponent", "components/Components", "components/MessageComponent",
 
@@ -17,7 +17,7 @@ define(["MeshUtils", "GridUtils", "MeshCache", "SceneBuilder", "TerrainBuilder",
 
 	function(MeshUtils, GridUtils, MeshCache, SceneBuilder, TerrainBuilder, CharacterBuilder, GridBuilder, ObjectBuilder,
 
-		GreedyMeshAlgo, Materials, GamePad, GamePadUtils, EntityManager, Listener,
+		GreedyMeshAlgo, Materials, GamePad, GamePadUtils, EntityManager, Listener, CommandQueue,
 
 	HealthComponent, SpeedComponent, Components, MessageComponent, MeshComponent, BaddieStrategyComponent,
 
@@ -30,7 +30,6 @@ define(["MeshUtils", "GridUtils", "MeshCache", "SceneBuilder", "TerrainBuilder",
 		"use strict";
 
 		var Game = function(engine){
-			var _this = this;
 			this._paused = false;
 			this.renderFn = this.render.bind(this);
 			this.engine = engine;
@@ -46,6 +45,7 @@ define(["MeshUtils", "GridUtils", "MeshCache", "SceneBuilder", "TerrainBuilder",
 			this.meshCache = new MeshCache(this.materialsCache);
 			Components.addTo(this.manager);
 			this.materialsCache.makeMaterials(this.scene, this.init.bind(this));
+			this.queue = new CommandQueue();
 		};
 
 		Game.prototype.loadJSON = function(){
@@ -61,20 +61,6 @@ define(["MeshUtils", "GridUtils", "MeshCache", "SceneBuilder", "TerrainBuilder",
 			TerrainBuilder.addGround(this.scene, this.grid, this.meshCache);
 			TerrainBuilder.addCeil(this.scene, this.meshCache);
 			TerrainBuilder.addSky(this.scene, this.meshCache);
-
-
-			var fireMaterial2 = new BABYLON.FireMaterial("fire", this.scene);
-		    fireMaterial2.diffuseTexture = new BABYLON.Texture("assets/diffuse.png", this.scene);
-		    fireMaterial2.distortionTexture = new BABYLON.Texture("assets/distortion.png", this.scene);
-		    fireMaterial2.opacityTexture = new BABYLON.Texture("assets/opacity.png", this.scene);
-		    fireMaterial2.opacityTexture.level = 0.5;
-		    fireMaterial2.speed = 5.0;
-
-		    var mesh = BABYLON.MeshBuilder.CreatePlane("fkey", {"height": 4, "width":80}, this.scene);
-			mesh.material = fireMaterial2;
-			//mesh.rotate(new BABYLON.Vector3(1, 0, 0), Math.PI / 2, BABYLON.Space.Local);
-			mesh.position = new BABYLON.Vector3(80, 1, 80);
-
 		};
 
 		Game.prototype.addBaddies = function(){
@@ -87,6 +73,10 @@ define(["MeshUtils", "GridUtils", "MeshCache", "SceneBuilder", "TerrainBuilder",
 				CharacterBuilder.addBaddie(obj.data.position, scene, meshCache, manager, id, obj, grid, playerPos);
 				baddieIds.push(id);
 			});
+		};
+
+		Game.prototype.addToQueue = function(comm, time){
+			this.queue.add(comm, time);
 		};
 
 		Game.prototype.addPlayer = function(){

@@ -1,4 +1,4 @@
-define(["TerrainCollectionCommand", "GeomUtils", "GridUtils"], function(TerrainCollectionCommand, GeomUtils, GridUtils){
+define(["GeomUtils", "GridUtils"], function(GeomUtils, GridUtils){
 	"use strict";
 
 	var TerrainCollisionProcessor = function(manager, playerId, grid){
