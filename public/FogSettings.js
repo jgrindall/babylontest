@@ -10,7 +10,7 @@ define([], function(){
 		"fogDensity": 0.0075,
 		"fogStart": 20.0,
 		"fogEnd": 320.0,
-		"fogColor": new BABYLON.Color4(0.4, 0.4, 0.4, 0.25)
+		"fogColor": new BABYLON.Color4(0.2, 0.2, 0.2, 0.25)
 	};
 
 	FogSettings.add = function(scene, type){
@@ -21,9 +21,9 @@ define([], function(){
 		data = FogSettings[type];
 		if(data){
 			scene.fogMode = BABYLON.Scene.FOGMODE_EXP;
-			scene.fogDensity = 0.0075;
-			scene.fogStart = 20.0;
-			scene.fogEnd = 320.0;
+			scene.fogDensity = data.fogDensity;
+			scene.fogStart = data.fogStart;
+			scene.fogEnd = data.fogEnd;
 			scene.fogColor = data.fogColor
 		}
 	};
