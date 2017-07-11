@@ -261,15 +261,15 @@ define([], function(){
 		{
 			"type":"hemi",
 			"position":[0, 1, 0],
-			"specular": [0.6, 0.6, 0.6],
-			"groundColor": [0.6, 0.6, 0.6],
-			"intensity": 0.75
+			"diffuse":[0.2, 0.2, 0.2],
+			"groundColor": [0.4, 0.4, 0.4],
+			"intensity": 0.9
 		},
 		{
-			"type":"point",
-			"diffuse":[0.2, 0.2, 0.2],
-			"position":[2, 150, -2],
-			"intensity": 0.75
+			"type":"dir",
+			"diffuse":[1, 1, 1],
+			"direction":[-0.5, -1, 0],
+			"intensity": 0.9
 		}
 	];
 

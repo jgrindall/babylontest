@@ -16,8 +16,11 @@ define([], function(){
 				if(lightData.type === "hemi"){
 					light = new BABYLON.HemisphericLight("Hemi0", _vector3FromArray(lightData.position), scene);
 				}
-				else{
+				else if(lightData.type === "point"){
 					light = new BABYLON.PointLight("Hemi0", _vector3FromArray(lightData.position), scene);
+				}
+				else if(lightData.type === "dir"){
+					light = new BABYLON.DirectionalLight("Hemi0", _vector3FromArray(lightData.direction), scene);
 				}
 				light.intensity = lightData.intensity;
 				if(lightData.diffuse){
@@ -25,6 +28,9 @@ define([], function(){
 				}
 				if(lightData.specular){
 					light.specular = _color3FromArray(lightData.specular);
+				}
+				if(lightData.direction){
+					light.direction = _vector3FromArray(lightData.direction);
 				}
 				if(lightData.groundColor){
 					light.groundColor = _color3FromArray(lightData.groundColor);
