@@ -1,31 +1,26 @@
 define(["GeomUtils", "GridUtils"], function(GeomUtils, GridUtils){
 	"use strict";
 
-	var TerrainCollisionProcessor = function(manager, playerId, grid){
-		this.manager = manager;
-		this.grid = grid;
-		console.log(this.grid);
-		this.playerId = playerId;
+	var TerrainCollisionProcessor = function(game){
+		this.game = game;
 		this.init();
 	};
 
 	TerrainCollisionProcessor.prototype.init = function(){
-		console.log("init", this.manager);
+		//
 	};
 
 	TerrainCollisionProcessor.prototype.update = function () {
-		var health = this.manager.getComponentDataForEntity('HealthComponent', this.playerId);
+		var health = this.game.manager.getComponentDataForEntity('HealthComponent', this.game.playerId);
 		if(health.isRegenerating){
 			return;
 		}
-		//TODO - better, get the sqr froim the position
-		var playerMesh = this.manager.getComponentDataForEntity('MeshComponent', this.playerId).mesh;
+		var playerMesh = this.game.manager.getComponentDataForEntity('MeshComponent', this.game.playerId).mesh;
 		var playerPos = playerMesh.position;
 		playerPos = GridUtils.babylonToIJ(playerPos);
-		var obj = this.grid[playerPos.i][playerPos.j];
-		console.log();
+		var obj = this.game.grid.grid[playerPos.i][playerPos.j];
 		if(obj.type === "fire"){
-			this.manager.listener.emit("terrainCollision", {"obj":obj});
+			this.game.manager.listener.emit("terrainCollision", {"obj":obj});
 		}
 	};
 

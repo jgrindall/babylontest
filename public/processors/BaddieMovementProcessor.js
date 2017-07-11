@@ -13,9 +13,8 @@ define(["GeomUtils", "GridUtils"], function(GeomUtils, GridUtils){
 		}
 	};
 
-	var BaddieMovementProcessor = function(manager, baddieIds){
-		this.manager = manager;
-		this.baddieIds = baddieIds;
+	var BaddieMovementProcessor = function(game){
+		this.game = game;
 		this.init();
 	};
 
@@ -24,7 +23,7 @@ define(["GeomUtils", "GridUtils"], function(GeomUtils, GridUtils){
 	};
 
 	BaddieMovementProcessor.prototype.moveWestEast = function(id, sComp){
-		var meshComp = this.manager.getComponentDataForEntity('MeshComponent', id);
+		var meshComp = this.game.manager.getComponentDataForEntity('MeshComponent', id);
 		var position = meshComp.mesh.position;
 		if(position.x <= sComp.path.xmin){
 			sComp.vel.x = 1;
@@ -36,7 +35,7 @@ define(["GeomUtils", "GridUtils"], function(GeomUtils, GridUtils){
 	};
 
 	BaddieMovementProcessor.prototype.moveNorthSouth = function(id, sComp){
-		var meshComp = this.manager.getComponentDataForEntity('MeshComponent', id);
+		var meshComp = this.game.manager.getComponentDataForEntity('MeshComponent', id);
 		var position = meshComp.mesh.position;
 		if(position.z <= sComp.path.zmin){
 			sComp.vel.z = 1;
@@ -48,7 +47,7 @@ define(["GeomUtils", "GridUtils"], function(GeomUtils, GridUtils){
 	};
 
 	BaddieMovementProcessor.prototype.moveHunt = function(id, sComp){
-		var meshComp = this.manager.getComponentDataForEntity('MeshComponent', id);
+		var meshComp = this.game.manager.getComponentDataForEntity('MeshComponent', id);
 		var position = meshComp.mesh.position;
 		var section = sComp.path.sections[sComp.path.currentNum];
 		sComp.vel.x = 0;
@@ -100,23 +99,45 @@ define(["GeomUtils", "GridUtils"], function(GeomUtils, GridUtils){
 		position.z += sComp.vel.z*SF;
 	};
 
+	BaddieMovementProcessor.prototype.addPath = function (sComp, meshComp) {
+		alert("add path!");
+		var playerPos = this.game.manager.getComponentDataForEntity('MeshComponent', this.game.playerId).mesh.position;
+		var baddiePos = GridUtils.babylonToIJ(meshComp.mesh.position);
+		if(sComp.move === "north-south"){
+			sComp.vel = {'x':0, 'z':1};
+		}
+		else if(sComp.move === "west-east"){
+			sComp.vel = {'x':1, 'z':0};
+		}
+		else{
+			sComp.vel = {'x':0, 'z':0};
+		}
+		alert("add path!");
+		sComp.path = GridUtils.getPath(sComp.move, [baddiePos.i, baddiePos.j], this.game.grid.grid, [2, 13]);
+	};
+
 	BaddieMovementProcessor.prototype.updateBaddie = function (id) {
-		var manager = this.manager;
-		var sComp = manager.getComponentDataForEntity('BaddieStrategyComponent', id);
-		var strategy = sComp.move;
-		if(strategy === "north-south" && !_pathIsUnit(strategy, sComp.path)){
+		var move, sComp, meshComp;
+		sComp = this.game.manager.getComponentDataForEntity('BaddieStrategyComponent', id);
+		if(typeof sComp.vel === "undefined"){
+			// not defined yet
+			meshComp = this.game.manager.getComponentDataForEntity('MeshComponent', id);
+			this.addPath(sComp, meshComp);
+		}
+		move = sComp.move;
+		if(move === "north-south" && !_pathIsUnit(move, sComp.path)){
 			this.moveNorthSouth(id, sComp);
 		}
-		else if(strategy === "west-east" && !_pathIsUnit(strategy, sComp.path)){
+		else if(move === "west-east" && !_pathIsUnit(move, sComp.path)){
 			this.moveWestEast(id, sComp);
 		}
-		else if(strategy === "hunt" && sComp.path && sComp.path.sections){
+		else if(move === "hunt" && sComp.path && sComp.path.sections){
 			this.moveHunt(id, sComp);
 		}
 	};
 
 	BaddieMovementProcessor.prototype.update = function () {
-		_.each(this.baddieIds, this.updateBaddie.bind(this));
+		_.each(this.game.baddieIds, this.updateBaddie.bind(this));
 	};
 
 	return BaddieMovementProcessor;

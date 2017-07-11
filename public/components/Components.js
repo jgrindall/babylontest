@@ -5,15 +5,15 @@ define(["components/HealthComponent", "components/ObjectComponent", "components/
 
 "components/MeshComponent", "components/BaddieStrategyComponent",
 
-"components/CameraComponent", "components/PossessionsComponent"],
+"components/CameraComponent", "components/PossessionsComponent", "components/DoorComponent"],
 
 	function(HealthComponent, ObjectComponent, SpeedComponent, MessageComponent, MeshComponent, BaddieStrategyComponent,
 
-	CameraComponent, PossessionsComponent) {
+	CameraComponent, PossessionsComponent, DoorComponent) {
 
 		"use strict";
 
-		var ALL = [ObjectComponent, HealthComponent, MessageComponent, PossessionsComponent, MeshComponent, SpeedComponent, BaddieStrategyComponent, CameraComponent];
+		var ALL = [ObjectComponent, HealthComponent, MessageComponent, PossessionsComponent, DoorComponent, MeshComponent, SpeedComponent, BaddieStrategyComponent, CameraComponent];
 
 		var Components = {};
 

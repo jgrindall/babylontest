@@ -257,6 +257,20 @@ define([], function(){
 		}
 	];
 
+	var doors = [
+		{
+			"type":"door",
+			"data":{
+				"texture":"crate",
+				"key":"red",
+				"position":[
+					1,
+					11
+				]
+			}
+		}
+	];
+
 	var lights = [
 		{
 			"type":"hemi",

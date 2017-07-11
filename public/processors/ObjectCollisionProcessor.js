@@ -1,10 +1,8 @@
 define([], function(){
 	"use strict";
 
-	var ObjectCollisionProcessor = function(manager, playerId, objectIds){
-		this.manager = manager;
-		this.objectIds = objectIds;
-		this.playerId = playerId;
+	var ObjectCollisionProcessor = function(game){
+		this.game = game;
 		this.init();
 	};
 
@@ -13,10 +11,10 @@ define([], function(){
 	};
 
 	ObjectCollisionProcessor.prototype.update = function () {
-		var manager = this.manager, _this = this, toDeleteIds = [];
-		var playerMesh = manager.getComponentDataForEntity('MeshComponent', this.playerId).mesh;
+		var manager = this.game.manager, _this = this, toDeleteIds = [];
+		var playerMesh = manager.getComponentDataForEntity('MeshComponent', this.game.playerId).mesh;
 		$("span").text("No");
-		_.each(this.objectIds, function(objectId){
+		_.each(this.game.objectIds, function(objectId){
 			var mesh0 = manager.getComponentDataForEntity('MeshComponent', objectId).mesh;
 			var dx = mesh0.position.x - playerMesh.position.x;
 			var dz = mesh0.position.z - playerMesh.position.z;
@@ -26,7 +24,7 @@ define([], function(){
 			}
 		});
 		if(toDeleteIds.length >= 1){
-			this.manager.listener.emit("objectCollect", {"toDeleteIds": toDeleteIds});
+			this.game.manager.listener.emit("objectCollect", {"toDeleteIds": toDeleteIds});
 		}
 	};
 

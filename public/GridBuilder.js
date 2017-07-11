@@ -14,9 +14,6 @@ define(["GridUtils", "GreedyMeshAlgo", "Materials", "Textures", "LightBuilder", 
 		g.objects = window._OBJECTS;
 		g.baddies = window._BADDIES;
 		GridUtils.addFacesInfoToGrid(g.grid);
-		g.empty = _.shuffle(GridUtils.getMatchingLocations(g.grid, function(obj){
-			return obj.type === "empty";
-		}));
 		g.solid = GridUtils.getSolid(g.grid);
 		g.greedy = GreedyMeshAlgo.get(g.solid);
 		g.greedyWater = GreedyMeshAlgo.get(GridUtils.getByType(g.grid, "water"));

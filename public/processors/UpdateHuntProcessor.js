@@ -3,12 +3,10 @@ define(["GridUtils"], function(GridUtils){
 
 	var FREQUENCY = 250; // do not execute every tick
 
-	var UpdateHuntProcessor = function(manager, baddieIds, playerId, solid){
+	var UpdateHuntProcessor = function(game){
 		this.num = 0;
-		this.baddieIds = baddieIds;
-		this.manager = manager;
-		this.playerId = playerId;
-		this.pfGrid = new PF.Grid(GridUtils.transpose(solid));
+		this.game = game;
+		this.pfGrid = new PF.Grid(GridUtils.transpose(game.grid.solid));
 		this.init();
 	};
 
@@ -17,10 +15,10 @@ define(["GridUtils"], function(GridUtils){
 	};
 
 	UpdateHuntProcessor.prototype._update = function () {
-		var manager = this.manager, pfGrid = this.pfGrid;
-		var position = manager.getComponentDataForEntity('MeshComponent', this.playerId).mesh.position;
+		var manager = this.game.manager, pfGrid = this.pfGrid;
+		var position = manager.getComponentDataForEntity('MeshComponent', this.game.playerId).mesh.position;
 		var playerPos = GridUtils.babylonToIJ(position);
-		_.each(this.baddieIds, function(id){
+		_.each(this.game.baddieIds, function(id){
 			var sComp, mesh, baddiePos;
 			sComp = manager.getComponentDataForEntity('BaddieStrategyComponent', id);
 			if(sComp.move === "hunt"){
@@ -32,7 +30,6 @@ define(["GridUtils"], function(GridUtils){
 	};
 
 	UpdateHuntProcessor.prototype.update = function () {
-		//baddieIds
 		if(this.num % FREQUENCY === 0){
 			this._update();
 		}
