@@ -149,18 +149,31 @@ define([], function(){
 		}
 	};
 
-	MeshCache.prototype.addDoor = function(scene){
-		var key, mesh;
-		key = "door";
+	MeshCache.prototype.addDoor = function(scene, texture){
+		var key, mesh0, mesh1, mesh2, mesh3;
+		key = "door_" + texture;
 		if(!this._cache[key]){
-			mesh = BABYLON.MeshBuilder.CreatePlane(key, {"height": SIZE, "width":SIZE}, scene);
-			mesh.material = this.materialsCache.redMaterial;
-			this.add(scene, mesh, key);
+			mesh0 = BABYLON.MeshBuilder.CreatePlane(key, {"height": SIZE, "width":SIZE}, scene);
+			mesh1 = BABYLON.MeshBuilder.CreatePlane(key, {"height": SIZE, "width":SIZE}, scene);
+			mesh2 = BABYLON.MeshBuilder.CreatePlane(key, {"height": SIZE, "width":SIZE}, scene);
+			mesh3 = BABYLON.MeshBuilder.CreatePlane(key, {"height": SIZE, "width":SIZE}, scene);
+			this.materialsCache.applyToMesh(mesh0, 1, "door");
+			this.materialsCache.applyToMesh(mesh1, 1, "door");
+			this.materialsCache.applyToMesh(mesh2, 1, "door");
+			this.materialsCache.applyToMesh(mesh3, 1, "door");
+			mesh1.position.z = SIZE/2;
+			mesh3.position.z = -SIZE/2;
+			mesh0.position.x = -SIZE/2;
+			mesh2.position.x = SIZE/2;
+			mesh0.rotate(new BABYLON.Vector3(0, 1, 0), Math.PI / 2, BABYLON.Space.Local);
+			mesh2.rotate(new BABYLON.Vector3(0, 1, 0), -Math.PI/2, BABYLON.Space.Local);
+			mesh1.rotate(new BABYLON.Vector3(0, 1, 0), Math.PI, BABYLON.Space.Local);
+			this.add(scene, BABYLON.Mesh.MergeMeshes([mesh0, mesh1, mesh2, mesh3]), key);
 		}
 	};
 
-	MeshCache.prototype.getDoorFromCache = function(size){
-		var cached, mesh, key = "door";
+	MeshCache.prototype.getDoorFromCache = function(texture){
+		var cached, mesh, key = "door_" + texture;
 		cached = this._cache[key];
 		if(cached){
 			this._cacheI++;

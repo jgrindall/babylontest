@@ -12,7 +12,7 @@ define(["utils/GridUtils"],
 		var y = SIZE/2, mesh, babylonPos;
 		var meshComp = manager.getComponentDataForEntity('MeshComponent', id);
 		babylonPos = GridUtils.ijToBabylon(pos[0], pos[1]);
-		mesh = meshCache.getBaddieFromCache(obj.data.texture);
+		mesh = meshCache.getDoorFromCache(obj.data.texture);
 		mesh.position = new BABYLON.Vector3(babylonPos.x, y, babylonPos.z);
 		meshComp.mesh = mesh;
 	};

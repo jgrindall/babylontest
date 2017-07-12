@@ -51,8 +51,52 @@ define([], function(){
 				7
 			],
 			"strategy":{
-				"move":"north-south"
+				"move":"hunt"
 			}
+		}
+	});
+
+	data.push({
+		"type":"door",
+		"data":{
+			"texture":"door",
+			"position":[
+				1,
+				1
+			]
+		}
+	});
+
+	data.push({
+		"type":"door",
+		"data":{
+			"texture":"door",
+			"position":[
+				10,
+				10
+			]
+		}
+	});
+
+	data.push({
+		"type":"door",
+		"data":{
+			"texture":"door",
+			"position":[
+				9,
+				10
+			]
+		}
+	});
+
+	data.push({
+		"type":"door",
+		"data":{
+			"texture":"door",
+			"position":[
+				10,
+				9
+			]
 		}
 	});
 

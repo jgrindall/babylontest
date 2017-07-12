@@ -4,6 +4,8 @@ define(["utils/GridUtils", "utils/GreedyMeshAlgo"],
 
 	"use strict";
 
+	var SOLID_TYPES = ["water", "wall", "door"];
+
 	var GridBuilder = {
 
 	};
@@ -18,10 +20,10 @@ define(["utils/GridUtils", "utils/GreedyMeshAlgo"],
 		g.grid = GridUtils.arrayToGrid(g.data);
 		g.objects = GridUtils.listByType(g.grid, ["object"]);
 		g.baddies = GridUtils.listByType(g.grid, ["baddie"]);
-		g.doors = [];
+		g.doors = GridUtils.listByType(g.grid, ["door"]);
 		GridUtils.addDirectionsOfWalls(g.grid);
 		GridUtils.extendWalls(g.grid);
-		g.solid = GridUtils.markByType(g.grid, ["water", "wall", "door"]);
+		g.solid = GridUtils.markByType(g.grid, SOLID_TYPES);
 		g.greedy = GreedyMeshAlgo.get(g.solid);
 		g.greedyWater = GreedyMeshAlgo.get(GridUtils.markByType(g.grid, "water"));
 		g.greedyFire = GreedyMeshAlgo.get(GridUtils.markByType(g.grid, "fire"));
@@ -35,7 +37,7 @@ define(["utils/GridUtils", "utils/GreedyMeshAlgo"],
 		});
 		// cache bits and bobs
 		meshCache.addBillboardBoxToCache(scene);
-		meshCache.addDoor(scene);
+		meshCache.addDoor(scene, "door");
 		meshCache.addBaddieToCache(scene, "bird");
 		meshCache.addBaddieToCache(scene, "baddie");
 		// cache water and fire
@@ -48,7 +50,6 @@ define(["utils/GridUtils", "utils/GreedyMeshAlgo"],
 		_.each(g.objects, function(obj){
 			meshCache.addObjectToCache(scene, obj.data.texture);
 		});
-		g.doors = [];
 		return g;
 	};
 
