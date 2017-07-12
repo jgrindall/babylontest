@@ -1,13 +1,13 @@
-define(["lib/Deferred_", "Textures", "MeshUtils", "MaterialConsts"], function(Deferred, Textures, MeshUtils, MaterialConsts){
+define(["lib/Deferred_", "Textures", "utils/MeshUtils", "cache/MaterialConsts"], function(Deferred, Textures, MeshUtils, MaterialConsts){
 
 	"use strict";
 
-	var Materials = function(textures){
+	var MaterialsCache = function(textures){
 		this.keys = _.sortBy(_.keys(textures), _.identity);
 		this.textures = textures;
 	};
 
-	Materials.prototype.destroy = function(){
+	MaterialsCache.prototype.destroy = function(){
 		this.waterMaterial.opacityTexture = null;
 		this.fireMaterial.diffuseTexture = null;
 		this.fireMaterial.opacityTexture = null;
@@ -18,7 +18,7 @@ define(["lib/Deferred_", "Textures", "MeshUtils", "MaterialConsts"], function(De
 		this.base64Material.dispose();
 	};
 
-	Materials.prototype.makeMaterials = function(scene, callback){
+	MaterialsCache.prototype.makeMaterials = function(scene, callback){
 		var _this = this;
 		this.redMaterial = new BABYLON.StandardMaterial("red", scene);
 		this.redMaterial.diffuseColor = BABYLON.Color3.Red();
@@ -51,11 +51,11 @@ define(["lib/Deferred_", "Textures", "MeshUtils", "MaterialConsts"], function(De
 		});
 	};
 
-	Materials.prototype.getBase64ForKey = function(key){
+	MaterialsCache.prototype.getBase64ForKey = function(key){
 		return this.textures[key];
 	};
 
-	Materials.prototype.applyToMesh = function(mesh, len, texture){
+	MaterialsCache.prototype.applyToMesh = function(mesh, len, texture){
 		var index = this.keys.indexOf(texture);
 		if(index >= 0){
 			index = this.keys.length - 1 - index;
@@ -66,5 +66,5 @@ define(["lib/Deferred_", "Textures", "MeshUtils", "MaterialConsts"], function(De
 			throw new Error("not found", texture);
 		}
 	};
-	return Materials;
+	return MaterialsCache;
 });

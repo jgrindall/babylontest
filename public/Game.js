@@ -1,9 +1,9 @@
 
-define(["MeshUtils", "GridUtils", "MeshCache", "builders/SceneBuilder", "builders/TerrainBuilder", "builders/CharacterBuilder", "GridBuilder", "builders/ObjectBuilder", "builders/DoorBuilder",
+define(["utils/MeshUtils", "utils/GridUtils", "MeshCache", "builders/SceneBuilder", "builders/TerrainBuilder", "builders/CharacterBuilder", "GridBuilder", "builders/ObjectBuilder", "builders/DoorBuilder",
 
-	"GreedyMeshAlgo", "Materials", "GamePad",
+	"utils/GreedyMeshAlgo", "MaterialsCache", "GamePad",
 
-"GamePadUtils", "lib/entity-manager", "Listener", "CommandQueue",
+"utils/GamePadUtils", "lib/entity-manager", "Listener", "CommandQueue",
 
 "components/HealthComponent", "components/SpeedComponent", "components/Components", "components/MessageComponent",
 

@@ -1,4 +1,4 @@
-define(["GeomUtils", "GridUtils"], function(GeomUtils, GridUtils){
+define(["utils/GeomUtils", "utils/GridUtils"], function(GeomUtils, GridUtils){
 	"use strict";
 
 	var TerrainCollisionProcessor = function(game){

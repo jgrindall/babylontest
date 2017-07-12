@@ -1,4 +1,4 @@
-define(["GridUtils"], function(GridUtils){
+define(["utils/GridUtils"], function(GridUtils){
 
 	var FRICTION = 0.7;
 

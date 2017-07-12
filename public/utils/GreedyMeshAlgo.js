@@ -1,4 +1,4 @@
-define(["GridUtils"], function(GridUtils){
+define(["utils/GridUtils"], function(GridUtils){
 	/* helper functions */
 	"use strict";
 
