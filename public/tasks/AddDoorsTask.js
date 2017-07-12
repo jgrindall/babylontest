@@ -7,9 +7,11 @@ define(["builders/DoorBuilder"], function(DoorBuilder){
 		var manager = game.manager, scene = game.scene, meshCache = game.meshCache;
 		var doors = game.grid.doors;
 		_.each(doors, function(obj){
-			var id = manager.createEntity(['DoorComponent', 'MeshComponent']);
+			var id, mesh;
+			id = manager.createEntity(['DoorComponent', 'MeshComponent']);
 			DoorBuilder.addDoor(obj.data.position, scene, meshCache, manager, id, obj);
 			game.doorIds.push(id);
+			mesh = manager.getComponentDataForEntity('MeshComponent', id).mesh;
 		});
 	};
 

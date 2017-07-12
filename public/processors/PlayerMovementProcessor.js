@@ -4,6 +4,8 @@ define([], function(){
 
 	var FRICTION = 0.7;
 
+	var PI2 = 2*Math.PI;
+
 	var PlayerMovementProcessor = function(game){
 		this.game = game;
 		this.init();
@@ -20,6 +22,13 @@ define([], function(){
 		meshComp = manager.getComponentDataForEntity('MeshComponent', this.game.playerId);
 		speedComp = manager.getComponentDataForEntity('SpeedComponent', this.game.playerId);
 		speedComp.angle += speedComp.ang_speed * sf;
+		//TODO - not a while loop
+		while(speedComp.angle > PI2){
+			speedComp.angle -= PI2;
+		}
+		while(speedComp.angle < 0){
+			speedComp.angle += PI2;
+		}
 		meshComp.mesh.rotationQuaternion = BABYLON.Quaternion.RotationAxis(new BABYLON.Vector3(0, 1, 0), speedComp.angle);
 		dx = speedComp.speed*Math.sin(speedComp.angle) * sf;
 		dz = speedComp.speed*Math.cos(speedComp.angle) * sf;

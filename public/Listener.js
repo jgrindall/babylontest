@@ -1,6 +1,6 @@
-define(["commands/ObjectCollectionCommand", "commands/BaddieCollectionCommand", "commands/TerrainCollectionCommand"],
+define(["commands/ObjectCollectionCommand", "commands/DoorInteractionCommand", "commands/BaddieCollectionCommand", "commands/TerrainCollectionCommand"],
 
-	function(ObjectCollectionCommand, BaddieCollectionCommand, TerrainCollectionCommand){
+	function(ObjectCollectionCommand, DoorInteractionCommand, BaddieCollectionCommand, TerrainCollectionCommand){
 
 	"use strict";
 
@@ -19,6 +19,9 @@ define(["commands/ObjectCollectionCommand", "commands/BaddieCollectionCommand", 
 		}
 		else if(type === "terrainCollision"){
 			new TerrainCollectionCommand(this.game).exec();
+		}
+		else if(type === "doorInteraction"){
+			new DoorInteractionCommand(this.game).exec();
 		}
 	};
 

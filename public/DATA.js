@@ -16,14 +16,6 @@ define([], function(){
 	}
 
 	data.push({
-		"type":"water",
-		"data":{
-			"texture":"water",
-			"position":[5, 10]
-		}
-	});
-
-	data.push({
 		"type":"fire",
 		"data":{
 			"texture":"fire",
@@ -56,46 +48,28 @@ define([], function(){
 		}
 	});
 
-	data.push({
-		"type":"door",
-		"data":{
-			"texture":"door",
-			"position":[
-				1,
-				1
-			]
+	/*for(var q1 = 1; q1 < 120; q1+=3){
+		for(var q2 = 1; q2 < 120; q2+=3){
+			data.push({
+				"type":"door",
+				"data":{
+					"texture":"door",
+					"position":[
+						q1,
+						q2
+					]
+				}
+			});
 		}
-	});
+	}*/
 
 	data.push({
 		"type":"door",
 		"data":{
 			"texture":"door",
 			"position":[
-				10,
-				10
-			]
-		}
-	});
-
-	data.push({
-		"type":"door",
-		"data":{
-			"texture":"door",
-			"position":[
-				9,
-				10
-			]
-		}
-	});
-
-	data.push({
-		"type":"door",
-		"data":{
-			"texture":"door",
-			"position":[
-				10,
-				9
+				5,
+				5
 			]
 		}
 	});
