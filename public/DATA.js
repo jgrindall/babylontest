@@ -48,8 +48,8 @@ define([], function(){
 		}
 	});
 
-	/*for(var q1 = 1; q1 < 120; q1+=3){
-		for(var q2 = 1; q2 < 120; q2+=3){
+	for(var q1 = 4; q1 < 20; q1+=3){
+		for(var q2 = 4; q2 < 20; q2+=3){
 			data.push({
 				"type":"door",
 				"data":{
@@ -60,8 +60,18 @@ define([], function(){
 					]
 				}
 			});
+			data.push({
+				"type":"fire",
+				"data":{
+					"texture":"fire",
+					"position":[
+						q1 + 1,
+						q2
+					]
+				}
+			});
 		}
-	}*/
+	}
 
 	data.push({
 		"type":"door",

@@ -7,10 +7,10 @@ define([], function(){
 
 	ShowDamageCommand.prototype.exec = function(){
 		var camera = this.game.camera;
-		var postProcess = new BABYLON.PostProcess("Down sample", "/downsample", ["degree"], null, 1, camera);
-		var maxN = 200;
+		var postProcess = new BABYLON.PostProcess("Down sample", "/damage", ["degree"], null, 1, camera);
+		var maxN = 70;
 		var N = maxN;
-		var DEGREE = 5;
+		var DEGREE = 0.5;
 		postProcess.onApply = function (effect) {
 			effect.setFloat("degree", DEGREE);
 		};
