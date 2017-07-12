@@ -105,6 +105,18 @@ define(["cache/MeshCache", "builders/GridBuilder", "builders/SceneBuilder",
 			this.startProcessors();
 			this.engine.runRenderLoop(this.renderFn);
 			this.trigger("loaded");
+
+			var mesh0 = this.manager.getComponentDataForEntity('MeshComponent', this.baddieIds[0]).mesh;
+			var mesh1 = this.manager.getComponentDataForEntity('MeshComponent', this.playerId).mesh;
+			console.log(mesh0, mesh1);
+			var trigger = {
+				trigger:BABYLON.ActionManager.OnIntersectionEnterTrigger,
+				parameter: mesh0
+			};
+			var crash = new BABYLON.ExecuteCodeAction(trigger, function() {alert('CRASH!!!!!! BURRRRRRRR EXPLODIE NOISES');});
+			mesh1.actionManager = new BABYLON.ActionManager(this.scene);
+			mesh1.actionManager.registerAction(crash);
+
 		};
 
 		Game.prototype.destroy = function(){
