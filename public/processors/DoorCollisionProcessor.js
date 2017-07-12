@@ -54,7 +54,7 @@ define(["utils/GridUtils"], function(GridUtils){
 	};
 
 	DoorCollisionProcessor.prototype.update = function () {
-		var manager = this.game.manager, playerMesh, angle, playerPos, _getDir;
+		var manager = this.game.manager, playerMesh, angle, playerPos, _getDir, doorHit;
 		playerMesh = manager.getComponentDataForEntity('MeshComponent', this.game.playerId).mesh;
 		angle = manager.getComponentDataForEntity('SpeedComponent', this.game.playerId).angle;
 		playerPos = playerMesh.position;
@@ -76,14 +76,13 @@ define(["utils/GridUtils"], function(GridUtils){
 				}
 			});
 		};
-		var door = _.find(this.game.doorIds, function(id){
-			var doorMesh, hit;
-			doorMesh = manager.getComponentDataForEntity('MeshComponent', id).mesh;
-			hit = _getDir(doorMesh.position);
-			if(hit){
-				manager.listener.emit("doorInteraction");
-			}
+		doorHit = _.find(this.game.doorIds, function(id){
+			var doorMesh = manager.getComponentDataForEntity('MeshComponent', id).mesh;
+			return !!_getDir(doorMesh.position);
 		});
+		if(doorHit){
+			manager.listener.emit("doorInteraction");
+		}
 	};
 
 	return DoorCollisionProcessor;

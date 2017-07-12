@@ -61,12 +61,12 @@ define(["cache/MeshCache", "builders/GridBuilder", "builders/SceneBuilder",
 		Game.prototype.startProcessors = function(){
 			this.processors.push(new PlayerMovementProcessor(this));
 			this.processors.push(new CameraMatchPlayerProcessor(this));
-			//this.processors.push(new BaddieMovementProcessor(this));
+			this.processors.push(new BaddieMovementProcessor(this));
 			this.processors.push(new BaddieCollisionProcessor(this));
 			this.processors.push(new TerrainCollisionProcessor(this));
-			//this.processors.push(new ObjectCollisionProcessor(this));
-			//this.processors.push(new UpdateHuntProcessor(this));
-			//this.processors.push(new UpdateHUDProcessor(this));
+			this.processors.push(new ObjectCollisionProcessor(this));
+			this.processors.push(new UpdateHuntProcessor(this));
+			this.processors.push(new UpdateHUDProcessor(this));
 			this.processors.push(new DoorCollisionProcessor(this));
 			_.each(this.processors, this.manager.addProcessor.bind(this.manager));
 		};

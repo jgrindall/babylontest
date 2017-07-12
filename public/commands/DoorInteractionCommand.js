@@ -9,6 +9,7 @@ define(["commands/ReduceHealthCommand", "commands/ShowDamageCommand", "commands/
 
 	DoorInteractionCommand.prototype.exec = function(){
 		this.game.pause();
+		$("body").append("<div style='position:absolute;left:50%;top:50%;width:300px;height:200px;background:white;'></div>");
 	};
 
 	return DoorInteractionCommand;
