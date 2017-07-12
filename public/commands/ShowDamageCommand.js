@@ -8,16 +8,17 @@ define([], function(){
 	ShowDamageCommand.prototype.exec = function(){
 		var camera = this.game.manager.getComponentDataForEntity('CameraComponent', this.game.cameraId).camera;
 		var postProcess = new BABYLON.PostProcess("Down sample", "/downsample", ["degree"], null, 1, camera);
-		var N = 0;
 		var maxN = 200;
+		var N = maxN;
+		var DEGREE = 5;
 		postProcess.onApply = function (effect) {
-			effect.setFloat("degree", 0.6);
+			effect.setFloat("degree", DEGREE);
 		};
 		postProcess.onBeforeRender = function (effect) {
-			var d = 1 - N/maxN;
+			var d = DEGREE * N/maxN;
 			effect.setFloat("degree", d);
-			N++;
-			if(N === maxN){
+			N--;
+			if(N === 0){
 				camera.detachPostProcess(postProcess);
 			}
 		};

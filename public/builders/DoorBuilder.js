@@ -1,6 +1,6 @@
-define(["utils/GridUtils", "cache/AnimationCache"],
+define(["utils/GridUtils"],
 
-	function(GridUtils, AnimationCache){
+	function(GridUtils){
 
 	"use strict";
 
@@ -25,7 +25,6 @@ define(["utils/GridUtils", "cache/AnimationCache"],
 			strategyComp.vel = {'x':1, 'z':0};
 		}
 		strategyComp.path = GridUtils.getPath(obj.data.strategy.move, obj.data.position, grid.grid, playerPos);
-		scene.beginDirectAnimation(billboard, [AnimationCache.get("rot")], 0, 20, true);
 	};
 
 	return DoorBuilder;

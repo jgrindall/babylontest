@@ -8,6 +8,10 @@ define(["utils/GridUtils", "utils/GreedyMeshAlgo"],
 
 	};
 
+	GridBuilder.cache = function(){
+		//
+	};
+
 	GridBuilder.build = function(scene, meshCache){
 		var g = {};
 		g.grid = window._DATA;

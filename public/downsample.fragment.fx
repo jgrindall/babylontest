@@ -5,5 +5,5 @@ uniform float degree;
 void main(void)
 {
 	vec3 color = texture2D(textureSampler, vUV).rgb;
-	gl_FragColor = vec4(color.r + 10.0*degree, color.g, color.b, 1.0);
+	gl_FragColor = vec4(color.r + degree, color.g, color.b, 1.0);
 }

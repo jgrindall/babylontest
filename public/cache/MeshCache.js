@@ -117,7 +117,6 @@ define([], function(){
 		if(cached){
 			this._cacheI++;
 			mesh = cached.createInstance("index: " + this._cacheI);
-	 		mesh.material = cached.material;
 			return mesh;
 		}
 		else{

@@ -282,7 +282,7 @@ define([], function(){
 		{
 			"type":"dir",
 			"diffuse":[1, 1, 1],
-			"direction":[-0.5, -1, 0],
+			"direction":[-0.5, -0.5, 0],
 			"intensity": 0.9
 		}
 	];
