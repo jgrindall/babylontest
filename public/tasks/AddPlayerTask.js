@@ -1,4 +1,4 @@
-define(["CharacterBuilder"], function(CharacterBuilder){
+define(["builders/CharacterBuilder"], function(CharacterBuilder){
 
 	var AddPlayerTask = function(game){
 		game.playerId = game.manager.createEntity(['HealthComponent', 'MessageComponent', 'PossessionsComponent', 'SpeedComponent', 'MeshComponent']);

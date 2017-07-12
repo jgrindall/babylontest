@@ -1,4 +1,4 @@
-define(["DoorBuilder"], function(DoorBuilder){
+define(["builders/DoorBuilder"], function(DoorBuilder){
 
 	var AddDoorsTask = function(game){
 		return;

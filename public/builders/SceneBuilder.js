@@ -1,4 +1,4 @@
-define(["GridUtils", "MeshCache", "GreedyMeshAlgo", "Materials", "Textures", "LightBuilder", "EffectBuilder"],
+define(["GridUtils", "MeshCache", "GreedyMeshAlgo", "Materials", "Textures", "builders/LightBuilder", "builders/EffectBuilder"],
 
 	function(GridUtils, MeshCache, GreedyMeshAlgo, Materials, Textures, LightBuilder, EffectBuilder){
 

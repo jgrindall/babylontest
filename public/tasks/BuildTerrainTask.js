@@ -1,4 +1,4 @@
-define(["TerrainBuilder"], function(TerrainBuilder){
+define(["builders/TerrainBuilder"], function(TerrainBuilder){
 
 	var BuildTerrainTask = function(game){
 		TerrainBuilder.addFromData(game.scene, game.grid, game.meshCache);

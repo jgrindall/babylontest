@@ -1,5 +1,5 @@
 
-define(["MeshUtils", "GridUtils", "MeshCache", "SceneBuilder", "TerrainBuilder", "CharacterBuilder", "GridBuilder", "ObjectBuilder", "DoorBuilder",
+define(["MeshUtils", "GridUtils", "MeshCache", "builders/SceneBuilder", "builders/TerrainBuilder", "builders/CharacterBuilder", "GridBuilder", "builders/ObjectBuilder", "builders/DoorBuilder",
 
 	"GreedyMeshAlgo", "Materials", "GamePad",
 

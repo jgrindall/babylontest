@@ -100,7 +100,6 @@ define(["GeomUtils", "GridUtils"], function(GeomUtils, GridUtils){
 	};
 
 	BaddieMovementProcessor.prototype.addPath = function (sComp, meshComp) {
-		alert("add path!");
 		var playerPos = this.game.manager.getComponentDataForEntity('MeshComponent', this.game.playerId).mesh.position;
 		var baddiePos = GridUtils.babylonToIJ(meshComp.mesh.position);
 		if(sComp.move === "north-south"){
@@ -112,7 +111,6 @@ define(["GeomUtils", "GridUtils"], function(GeomUtils, GridUtils){
 		else{
 			sComp.vel = {'x':0, 'z':0};
 		}
-		alert("add path!");
 		sComp.path = GridUtils.getPath(sComp.move, [baddiePos.i, baddiePos.j], this.game.grid.grid, [2, 13]);
 	};
 

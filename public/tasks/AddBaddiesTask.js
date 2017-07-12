@@ -1,4 +1,4 @@
-define(["CharacterBuilder"], function(CharacterBuilder){
+define(["builders/CharacterBuilder"], function(CharacterBuilder){
 
 	var AddBaddiesTask = function(game){
 		game.baddieIds = [];

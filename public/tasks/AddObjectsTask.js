@@ -1,4 +1,4 @@
-define(["ObjectBuilder"], function(ObjectBuilder){
+define(["builders/ObjectBuilder"], function(ObjectBuilder){
 
 	var AddObjectsTask = function(game){
 		game.objectIds = [];
