@@ -6,18 +6,16 @@ define(["utils/GridUtils"], function(GridUtils){
 	};
 
 	DoorCollisionProcessor.prototype.update = function () {
-		/*var health = this.game.manager.getComponentDataForEntity('HealthComponent', this.game.playerId);
-		if(health.isRegenerating){
-			return;
-		}
-		var playerMesh = this.game.manager.getComponentDataForEntity('MeshComponent', this.game.playerId).mesh;
-		var playerPos = playerMesh.position;
-		playerPos = GridUtils.babylonToIJ(playerPos);
-		var obj = this.game.grid.grid[playerPos.i][playerPos.j];
-		if(obj.type === "fire"){
-			this.game.manager.listener.emit("terrainCollision", {"obj":obj});
-		}
-		*/
+		var DSQR = SIZE*SIZE;
+		var manager = this.game.manager;
+		var playerPos = manager.getComponentDataForEntity('MeshComponent', this.game.playerId).mesh.position;
+		var door = _.find(this.game.doorIds, function(id){
+			var mesh0 = manager.getComponentDataForEntity('MeshComponent', id).mesh;
+			var dx = mesh0.position.x - playerPos.x;
+			var dz = mesh0.position.z - playerPos.z;
+			return dx*dx + dz*dz < DSQR;
+		});
+		console.log(door);
 	};
 
 	return DoorCollisionProcessor;
