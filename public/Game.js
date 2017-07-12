@@ -9,7 +9,7 @@ define(["cache/MeshCache", "builders/GridBuilder", "builders/SceneBuilder",
 
 "processors/PlayerMovementProcessor", "processors/TerrainCollisionProcessor",
 
-"processors/BaddieMovementProcessor", "processors/UpdateHuntProcessor",
+"processors/BaddieMovementProcessor", "processors/UpdateHuntProcessor", "processors/DoorCollisionProcessor",
 
 "processors/BaddieCollisionProcessor", "processors/ObjectCollisionProcessor"],
 
@@ -19,7 +19,7 @@ define(["cache/MeshCache", "builders/GridBuilder", "builders/SceneBuilder",
 
 	Components, CameraMatchPlayerProcessor, UpdateHUDProcessor,
 
-	PlayerMovementProcessor, TerrainCollisionProcessor, BaddieMovementProcessor, UpdateHuntProcessor,
+	PlayerMovementProcessor, TerrainCollisionProcessor, BaddieMovementProcessor, UpdateHuntProcessor, DoorCollisionProcessor,
 
 	BaddieCollisionProcessor, ObjectCollisionProcessor) {
 
@@ -67,6 +67,7 @@ define(["cache/MeshCache", "builders/GridBuilder", "builders/SceneBuilder",
 			this.processors.push(new ObjectCollisionProcessor(this));
 			this.processors.push(new UpdateHuntProcessor(this));
 			this.processors.push(new UpdateHUDProcessor(this));
+			this.processors.push(new DoorCollisionProcessor(this));
 			_.each(this.processors, this.manager.addProcessor.bind(this.manager));
 		};
 
@@ -99,8 +100,7 @@ define(["cache/MeshCache", "builders/GridBuilder", "builders/SceneBuilder",
 
 		Game.prototype.init = function(){
 			this.grid = GridBuilder.build(this.scene, this.meshCache);
-			this.cameraId = this.manager.createEntity(['CameraComponent']);
-			this.manager.getComponentDataForEntity('CameraComponent', this.cameraId).camera = SceneBuilder.makeCamera(this.scene);
+			this.camera = new BABYLON.FreeCamera("FreeCamera", new BABYLON.Vector3(0, 0, 0), this.scene);
 			_.each(this._tasks, this.executeTask.bind(this));
 			this.startProcessors();
 			this.engine.runRenderLoop(this.renderFn);

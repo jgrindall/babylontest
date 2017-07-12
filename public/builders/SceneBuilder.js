@@ -16,10 +16,6 @@ define(["builders/LightBuilder", "builders/EffectBuilder"],
 		return scene;
 	};
 
-	SceneBuilder.makeCamera = function(scene){
-		return new BABYLON.FreeCamera("FreeCamera", new BABYLON.Vector3(0, 0, 0), scene);
-	};
-
 	return SceneBuilder;
 
 });
