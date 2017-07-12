@@ -103,6 +103,7 @@ define(["utils/GeomUtils", "utils/ImageUtils"],
 			plane.position.y = 0.001;
 			plane.freezeWorldMatrix();
 			music.attachToMesh(plane);
+			//https://doc.babylonjs.com/overviews/playing_sounds_and_music#creating-a-spatial-3d-sound
 		});
 	};
 

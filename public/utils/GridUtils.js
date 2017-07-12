@@ -138,10 +138,6 @@ define([], function(){
 		});
 	};
 
-	GridUtils.getSolid = function(a){
-		return GridUtils.getByType(a, ["water", "wall"]);
-	};
-
 	GridUtils.addFacesInfoToGrid = function(a){
 		// start off with just a list of cells and add info describing where the walls are
 		GridUtils.addDirectionsOfWalls(a);

@@ -31,6 +31,14 @@ define(["utils/GridUtils"], function(GridUtils){
 		});
 	};
 
+	HUD.prototype.drawDoors = function(){
+		var ctx = this.ctx;
+		ctx.fillStyle = "#666666";
+		_.each(this.data.doors, function(wall){
+			ctx.fillRect(wall[1]*HUD_SIZE, wall[0]*HUD_SIZE, wall[2]*HUD_SIZE, wall[3]*HUD_SIZE);
+		});
+	};
+
 	HUD.prototype.drawWater = function(){
 		var ctx = this.ctx;
 		ctx.fillStyle = "#0077ee";
@@ -89,6 +97,7 @@ define(["utils/GridUtils"], function(GridUtils){
 		this.ctx.clearRect(0, 0, 300, 200);
 		this.data = data;
 		this.drawWalls();
+		this.drawDoors();
 		this.drawWater();
 		this.drawFire();
 		this.addPlayer();

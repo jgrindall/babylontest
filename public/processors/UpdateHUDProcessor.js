@@ -23,6 +23,10 @@ define(["utils/GridUtils"], function(GridUtils){
 		return this.game.grid.greedyFire.quads;
 	};
 
+	UpdateHUDProcessor.prototype.getDoors = function () {
+		return this.game.grid.doors;
+	};
+
 	UpdateHUDProcessor.prototype.getPlayer = function () {
 		var position = this.game.manager.getComponentDataForEntity('MeshComponent', this.game.playerId).mesh.position;
 		return {
@@ -58,6 +62,7 @@ define(["utils/GridUtils"], function(GridUtils){
 			"fire":this.getFire(),
 			"player":this.getPlayer(),
 			"baddies":this.getBaddies(),
+			"doors":this.getDoors(),
 			"objects":this.getObjects()
 		};
 		this.game.hud.update(data);

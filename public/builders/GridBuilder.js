@@ -18,7 +18,7 @@ define(["utils/GridUtils", "utils/GreedyMeshAlgo"],
 		g.objects = window._OBJECTS;
 		g.baddies = window._BADDIES;
 		GridUtils.addFacesInfoToGrid(g.grid);
-		g.solid = GridUtils.getSolid(g.grid);
+		g.solid = GridUtils.getByType(g.grid, ["water", "wall"]);
 		g.greedy = GreedyMeshAlgo.get(g.solid);
 		g.greedyWater = GreedyMeshAlgo.get(GridUtils.getByType(g.grid, "water"));
 		g.greedyFire = GreedyMeshAlgo.get(GridUtils.getByType(g.grid, "fire"));
@@ -44,6 +44,7 @@ define(["utils/GridUtils", "utils/GreedyMeshAlgo"],
 		_.each(g.objects, function(obj){
 			meshCache.addObjectToCache(scene, obj.data.texture);
 		});
+		g.doors = [];
 		return g;
 	};
 
