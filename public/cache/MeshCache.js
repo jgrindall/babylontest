@@ -144,9 +144,31 @@ define([], function(){
 		if(!this._cache[key]){
 			mesh = BABYLON.MeshBuilder.CreatePlane(key, {"height": SIZE*size[0], "width":SIZE*size[1]}, scene);
 			mesh.rotate(new BABYLON.Vector3(1, 0, 0), Math.PI / 2, BABYLON.Space.Local);
-			this._cache[key] = mesh;
 			mesh.material = this.materialsCache.waterMaterial;
-			scene.meshes.pop();
+			this.add(scene, mesh, key);
+		}
+	};
+
+	MeshCache.prototype.addDoor = function(scene){
+		var key, mesh;
+		key = "door";
+		if(!this._cache[key]){
+			mesh = BABYLON.MeshBuilder.CreatePlane(key, {"height": SIZE, "width":SIZE}, scene);
+			mesh.material = this.materialsCache.redMaterial;
+			this.add(scene, mesh, key);
+		}
+	};
+
+	MeshCache.prototype.getDoorFromCache = function(size){
+		var cached, mesh, key = "door";
+		cached = this._cache[key];
+		if(cached){
+			this._cacheI++;
+			mesh = cached.createInstance("index: " + this._cacheI);
+			return mesh;
+		}
+		else{
+			throw new Error("not found " + key);
 		}
 	};
 
@@ -169,9 +191,8 @@ define([], function(){
 		if(!this._cache[key]){
 			mesh = BABYLON.MeshBuilder.CreatePlane(key, {"height": SIZE*size[0], "width":SIZE*size[1]}, scene);
 			mesh.rotate(new BABYLON.Vector3(1, 0, 0), Math.PI / 2, BABYLON.Space.Local);
-			this._cache[key] = mesh;
 			mesh.material = this.materialsCache.fireMaterial;
-			scene.meshes.pop();
+			this.add(scene, mesh, key);
 		}
 	};
 

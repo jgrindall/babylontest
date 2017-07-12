@@ -24,8 +24,8 @@ define(["Textures", "utils/MeshUtils", "cache/MaterialConsts"], function(Texture
 		this.redMaterial.diffuseColor = BABYLON.Color3.Red();
 		this.redMaterial.alpha = 0.7;
 		this.redMaterial.freeze();
-		var waterTexture = new BABYLON.FireProceduralTexture("water", 8, scene); // water is a blue fire.
-		var fireTexture = new BABYLON.FireProceduralTexture("fire", 8, scene);
+		var waterTexture = new BABYLON.FireProceduralTexture("water", 4, scene); // water is a blue fire.
+		var fireTexture = new BABYLON.FireProceduralTexture("fire", 4, scene);
 		fireTexture.speed = new BABYLON.Vector2(10, 8);
 		this.waterMaterial = new BABYLON.StandardMaterial("water", scene);
 		this.waterMaterial.diffuseColor = MaterialConsts.BLUE1;

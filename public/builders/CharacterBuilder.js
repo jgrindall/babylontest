@@ -9,15 +9,15 @@ define(["utils/GridUtils", "cache/AnimationCache"],
 	};
 
 	CharacterBuilder.addBaddie = function(pos, scene, meshCache, manager, id, obj, grid, playerPos){
-		var y = SIZE/2, container, billboard, babylonPos, texture;
+		var y = SIZE/2, container, mesh, babylonPos, texture;
 		var meshComp = manager.getComponentDataForEntity('MeshComponent', id);
 		var strategyComp = manager.getComponentDataForEntity('BaddieStrategyComponent', id);
 		babylonPos = GridUtils.ijToBabylon(pos[0], pos[1]);
-		billboard = meshCache.getBaddieFromCache(obj.data.texture);
-		billboard.position = new BABYLON.Vector3(babylonPos.x, y, babylonPos.z);
-		meshComp.mesh = billboard;
+		mesh = meshCache.getBaddieFromCache(obj.data.texture);
+		mesh.position = new BABYLON.Vector3(babylonPos.x, y, babylonPos.z);
+		meshComp.mesh = mesh;
 		strategyComp.move = obj.data.strategy.move;
-		scene.beginDirectAnimation(billboard, [AnimationCache.get("rot")], 0, 20, true);
+		scene.beginDirectAnimation(mesh, [AnimationCache.get("rot")], 0, 20, true);
 	};
 
 	CharacterBuilder.addPlayer = function(pos, scene){

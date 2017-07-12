@@ -11,13 +11,11 @@ require(["Game", "DATA", "tasks/BuildTerrainTask", "tasks/AddBaddiesTask", "task
 
 		"use strict";
 
-		window._DATA = DATA.landscape;
-		window._OBJECTS = DATA.objects;
-		window._BADDIES = DATA.baddies;
-		window._TEXTURES = DATA.textures;
+		window._DATA = DATA.data;
 		window._LIGHTS = DATA.lights;
 		window._EFFECTS = DATA.effects;
-		window._DOORS = DATA.doors;
+		window._TEXTURES = DATA.textures;
+
 		window.engine = new BABYLON.Engine(document.querySelector("#renderCanvas"), false, null, false);
 
 		var launch;

@@ -111,7 +111,7 @@ define(["utils/GridUtils"], function(GridUtils){
 		else{
 			sComp.vel = {'x':0, 'z':0};
 		}
-		sComp.path = GridUtils.getPath(sComp.move, [baddiePos.i, baddiePos.j], this.game.grid.grid, [2, 13]);
+		sComp.path = GridUtils.getPath(sComp.move, [baddiePos.i, baddiePos.j], this.game.grid.solid, [2, 13]);
 	};
 
 	BaddieMovementProcessor.prototype.updateBaddie = function (id) {

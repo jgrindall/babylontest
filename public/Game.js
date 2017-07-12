@@ -15,7 +15,7 @@ define(["cache/MeshCache", "builders/GridBuilder", "builders/SceneBuilder",
 
 	function(MeshCache, GridBuilder, SceneBuilder,
 
-		Materials, EntityManager, Listener, CommandQueue,
+		MaterialsCache, EntityManager, Listener, CommandQueue,
 
 	Components, CameraMatchPlayerProcessor, UpdateHUDProcessor,
 
@@ -35,7 +35,7 @@ define(["cache/MeshCache", "builders/GridBuilder", "builders/SceneBuilder",
 			this.manager = new EntityManager(new Listener(this));
 			Components.addTo(this.manager);
 			this._tasks = [];
-			this.materialsCache = new Materials(window._TEXTURES);
+			this.materialsCache = new MaterialsCache(window._TEXTURES);
 			this.meshCache = new MeshCache(this.materialsCache);
 			this.queue = new CommandQueue();
 		};

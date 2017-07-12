@@ -14,14 +14,17 @@ define(["utils/GridUtils", "utils/GreedyMeshAlgo"],
 
 	GridBuilder.build = function(scene, meshCache){
 		var g = {};
-		g.grid = window._DATA;
-		g.objects = window._OBJECTS;
-		g.baddies = window._BADDIES;
-		GridUtils.addFacesInfoToGrid(g.grid);
-		g.solid = GridUtils.getByType(g.grid, ["water", "wall"]);
+		g.data = window._DATA;
+		g.grid = GridUtils.arrayToGrid(g.data);
+		g.objects = GridUtils.listByType(g.grid, ["object"]);
+		g.baddies = GridUtils.listByType(g.grid, ["baddie"]);
+		g.doors = [];
+		GridUtils.addDirectionsOfWalls(g.grid);
+		GridUtils.extendWalls(g.grid);
+		g.solid = GridUtils.markByType(g.grid, ["water", "wall", "door"]);
 		g.greedy = GreedyMeshAlgo.get(g.solid);
-		g.greedyWater = GreedyMeshAlgo.get(GridUtils.getByType(g.grid, "water"));
-		g.greedyFire = GreedyMeshAlgo.get(GridUtils.getByType(g.grid, "fire"));
+		g.greedyWater = GreedyMeshAlgo.get(GridUtils.markByType(g.grid, "water"));
+		g.greedyFire = GreedyMeshAlgo.get(GridUtils.markByType(g.grid, "fire"));
 		// cache the boxes
 		_.each(g.greedy.dims, function(size){
 			meshCache.addBoxToCache(scene, size, SIZE);
@@ -32,6 +35,7 @@ define(["utils/GridUtils", "utils/GreedyMeshAlgo"],
 		});
 		// cache bits and bobs
 		meshCache.addBillboardBoxToCache(scene);
+		meshCache.addDoor(scene);
 		meshCache.addBaddieToCache(scene, "bird");
 		meshCache.addBaddieToCache(scene, "baddie");
 		// cache water and fire

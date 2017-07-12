@@ -129,7 +129,31 @@ define([], function(){
 		return lengthsNeeded;
 	};
 
-	GridUtils.getByType = function(a, typeArr){
+	GridUtils.arrayToGrid = function(a){
+		var g = GridUtils.makeEmpty(SIZE_I, SIZE_J, {"type":"empty", "data":{}});
+		_.each(a, function(obj){
+			g[obj.data.position[0]][obj.data.position[1]] = obj;
+		});
+		return g;
+	};
+
+	GridUtils.listByType = function(a, typeArr){
+		var arr = [];
+		if(!_.isArray(typeArr)){
+			typeArr = [typeArr];
+		}
+		var _i, _j, SIZE_I = a.length, SIZE_J = a[0].length;
+		for(_i = 0; _i < SIZE_I; _i++){
+			for(_j = 0; _j < SIZE_J; _j++){
+				if(typeArr.indexOf(a[_i][_j].type) >= 0){
+					arr.push(a[_i][_j]);
+				}
+			}
+		}
+		return arr;
+	};
+
+	GridUtils.markByType = function(a, typeArr){
 		if(!_.isArray(typeArr)){
 			typeArr = [typeArr];
 		}
@@ -138,23 +162,17 @@ define([], function(){
 		});
 	};
 
-	GridUtils.addFacesInfoToGrid = function(a){
-		// start off with just a list of cells and add info describing where the walls are
-		GridUtils.addDirectionsOfWalls(a);
-		GridUtils.extendWalls(a);
-	};
-
-	GridUtils.getPath = function(strategy, pos, grid, playerPos){
+	GridUtils.getPath = function(strategy, pos, solid, playerPos){
 		var i = pos[0], j = pos[1], i0, j0, i1, j1;
 		var TOP_LEFT = {"x":0, "z":window.SIZE_I * window.SIZE};
 		if(strategy === "north-south"){
-			while(grid[i][j].type === "empty"){
+			while(solid[i][j] === 0){
 				i--;
 			}
 			i++;
 			i0 = i;
 			i = pos[0];
-			while(grid[i][j].type === "empty"){
+			while(solid[i][j] === 0){
 				i++;
 			}
 			i--;
@@ -166,13 +184,13 @@ define([], function(){
 			};
 		}
 		else if(strategy === "west-east"){
-			while(grid[i][j].type === "empty"){
+			while(solid[i][j] === 0){
 				j--;
 			}
 			j++;
 			j0 = j;
 			j = pos[1];
-			while(grid[i][j].type === "empty"){
+			while(solid[i][j] === 0){
 				j++;
 			}
 			j--;
@@ -203,18 +221,6 @@ define([], function(){
 			}
 		}
 		return output;
-	};
-
-	GridUtils.getMatchingLocations = function(a, testFn){
-		var _i, _j, SIZE_I = a.length, SIZE_J = a[0].length, matching = [];
-		for(_i = 0; _i < SIZE_I; _i++){
-			for(_j = 0; _j < SIZE_J; _j++){
-				if(testFn(a[_i][_j])){
-					matching.push([_i, _j]);
-				}
-			}
-		}
-		return matching;
 	};
 
 	return GridUtils;
