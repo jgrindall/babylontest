@@ -2,8 +2,6 @@
 window.SIZE_I = 16;
 window.SIZE_J = 16;
 window.SIZE = 10;
-window.SIZE_MAX = Math.max(SIZE_I, SIZE_J);
-window._NUM_BADDIES = 4;
 
 require(["Game", "DATA", "tasks/BuildTerrainTask", "tasks/AddBaddiesTask", "tasks/AddControlsTask", "tasks/AddDoorsTask", "tasks/AddObjectsTask", "tasks/AddPlayerTask", "tasks/AddMusicTask"],
 
