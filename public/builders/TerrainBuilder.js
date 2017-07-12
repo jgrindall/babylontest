@@ -158,11 +158,11 @@ define(["utils/GridUtils", "MeshCache", "utils/GreedyMeshAlgo", "MaterialsCache"
 					c.height = imgs[0].height;
 					var scaleX = imgs[0].width / SIZE_J;
 					var scaleY = imgs[0].height / SIZE_I;
-					var RADIUS = 4;
+					var RADIUS = 12, RADIUS_2 = 12/Math.sqrt(2), D_RADIUS = RADIUS - RADIUS_2;
 					c.getContext("2d").drawImage(imgs[0], 0, 0);
 					c.getContext("2d").fillStyle = "#4dc9ff";
 					_.each(waterQuads, function(quad){
-						GeomUtils.roundRect(c.getContext("2d"), scaleX*quad[1] - RADIUS, scaleY*quad[0] - RADIUS, scaleX*quad[2] + 2*RADIUS, scaleY*quad[3] + 2*RADIUS, RADIUS, true, false);
+						GeomUtils.roundRect(c.getContext("2d"), scaleX*quad[1] - D_RADIUS, scaleY*quad[0] - D_RADIUS, scaleX*quad[2] + 2*D_RADIUS, scaleY*quad[3] + 2*D_RADIUS, RADIUS, true, false);
 					});
 					c.getContext("2d").fillStyle = "#FFA500";
 					_.each(fireQuads, function(quad){
