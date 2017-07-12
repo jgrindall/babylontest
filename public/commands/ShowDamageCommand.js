@@ -15,7 +15,6 @@ define([], function(){
 		};
 		postProcess.onBeforeRender = function (effect) {
 			var d = 1 - N/maxN;
-			console.log(d);
 			effect.setFloat("degree", d);
 			N++;
 			if(N === maxN){

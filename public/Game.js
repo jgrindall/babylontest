@@ -1,7 +1,7 @@
 
-define(["utils/MeshUtils", "utils/GridUtils", "cache/MeshCache", "builders/SceneBuilder", "builders/TerrainBuilder", "builders/CharacterBuilder", "builders/GridBuilder", "builders/ObjectBuilder", "builders/DoorBuilder",
+define(["utils/MeshUtils", "utils/GridUtils", "cache/MeshCache",
 
-	"utils/GreedyMeshAlgo", "cache/MaterialsCache", "GamePad",
+	"cache/MaterialsCache", "GamePad",
 
 "utils/GamePadUtils", "lib/entity-manager", "Listener", "CommandQueue",
 
@@ -13,13 +13,15 @@ define(["utils/MeshUtils", "utils/GridUtils", "cache/MeshCache", "builders/Scene
 
 "processors/UpdateHUDProcessor", "Possessions", "Health",
 
-"processors/PlayerMovementProcessor", "processors/TerrainCollisionProcessor", "processors/BaddieMovementProcessor", "processors/UpdateHuntProcessor",
+"processors/PlayerMovementProcessor", "processors/TerrainCollisionProcessor",
+
+"processors/BaddieMovementProcessor", "processors/UpdateHuntProcessor",
 
 "processors/BaddieCollisionProcessor", "processors/ObjectCollisionProcessor", "DATA", "HUD"],
 
-	function(MeshUtils, GridUtils, MeshCache, SceneBuilder, TerrainBuilder, CharacterBuilder, GridBuilder, ObjectBuilder, DoorBuilder,
+	function(MeshUtils, GridUtils, MeshCache,
 
-		GreedyMeshAlgo, Materials, GamePad, GamePadUtils, EntityManager, Listener, CommandQueue,
+		Materials, GamePad, GamePadUtils, EntityManager, Listener, CommandQueue,
 
 	HealthComponent, SpeedComponent, Components, MessageComponent, MeshComponent, BaddieStrategyComponent,
 

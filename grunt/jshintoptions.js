@@ -1,0 +1,31 @@
+module.exports = {
+    curly: false,
+    eqeqeq: true,
+    eqnull: true,
+    browser: true,
+    strict:true,
+    freeze:true,
+    immed:true,
+    indent:4,
+    latedef:true,
+    newcap:true,
+    nonbsp:true,
+    undef:true,
+    unused:false,
+    maxdepth:6,
+    sub: true,
+    globals: {
+        require:true,
+        define:true,
+        console:true,
+        _:true,
+        $:true,
+        BABYLON:true,
+        PF:true,
+        SIZE:true,
+        window:true,
+        SIZE_I:true,
+        SIZE_J:true,
+        Promise:true
+    }
+};

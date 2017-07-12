@@ -1,4 +1,4 @@
-define(["utils/GridUtils"], function(GridUtils){
+define([], function(){
 	"use strict";
 
 	var Health = function(){

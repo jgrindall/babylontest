@@ -1,6 +1,6 @@
-define(["utils/GridUtils", "cache/MeshCache", "utils/GreedyMeshAlgo", "cache/MaterialsCache", "Textures", "utils/GeomUtils", "utils/ImageUtils", "builders/LightBuilder", "builders/EffectBuilder"],
+define(["cache/MaterialsCache", "Textures", "utils/GeomUtils", "utils/ImageUtils", "builders/LightBuilder", "builders/EffectBuilder"],
 
-	function(GridUtils, MeshCache, GreedyMeshAlgo, Materials, Textures, GeomUtils, ImageUtils, LightBuilder, EffectBuilder){
+	function(Materials, Textures, GeomUtils, ImageUtils, LightBuilder, EffectBuilder){
 
 	"use strict";
 

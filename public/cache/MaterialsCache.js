@@ -1,4 +1,4 @@
-define(["lib/Deferred_", "Textures", "utils/MeshUtils", "cache/MaterialConsts"], function(Deferred, Textures, MeshUtils, MaterialConsts){
+define(["Textures", "utils/MeshUtils", "cache/MaterialConsts"], function(Textures, MeshUtils, MaterialConsts){
 
 	"use strict";
 
