@@ -24,7 +24,7 @@ define([], function(){
 			scene.fogDensity = data.fogDensity;
 			scene.fogStart = data.fogStart;
 			scene.fogEnd = data.fogEnd;
-			scene.fogColor = data.fogColor
+			scene.fogColor = data.fogColor;
 		}
 	};
 

@@ -1,5 +1,7 @@
 define([], function(){
-	
+
+	"use strict";
+
 	var SpeedComponent = {
 		state: {
 			"speed":0,
@@ -8,9 +10,9 @@ define([], function(){
 			"mode":"off"
 		}
 	};
-	
+
 	SpeedComponent.name = "SpeedComponent";
 
 	return SpeedComponent;
-	
+
 });

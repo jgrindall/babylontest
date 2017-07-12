@@ -1,5 +1,7 @@
 define([], function(){
 
+	"use strict";
+
 	var FRICTION = 0.7;
 
 	var PlayerMovementProcessor = function(game){

@@ -1,6 +1,6 @@
 define(["utils/GridUtils"], function(GridUtils){
 
-	var FRICTION = 0.7;
+	"use strict";
 
 	var UpdateHUDProcessor = function(game){
 		this.game = game;
@@ -27,7 +27,7 @@ define(["utils/GridUtils"], function(GridUtils){
 		var position = this.game.manager.getComponentDataForEntity('MeshComponent', this.game.playerId).mesh.position;
 		return {
 			"position":GridUtils.babylonToIJ(position)
-		}
+		};
 	};
 
 	UpdateHUDProcessor.prototype.getBaddies = function () {

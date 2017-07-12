@@ -1,35 +1,27 @@
 
-define(["utils/MeshUtils", "utils/GridUtils", "cache/MeshCache",
+define(["cache/MeshCache", "builders/GridBuilder", "builders/SceneBuilder",
 
-	"cache/MaterialsCache", "GamePad",
+	"cache/MaterialsCache", "lib/entity-manager", "Listener", "CommandQueue",
 
-"utils/GamePadUtils", "lib/entity-manager", "Listener", "CommandQueue",
+"components/Components", "processors/CameraMatchPlayerProcessor",
 
-"components/HealthComponent", "components/SpeedComponent", "components/Components", "components/MessageComponent",
-
-"components/MeshComponent", "components/BaddieStrategyComponent",
-
-"components/CameraComponent", "components/PossessionsComponent", "processors/CameraMatchPlayerProcessor",
-
-"processors/UpdateHUDProcessor", "Possessions", "Health",
+"processors/UpdateHUDProcessor",
 
 "processors/PlayerMovementProcessor", "processors/TerrainCollisionProcessor",
 
 "processors/BaddieMovementProcessor", "processors/UpdateHuntProcessor",
 
-"processors/BaddieCollisionProcessor", "processors/ObjectCollisionProcessor", "DATA", "HUD"],
+"processors/BaddieCollisionProcessor", "processors/ObjectCollisionProcessor"],
 
-	function(MeshUtils, GridUtils, MeshCache,
+	function(MeshCache, GridBuilder, SceneBuilder,
 
-		Materials, GamePad, GamePadUtils, EntityManager, Listener, CommandQueue,
+		Materials, EntityManager, Listener, CommandQueue,
 
-	HealthComponent, SpeedComponent, Components, MessageComponent, MeshComponent, BaddieStrategyComponent,
-
-	CameraComponent, PossessionsComponent, CameraMatchPlayerProcessor, UpdateHUDProcessor, Possessions, Health,
+	Components, CameraMatchPlayerProcessor, UpdateHUDProcessor,
 
 	PlayerMovementProcessor, TerrainCollisionProcessor, BaddieMovementProcessor, UpdateHuntProcessor,
 
-	BaddieCollisionProcessor, ObjectCollisionProcessor, DATA, HUD) {
+	BaddieCollisionProcessor, ObjectCollisionProcessor) {
 
 		"use strict";
 

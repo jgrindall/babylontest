@@ -1,5 +1,7 @@
 define([], function(){
 
+	"use strict";
+
 	var MeshComponent = {
 		state: {
 		    mesh:null

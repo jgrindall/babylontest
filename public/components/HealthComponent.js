@@ -1,5 +1,7 @@
 define([], function(){
 
+	"use strict";
+
 	var HealthComponent = {
 		state: {
 		    health:100,

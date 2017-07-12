@@ -8,10 +8,7 @@ define([], function(){
 
 	GeomUtils.pointInRect = function(p, r, options){
 		options = options || {'tolerance': 1};
-		return (p.x > r.left + options.tolerance)
-		&& (p.x < r.right - options.tolerance)
-		&& (p.z > r.bottom + options.tolerance)
-		&& (p.z < r.top - options.tolerance);
+		return (p.x > r.left + options.tolerance) && (p.x < r.right - options.tolerance) && (p.z > r.bottom + options.tolerance) && (p.z < r.top - options.tolerance);
 	};
 
 	GeomUtils.rectIntersectRect = function(r1, r2) {
@@ -19,7 +16,7 @@ define([], function(){
 	};
 
 	GeomUtils.roundRect = function(ctx, x, y, width, height, radius, fill, stroke) {
-	 	if (typeof stroke == "undefined" ) {
+	 	if (typeof stroke === "undefined" ) {
 	    	stroke = true;
 	  	}
 	  	if (typeof radius === "undefined") {

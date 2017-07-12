@@ -1,5 +1,7 @@
 define([], function(){
 
+	"use strict";
+
 	var CameraComponent = {
 		state: {
 		    camera:"HELLO THERE!!"

@@ -1,4 +1,6 @@
-define(["lib/Deferred_"], function(Deferred){
+define([], function(){
+
+	"use strict";
 
 	var Textures = {};
 

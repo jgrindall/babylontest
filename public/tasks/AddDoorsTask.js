@@ -1,5 +1,7 @@
 define(["builders/DoorBuilder"], function(DoorBuilder){
 
+	"use strict";
+
 	var AddDoorsTask = function(game){
 		return;
 		/*

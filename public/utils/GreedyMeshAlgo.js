@@ -128,6 +128,6 @@ define(["utils/GridUtils"], function(GridUtils){
 
 	return {
 		"get":getBestGreedyMesh
-	}
+	};
 
 });

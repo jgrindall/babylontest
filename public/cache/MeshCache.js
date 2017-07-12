@@ -1,4 +1,6 @@
-define(["utils/MeshUtils", "cache/MaterialsCache"], function(MeshUtils, Materials){
+define([], function(){
+
+	"use strict";
 
 	var MeshCache = function(materialsCache){
 		this.materialsCache = materialsCache;
@@ -127,7 +129,7 @@ define(["utils/MeshUtils", "cache/MaterialsCache"], function(MeshUtils, Material
 		var cached, mesh, key = "billboardbox";
 		cached = this._cache[key];
 		if(cached){
-			mesh = cached.createInstance("box index: " + cacheI);
+			mesh = cached.createInstance("box index: " + this.cacheI);
 			this._cacheI++;
 			mesh.checkCollisions = true;
 			return mesh;
@@ -186,8 +188,8 @@ define(["utils/MeshUtils", "cache/MaterialsCache"], function(MeshUtils, Material
 		}
 	};
 
-	MeshCache.prototype.getBaddieFromCache = function(key){
-		var cached, mesh, key = "billboardplane_" + key;
+	MeshCache.prototype.getBaddieFromCache = function(texture){
+		var cached, mesh, key = "billboardplane_" + texture;
 		cached = this._cache[key];
 		if(cached){
 			mesh = cached.createInstance("index: " + this._cacheI);

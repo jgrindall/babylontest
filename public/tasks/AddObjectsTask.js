@@ -1,5 +1,7 @@
 define(["builders/ObjectBuilder"], function(ObjectBuilder){
 
+	"use strict";
+
 	var AddObjectsTask = function(game){
 		game.objectIds = [];
 		var manager = game.manager, scene = game.scene, meshCache = game.meshCache;

@@ -26,6 +26,9 @@ module.exports = {
         window:true,
         SIZE_I:true,
         SIZE_J:true,
-        Promise:true
+        Promise:true,
+        Backbone:true,
+        MiniRunner:true,
+        nipplejs:true
     }
 };

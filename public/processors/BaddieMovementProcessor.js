@@ -1,4 +1,4 @@
-define(["utils/GeomUtils", "utils/GridUtils"], function(GeomUtils, GridUtils){
+define(["utils/GridUtils"], function(GridUtils){
 
 	"use strict";
 

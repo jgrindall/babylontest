@@ -1,6 +1,6 @@
 module.exports = function(grunt) {
 
-    var src = "../public/**/*.js";
+    var src = ["../public/**/*.js", "!../public/lib/**/*.js"];
 
     grunt.initConfig({
 

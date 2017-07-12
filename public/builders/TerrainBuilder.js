@@ -1,6 +1,6 @@
-define(["cache/MaterialsCache", "Textures", "utils/GeomUtils", "utils/ImageUtils", "builders/LightBuilder", "builders/EffectBuilder"],
+define(["utils/GeomUtils", "utils/ImageUtils"],
 
-	function(Materials, Textures, GeomUtils, ImageUtils, LightBuilder, EffectBuilder){
+	function(GeomUtils, ImageUtils){
 
 	"use strict";
 
@@ -124,6 +124,7 @@ define(["cache/MaterialsCache", "Textures", "utils/GeomUtils", "utils/ImageUtils
 		},
 		addCeil :function(scene){
 			return;
+			/*
 			var img = new Image();
 			var groundWidth = SIZE_J*SIZE;
 			var groundHeight = SIZE_I*SIZE;
@@ -142,6 +143,7 @@ define(["cache/MaterialsCache", "Textures", "utils/GeomUtils", "utils/ImageUtils
 				ground.material.diffuseTexture = new BABYLON.Texture("data:b6423", scene, false, true, BABYLON.Texture.BILINEAR_SAMPLINGMODE, null, null, base64, true);
 			};
 			img.src = "assets/roof.jpg";
+			*/
 		},
 		addGround: function(scene, gridComponent){
 			ImageUtils

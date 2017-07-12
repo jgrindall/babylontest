@@ -6,7 +6,7 @@ define([], function(){
 	};
 
 	GamePadUtils.linkGamePadToId = function(manager, gamePad, id){
-		var ROT_ANGLE = 50, ROT_SPEED = 0.03, SPEED = 0.5, MIN_DIST = 0.25;;
+		var ROT_ANGLE = 50, ROT_SPEED = 0.03, SPEED = 0.5, MIN_DIST = 0.25;
 		gamePad.update.add({
 			update : function(name, obj){
 				var sf, data = manager.getComponentDataForEntity('SpeedComponent', id);

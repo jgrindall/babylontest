@@ -1,5 +1,7 @@
 define(["builders/CharacterBuilder"], function(CharacterBuilder){
 
+	"use strict";
+
 	var AddBaddiesTask = function(game){
 		game.baddieIds = [];
 		var manager = game.manager, scene = game.scene, meshCache = game.meshCache;

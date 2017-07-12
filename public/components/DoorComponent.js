@@ -1,5 +1,7 @@
 define([], function(){
 
+	"use strict";
+
 	var DoorComponent = {
 		state: {
 			key:"red",

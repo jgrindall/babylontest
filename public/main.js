@@ -23,7 +23,7 @@ require(["Game", "DATA", "tasks/BuildTerrainTask", "tasks/AddBaddiesTask", "task
 		var launch;
 
 		launch = function(){
-			var g = new Game(engine)
+			var g = new Game(window.engine)
 			.registerTask(BuildTerrainTask)
 			.registerTask(AddPlayerTask)
 			.registerTask(AddBaddiesTask)
