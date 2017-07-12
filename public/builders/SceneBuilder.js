@@ -1,4 +1,4 @@
-define(["utils/GridUtils", "MeshCache", "utils/GreedyMeshAlgo", "MaterialsCache", "Textures", "builders/LightBuilder", "builders/EffectBuilder"],
+define(["utils/GridUtils", "cache/MeshCache", "utils/GreedyMeshAlgo", "cache/MaterialsCache", "Textures", "builders/LightBuilder", "builders/EffectBuilder"],
 
 	function(GridUtils, MeshCache, GreedyMeshAlgo, Materials, Textures, LightBuilder, EffectBuilder){
 
@@ -17,8 +17,7 @@ define(["utils/GridUtils", "MeshCache", "utils/GreedyMeshAlgo", "MaterialsCache"
 	};
 
 	SceneBuilder.makeCamera = function(scene){
-		var camera = new BABYLON.FreeCamera("FreeCamera", new BABYLON.Vector3(SIZE_I*SIZE/2, 200, SIZE_J*SIZE/2), scene);
-		//var postProcess = new BABYLON.RefractionPostProcess("Refraction", "assets/normal.png", new BABYLON.Color3(1.0, 1.0, 1.0), 0.5, 0.5, 1.0, camera);
+		var camera = new BABYLON.FreeCamera("FreeCamera", new BABYLON.Vector3(SIZE_I*SIZE/2, 0, SIZE_J*SIZE/2), scene);
 		return camera;
 	};
 

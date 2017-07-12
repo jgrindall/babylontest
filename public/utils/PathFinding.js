@@ -1,10 +1,10 @@
-define([], function(){
-	/* helper functions */
+define(["utils/GridUtils"], function(GridUtils){
+
 	"use strict";
 
 	var PathFinding  = {};
 
-	PathFinding.getAStarPath = function(pos, grid, targetPos){
+	PathFinding.getAStarPath = function(pos, grid, playerPos){
 		// TODO - cache new PF.AStarFinder()??
 		// TODO - web worker?
 		var i, points, numPoints, sections = [], _addDir;

@@ -1,4 +1,4 @@
-define(["utils/GridUtils", "MeshCache", "utils/GreedyMeshAlgo", "MaterialsCache", "Textures", "utils/GeomUtils", "utils/ImageUtils", "builders/LightBuilder", "builders/EffectBuilder"],
+define(["utils/GridUtils", "cache/MeshCache", "utils/GreedyMeshAlgo", "cache/MaterialsCache", "Textures", "utils/GeomUtils", "utils/ImageUtils", "builders/LightBuilder", "builders/EffectBuilder"],
 
 	function(GridUtils, MeshCache, GreedyMeshAlgo, Materials, Textures, GeomUtils, ImageUtils, LightBuilder, EffectBuilder){
 
@@ -70,7 +70,7 @@ define(["utils/GridUtils", "MeshCache", "utils/GreedyMeshAlgo", "MaterialsCache"
 
 	var _addWater = function(scene, quads, meshCache){
 		var TOP_LEFT = {"x":0, "z":SIZE_I * SIZE};
-		var music = new BABYLON.Sound("Violons", "assets/water.wav", scene, function () {}, { loop: true, autoplay: true,  maxDistance: 20 });
+		var music = new BABYLON.Sound("Violons", "assets/water.wav", scene, function () {}, { loop: true, autoplay: true,  maxDistance: 12 });
 		_.each(quads, function(quad){
 			var size, plane;
 			size = (quad[2] >= quad[3]) ? [quad[2], quad[3]] : [quad[3], quad[2]];
@@ -88,8 +88,9 @@ define(["utils/GridUtils", "MeshCache", "utils/GreedyMeshAlgo", "MaterialsCache"
 		});
 	};
 
-	var _addFire = function(quads, meshCache){
+	var _addFire = function(scene, quads, meshCache){
 		var TOP_LEFT = {"x":0, "z":SIZE_I * SIZE};
+		var music = new BABYLON.Sound("Violons", "assets/fire.mp3", scene, function () {}, { loop: true, autoplay: true,  maxDistance: 12 });
 		_.each(quads, function(quad){
 			var size, plane;
 			size = (quad[2] >= quad[3]) ? [quad[2], quad[3]] : [quad[3], quad[2]];
@@ -101,6 +102,7 @@ define(["utils/GridUtils", "MeshCache", "utils/GreedyMeshAlgo", "MaterialsCache"
 			plane.position.z = TOP_LEFT.z - (quad[0] + quad[3]/2)*SIZE;
 			plane.position.y = 0.001;
 			plane.freezeWorldMatrix();
+			music.attachToMesh(plane);
 		});
 	};
 
@@ -114,11 +116,11 @@ define(["utils/GridUtils", "MeshCache", "utils/GreedyMeshAlgo", "MaterialsCache"
 	};
 
 	var TerrainBuilder = {
-		addFromData: function(scene, gridComponent, meshCache){
-			_addBoxes(gridComponent.greedy.quads, meshCache);
-			_addWalls(gridComponent.grid, meshCache);
-			_addWater(scene, gridComponent.greedyWater.quads, meshCache);
-			_addFire(gridComponent.greedyFire.quads, meshCache);
+		addFromData: function(scene, grid, meshCache){
+			_addBoxes(grid.greedy.quads, meshCache);
+			_addWalls(grid.grid, meshCache);
+			_addWater(scene, grid.greedyWater.quads, meshCache);
+			_addFire(scene, grid.greedyFire.quads, meshCache);
 		},
 		addCeil :function(scene){
 			return;
@@ -158,7 +160,7 @@ define(["utils/GridUtils", "MeshCache", "utils/GreedyMeshAlgo", "MaterialsCache"
 					c.height = imgs[0].height;
 					var scaleX = imgs[0].width / SIZE_J;
 					var scaleY = imgs[0].height / SIZE_I;
-					var RADIUS = 12, RADIUS_2 = 12/Math.sqrt(2), D_RADIUS = RADIUS - RADIUS_2;
+					var RADIUS = 12, RADIUS_2 = 12/Math.sqrt(2), D_RADIUS = RADIUS - RADIUS_2 + 2;
 					c.getContext("2d").drawImage(imgs[0], 0, 0);
 					c.getContext("2d").fillStyle = "#4dc9ff";
 					_.each(waterQuads, function(quad){

@@ -18,7 +18,7 @@ define(["lib/Deferred_", "Textures", "utils/MeshUtils", "cache/MaterialConsts"],
 		this.base64Material.dispose();
 	};
 
-	MaterialsCache.prototype.makeMaterials = function(scene, callback){
+	MaterialsCache.prototype.load = function(scene, callback){
 		var _this = this;
 		this.redMaterial = new BABYLON.StandardMaterial("red", scene);
 		this.redMaterial.diffuseColor = BABYLON.Color3.Red();

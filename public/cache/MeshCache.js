@@ -1,4 +1,4 @@
-define(["utils/MeshUtils", "MaterialsCache"], function(MeshUtils, Materials){
+define(["utils/MeshUtils", "cache/MaterialsCache"], function(MeshUtils, Materials){
 
 	var MeshCache = function(materialsCache){
 		this.materialsCache = materialsCache;

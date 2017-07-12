@@ -1,7 +1,7 @@
 
-define(["utils/MeshUtils", "utils/GridUtils", "MeshCache", "builders/SceneBuilder", "builders/TerrainBuilder", "builders/CharacterBuilder", "GridBuilder", "builders/ObjectBuilder", "builders/DoorBuilder",
+define(["utils/MeshUtils", "utils/GridUtils", "cache/MeshCache", "builders/SceneBuilder", "builders/TerrainBuilder", "builders/CharacterBuilder", "builders/GridBuilder", "builders/ObjectBuilder", "builders/DoorBuilder",
 
-	"utils/GreedyMeshAlgo", "MaterialsCache", "GamePad",
+	"utils/GreedyMeshAlgo", "cache/MaterialsCache", "GamePad",
 
 "utils/GamePadUtils", "lib/entity-manager", "Listener", "CommandQueue",
 
@@ -35,15 +35,11 @@ define(["utils/MeshUtils", "utils/GridUtils", "MeshCache", "builders/SceneBuilde
 			this._paused = false;
 			this.renderFn = this.render.bind(this);
 			this.engine = engine;
+			window.engine = engine;
 			this.processors = [];
 			this.scene = SceneBuilder.makeScene(this.engine);
 			this.manager = new EntityManager(new Listener(this));
 			Components.addTo(this.manager);
-			this.playerId = null;
-			this._tasks = [];
-			this.baddieIds = [];
-			this.objectIds = [];
-			this.doorIds = [];
 			this._tasks = [];
 			this.materialsCache = new Materials(window._TEXTURES);
 			this.meshCache = new MeshCache(this.materialsCache);
@@ -55,7 +51,7 @@ define(["utils/MeshUtils", "utils/GridUtils", "MeshCache", "builders/SceneBuilde
 		};
 
 		Game.prototype.start = function(){
-			this.materialsCache.makeMaterials(this.scene, this.init.bind(this));
+			this.materialsCache.load(this.scene, this.init.bind(this));
 			return this;
 		};
 
@@ -69,8 +65,6 @@ define(["utils/MeshUtils", "utils/GridUtils", "MeshCache", "builders/SceneBuilde
 		};
 
 		Game.prototype.startProcessors = function(){
-			var manager = this.manager;
-			//TODO - make them all "this"
 			this.processors.push(new PlayerMovementProcessor(this));
 			this.processors.push(new CameraMatchPlayerProcessor(this));
 			this.processors.push(new BaddieMovementProcessor(this));
@@ -79,7 +73,7 @@ define(["utils/MeshUtils", "utils/GridUtils", "MeshCache", "builders/SceneBuilde
 			this.processors.push(new ObjectCollisionProcessor(this));
 			this.processors.push(new UpdateHuntProcessor(this));
 			this.processors.push(new UpdateHUDProcessor(this));
-			_.each(this.processors, manager.addProcessor.bind(manager));
+			_.each(this.processors, this.manager.addProcessor.bind(this.manager));
 		};
 
 		Game.prototype.pause = function(){
@@ -116,8 +110,6 @@ define(["utils/MeshUtils", "utils/GridUtils", "MeshCache", "builders/SceneBuilde
 			_.each(this._tasks, this.executeTask.bind(this));
 			this.startProcessors();
 			this.engine.runRenderLoop(this.renderFn);
-			var music = new BABYLON.Sound("Music", "assets/sea.mp3", this.scene, null, { loop: true, autoplay: true });
-			music.setVolume(0.1);
 			this.trigger("loaded");
 		};
 
@@ -129,7 +121,6 @@ define(["utils/MeshUtils", "utils/GridUtils", "MeshCache", "builders/SceneBuilde
 			this.gamePad.destroy();
 			this.manager.listener = null;
 			_.each(this.processors, this.manager.removeProcessor.bind(this.manager));
-			this.manager = null;
 			this.scene.dispose();
 			this.manager = null;
 			// remove component from entity and remove components
