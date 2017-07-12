@@ -81,7 +81,7 @@ define(["utils/GridUtils"], function(GridUtils){
 			doorMesh = manager.getComponentDataForEntity('MeshComponent', id).mesh;
 			hit = _getDir(doorMesh.position);
 			if(hit){
-				this.game.manager.listener.emit("doorInteraction");
+				manager.listener.emit("doorInteraction");
 			}
 		});
 	};
