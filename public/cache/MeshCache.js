@@ -27,10 +27,16 @@ define([], function(){
 	MeshCache.prototype.get = function(key){
 		var cached = this._cache[key];
 		if(cached){
-			this._cacheI ++;
+			this._cacheI++;
 			return cached.createInstance(key + "_index: " + this._cacheI);
 		}
 		return null;
+	};
+
+	MeshCache.prototype.getPlaneWithTexture = function(key, scaleW, scaleH, texture, scene){
+		var mesh = BABYLON.MeshBuilder.CreatePlane(key, {"height": SIZE*scaleH, "width":SIZE*scaleW}, scene);
+		this.materialsCache.applyToMesh(mesh, 1, texture);
+		return mesh;
 	};
 
 	MeshCache.prototype.getObject = function(scene, texture){
@@ -41,9 +47,8 @@ define([], function(){
 			return mesh;
 		}
 		else{
-			mesh = BABYLON.MeshBuilder.CreatePlane(key, {"height": SIZE*0.33, "width":SIZE*0.33}, scene);
+			mesh = this.getPlaneWithTexture(key, 0.333, 0.333, texture, scene);
 			mesh.convertToUnIndexedMesh();
-			this.materialsCache.applyToMesh(mesh, 1, texture);
 			this.add(scene, mesh, key);
 			return this.getObject(scene, texture);
 		}
@@ -71,9 +76,8 @@ define([], function(){
 			return mesh;
 		}
 		else{
-			mesh = BABYLON.MeshBuilder.CreatePlane(key, {"height": SIZE, "width":SIZE*size}, scene);
+			mesh = this.getPlaneWithTexture(key, size, 1, texture, scene);
 			mesh.convertToUnIndexedMesh();
-			this.materialsCache.applyToMesh(mesh, size, texture);
 			this.add(scene, mesh, key);
 			return this.getPlane(scene, size, texture);
 		}
@@ -86,14 +90,10 @@ define([], function(){
 			return mesh;
 		}
 		else{
-			mesh0 = BABYLON.MeshBuilder.CreatePlane(key, {"height": SIZE, "width":SIZE}, scene);
-			mesh1 = BABYLON.MeshBuilder.CreatePlane(key, {"height": SIZE, "width":SIZE}, scene);
-			mesh2 = BABYLON.MeshBuilder.CreatePlane(key, {"height": SIZE, "width":SIZE}, scene);
-			mesh3 = BABYLON.MeshBuilder.CreatePlane(key, {"height": SIZE, "width":SIZE}, scene);
-			this.materialsCache.applyToMesh(mesh0, 1, "door");
-			this.materialsCache.applyToMesh(mesh1, 1, "door");
-			this.materialsCache.applyToMesh(mesh2, 1, "door");
-			this.materialsCache.applyToMesh(mesh3, 1, "door");
+			mesh0 = this.getPlaneWithTexture(key, 1, 1, "door", scene);
+			mesh1 = this.getPlaneWithTexture(key, 1, 1, "door", scene);
+			mesh2 = this.getPlaneWithTexture(key, 1, 1, "door", scene);
+			mesh3 = this.getPlaneWithTexture(key, 1, 1, "door", scene);
 			mesh1.position.z = SIZE/2;
 			mesh3.position.z = -SIZE/2;
 			mesh0.position.x = -SIZE/2;
@@ -144,9 +144,8 @@ define([], function(){
 			return mesh;
 		}
 		else{
-			mesh = BABYLON.MeshBuilder.CreatePlane(key, {"height": SIZE*0.75, "width":SIZE*0.75}, scene);
+			mesh = this.getPlaneWithTexture(key, 0.75, 0.75, texture, scene);
 			mesh.convertToUnIndexedMesh();
-			this.materialsCache.applyToMesh(mesh, 1, texture);
 			this.add(scene, mesh, key);
 			return this.getBaddie(scene, texture);
 		}
