@@ -3,10 +3,8 @@ define(["builders/TerrainBuilder"], function(TerrainBuilder){
 	"use strict";
 
 	var BuildTerrainTask = function(game){
-		TerrainBuilder.addFromData(game.scene, game.grid, game.meshCache);
-		TerrainBuilder.addGround(game.scene, game.grid, game.meshCache);
-		TerrainBuilder.addCeil(game.scene, game.meshCache);
-		TerrainBuilder.addSky(game.scene, game.meshCache);
+		TerrainBuilder.addBoxes(game.scene, game.grid.greedy.solid.quads, game.meshCache);
+		TerrainBuilder.addWalls(game.scene, game.grid.grid, game.meshCache);
 	};
 
 	return BuildTerrainTask;

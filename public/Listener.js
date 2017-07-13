@@ -21,7 +21,7 @@ define(["commands/ObjectCollectionCommand", "commands/DoorInteractionCommand", "
 			new TerrainCollectionCommand(this.game).exec();
 		}
 		else if(type === "doorInteraction"){
-			//new DoorInteractionCommand(this.game).exec();
+			new DoorInteractionCommand(this.game, options.id).exec();
 		}
 	};
 
