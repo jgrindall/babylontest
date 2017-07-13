@@ -13,7 +13,7 @@ define(["utils/GridUtils", "cache/AnimationCache"],
 		var meshComp = manager.getComponentDataForEntity('MeshComponent', id);
 		var strategyComp = manager.getComponentDataForEntity('BaddieStrategyComponent', id);
 		babylonPos = GridUtils.ijToBabylon(pos[0], pos[1]);
-		mesh = meshCache.getBaddie(obj.data.texture);
+		mesh = meshCache.getBaddie(scene, obj.data.texture);
 		mesh.position = new BABYLON.Vector3(babylonPos.x, y, babylonPos.z);
 		meshComp.mesh = mesh;
 		strategyComp.move = obj.data.strategy.move;

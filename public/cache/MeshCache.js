@@ -137,7 +137,7 @@ define([], function(){
 	};
 
 	MeshCache.prototype.getBaddie = function(scene, texture){
-		var mesh, key = "billboardplane_" + texture;
+		var mesh, key = "baddie_" + texture;
 		mesh = this.get(key);
 		if(mesh){
 			mesh.billboardMode = BABYLON.Mesh.BILLBOARDMODE_ALL;
@@ -148,7 +148,7 @@ define([], function(){
 			mesh.convertToUnIndexedMesh();
 			this.materialsCache.applyToMesh(mesh, 1, texture);
 			this.add(scene, mesh, key);
-			return this.getBaddie(texture);
+			return this.getBaddie(scene, texture);
 		}
 	};
 

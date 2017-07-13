@@ -4,6 +4,7 @@ define([], function(){
 	for(i = 0; i < SIZE_I; i++){
 		for(j = 0; j < SIZE_J; j++){
 			if(i === 0 || i === SIZE_I - 1 || j === 0 || j === SIZE_J - 1){
+				/*
 				data.push({
 					"type":"wall",
 					"data":{
@@ -11,6 +12,8 @@ define([], function(){
 						"position":[i, j]
 					}
 				});
+
+				*/
 			}
 		}
 	}
@@ -48,8 +51,8 @@ define([], function(){
 		}
 	});
 
-	for(var q1 = 4; q1 < 20; q1+=3){
-		for(var q2 = 4; q2 < 20; q2+=3){
+	for(var q1 = 4; q1 < 6; q1+=1){
+		for(var q2 = 4; q2 < 6; q2+=1){
 			data.push({
 				"type":"door",
 				"data":{
@@ -60,7 +63,7 @@ define([], function(){
 					]
 				}
 			});
-			data.push({
+			/*data.push({
 				"type":"fire",
 				"data":{
 					"texture":"fire",
@@ -69,7 +72,7 @@ define([], function(){
 						q2
 					]
 				}
-			});
+			});*/
 		}
 	}
 
