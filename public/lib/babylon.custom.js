@@ -11903,7 +11903,7 @@ var BABYLON;
             }
             return this._worldMatrix;
         };
-        Object.defineProperty(AbstractMesh.prototype, "worldMatrixFromCache", {
+        Object.defineProperty(AbstractMesh.prototype, "worldMatrix", {
             /**
              * Returns directly the last state of the mesh World matrix.
              * A Matrix is returned.
@@ -12201,8 +12201,8 @@ var BABYLON;
          */
         AbstractMesh.prototype._updateBoundingInfo = function () {
             this._boundingInfo = this._boundingInfo || new BABYLON.BoundingInfo(this.absolutePosition, this.absolutePosition);
-            this._boundingInfo.update(this.worldMatrixFromCache);
-            this._updateSubMeshesBoundingInfo(this.worldMatrixFromCache);
+            this._boundingInfo.update(this.worldMatrix);
+            this._updateSubMeshesBoundingInfo(this.worldMatrix);
             return this;
         };
         /**
@@ -12611,7 +12611,7 @@ var BABYLON;
                 return this;
             // Transformation matrix
             BABYLON.Matrix.ScalingToRef(1.0 / collider.radius.x, 1.0 / collider.radius.y, 1.0 / collider.radius.z, this._collisionsScalingMatrix);
-            this.worldMatrixFromCache.multiplyToRef(this._collisionsScalingMatrix, this._collisionsTransformMatrix);
+            this.worldMatrix.multiplyToRef(this._collisionsScalingMatrix, this._collisionsTransformMatrix);
             this._processCollisionsForSubMeshes(collider, this._collisionsTransformMatrix);
             return this;
         };
@@ -19001,7 +19001,7 @@ var BABYLON;
             enumerable: true,
             configurable: true
         });
-        BaseTexture.prototype._removeFromCache = function (url, noMipmap) {
+        BaseTexture.prototype._remove = function (url, noMipmap) {
             var texturesCache = this._scene.getEngine().getLoadedTexturesCache();
             for (var index = 0; index < texturesCache.length; index++) {
                 var texturesCacheEntry = texturesCache[index];
@@ -19011,7 +19011,7 @@ var BABYLON;
                 }
             }
         };
-        BaseTexture.prototype._getFromCache = function (url, noMipmap, sampling) {
+        BaseTexture.prototype._get = function (url, noMipmap, sampling) {
             var texturesCache = this._scene.getEngine().getLoadedTexturesCache();
             for (var index = 0; index < texturesCache.length; index++) {
                 var texturesCacheEntry = texturesCache[index];
@@ -19192,7 +19192,7 @@ var BABYLON;
                 _this._delayedOnError = onError;
                 return _this;
             }
-            _this._texture = _this._getFromCache(url, noMipmap, samplingMode);
+            _this._texture = _this._get(url, noMipmap, samplingMode);
             if (!_this._texture) {
                 if (!scene.useDelayedTextureLoading) {
                     _this._texture = scene.getEngine().createTexture(url, noMipmap, invertY, scene, _this._samplingMode, load, onError, _this._buffer, null, _this._format);
@@ -19244,7 +19244,7 @@ var BABYLON;
                 return;
             }
             this.delayLoadState = BABYLON.Engine.DELAYLOADSTATE_LOADED;
-            this._texture = this._getFromCache(this.url, this._noMipmap, this._samplingMode);
+            this._texture = this._get(this.url, this._noMipmap, this._samplingMode);
             if (!this._texture) {
                 this._texture = this.getScene().getEngine().createTexture(this.url, this._noMipmap, this._invertY, this.getScene(), this._samplingMode, this._delayedOnLoad, this._delayedOnError, this._buffer, null, this._format);
                 if (this._deleteBuffer) {
@@ -19841,7 +19841,7 @@ var BABYLON;
                 if (level.distance < distanceToCamera) {
                     if (level.mesh) {
                         level.mesh._preActivate();
-                        level.mesh._updateSubMeshesBoundingInfo(this.worldMatrixFromCache);
+                        level.mesh._updateSubMeshesBoundingInfo(this.worldMatrix);
                     }
                     if (this.onLODLevelSelection) {
                         this.onLODLevelSelection(distanceToCamera, this, level.mesh);
@@ -38049,7 +38049,7 @@ var BABYLON;
             sphereRadius: mesh.getBoundingInfo().boundingSphere.radiusWorld,
             boxMinimum: mesh.getBoundingInfo().boundingBox.minimumWorld.asArray(),
             boxMaximum: mesh.getBoundingInfo().boundingBox.maximumWorld.asArray(),
-            worldMatrixFromCache: mesh.worldMatrixFromCache.asArray(),
+            worldMatrix: mesh.worldMatrix.asArray(),
             subMeshes: submeshes,
             checkCollisions: mesh.checkCollisions
         };
@@ -43017,7 +43017,7 @@ var BABYLON;
             if (!rootUrl && !files) {
                 return _this;
             }
-            _this._texture = _this._getFromCache(rootUrl, noMipmap);
+            _this._texture = _this._get(rootUrl, noMipmap);
             if (!files) {
                 if (!extensions) {
                     extensions = ["_px.jpg", "_py.jpg", "_pz.jpg", "_nx.jpg", "_ny.jpg", "_nz.jpg"];
@@ -43058,7 +43058,7 @@ var BABYLON;
                 return;
             }
             this.delayLoadState = BABYLON.Engine.DELAYLOADSTATE_LOADED;
-            this._texture = this._getFromCache(this.url, this._noMipmap);
+            this._texture = this._get(this.url, this._noMipmap);
             if (!this._texture) {
                 this._texture = this.getScene().getEngine().createCubeTexture(this.url, this.getScene(), this._files, this._noMipmap, undefined, undefined, this._format);
             }
@@ -56446,7 +56446,7 @@ var BABYLON;
                     !_this._useInGammaSpace;
             }
             _this.isPMREM = _this._usePMREMGenerator;
-            _this._texture = _this._getFromCache(url, _this._noMipmap);
+            _this._texture = _this._get(url, _this._noMipmap);
             if (!_this._texture) {
                 if (!scene.useDelayedTextureLoading) {
                     _this.loadTexture();
@@ -56678,7 +56678,7 @@ var BABYLON;
                 return;
             }
             this.delayLoadState = BABYLON.Engine.DELAYLOADSTATE_LOADED;
-            this._texture = this._getFromCache(this.url, this._noMipmap);
+            this._texture = this._get(this.url, this._noMipmap);
             if (!this._texture) {
                 this.loadTexture();
             }
@@ -61579,7 +61579,7 @@ var BABYLON;
             _this.wrapU = BABYLON.Texture.CLAMP_ADDRESSMODE;
             _this.wrapV = BABYLON.Texture.CLAMP_ADDRESSMODE;
             _this.anisotropicFilteringLevel = 1;
-            _this._texture = _this._getFromCache(url, true);
+            _this._texture = _this._get(url, true);
             if (!_this._texture) {
                 if (!scene.useDelayedTextureLoading) {
                     _this.loadTexture();
@@ -61685,7 +61685,7 @@ var BABYLON;
                 return;
             }
             this.delayLoadState = BABYLON.Engine.DELAYLOADSTATE_LOADED;
-            this._texture = this._getFromCache(this.url, true);
+            this._texture = this._get(this.url, true);
             if (!this._texture) {
                 this.loadTexture();
             }

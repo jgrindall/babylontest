@@ -4,8 +4,8 @@ define(["utils/GeomUtils", "utils/ImageUtils"],
 
 	"use strict";
 
-	var _getWallAt = function(start, dir, key, len, meshCache){
-		var plane = meshCache.getPlaneFromCache(len, key);
+	var _getWallAt = function(scene, start, dir, key, len, meshCache){
+		var plane = meshCache.getPlane(scene, len, key);
 		var TOP_LEFT = {"x":0, "z":SIZE_I * SIZE}, y = SIZE/2;
 		if(dir === "s"){
 			plane.position.x = TOP_LEFT.x + (start[1] + len/2)*SIZE;
@@ -34,14 +34,14 @@ define(["utils/GeomUtils", "utils/ImageUtils"],
 		return plane;
 	};
 
-	var _addWalls = function(a, meshCache){
+	var _addWalls = function(scene, a, meshCache){
 		var _i, _j, SIZE_I = a.length, SIZE_J = a[0].length, walls = [];
 		for(_i = 0; _i < SIZE_I; _i++){
 			for(_j = 0; _j < SIZE_J; _j++){
 				_.each(["n", "s", "w", "e"], function(dir){
 					var wallData = a[_i][_j].data.walls;
 					if(wallData[dir] >= 1){
-						walls.push(_getWallAt([_i, _j], dir, a[_i][_j].data.texture, wallData[dir], meshCache));
+						walls.push(_getWallAt(scene, [_i, _j], dir, a[_i][_j].data.texture, wallData[dir], meshCache));
 					}
 				});
 			}
@@ -49,12 +49,12 @@ define(["utils/GeomUtils", "utils/ImageUtils"],
 		return walls;
 	};
 
-	var _addBoxes = function(quads, meshCache){
+	var _addBoxes = function(scene, quads, meshCache){
 		var y = SIZE/2, TOP_LEFT = {"x":0, "z":SIZE_I * SIZE};
 		_.each(quads, function(quad){
 			var size, box, x, z;
 			size = (quad[2] >= quad[3]) ? [quad[2], quad[3]] : [quad[3], quad[2]];
-			box = meshCache.getBoxFromCache(size);
+			box = meshCache.getBox(scene, size);
 			x = TOP_LEFT.x + (quad[1] + quad[2]/2)*SIZE;
 			z = TOP_LEFT.z - (quad[0] + quad[3]/2)*SIZE;
 			if(quad[2] < quad[3]){
@@ -74,7 +74,7 @@ define(["utils/GeomUtils", "utils/ImageUtils"],
 		_.each(quads, function(quad){
 			var size, plane;
 			size = (quad[2] >= quad[3]) ? [quad[2], quad[3]] : [quad[3], quad[2]];
-			plane = meshCache.getWaterFromCache(size);
+			plane = meshCache.getWater(scene, size);
 			plane.position.x = TOP_LEFT.x + (quad[1] + quad[2]/2)*SIZE;
 			plane.position.z = TOP_LEFT.z - (quad[0] + quad[3]/2)*SIZE;
 			plane.position.y = 0.001;
@@ -94,7 +94,7 @@ define(["utils/GeomUtils", "utils/ImageUtils"],
 		_.each(quads, function(quad){
 			var size, plane;
 			size = (quad[2] >= quad[3]) ? [quad[2], quad[3]] : [quad[3], quad[2]];
-			plane = meshCache.getFireFromCache(size);
+			plane = meshCache.getFire(scene, size);
 			if(quad[3] < quad[2]){
 				plane.rotate(new BABYLON.Vector3(0, 0, 1), Math.PI/2, BABYLON.Space.Local);
 			}
@@ -118,8 +118,8 @@ define(["utils/GeomUtils", "utils/ImageUtils"],
 
 	var TerrainBuilder = {
 		addFromData: function(scene, grid, meshCache){
-			_addBoxes(grid.greedy.quads, meshCache);
-			_addWalls(grid.grid, meshCache);
+			_addBoxes(scene, grid.greedy.quads, meshCache);
+			_addWalls(scene, grid.grid, meshCache);
 			_addWater(scene, grid.greedyWater.quads, meshCache);
 			_addFire(scene, grid.greedyFire.quads, meshCache);
 		},
@@ -191,4 +191,3 @@ define(["utils/GeomUtils", "utils/ImageUtils"],
 	return TerrainBuilder;
 
 });
-
