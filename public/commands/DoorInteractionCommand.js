@@ -11,12 +11,8 @@ define(["commands/RemoveDoorCommand"],
 	DoorInteractionCommand.prototype.exec = function(){
 		var game = this.game, id = this.id;
 		game.pause();
-		$("body").append("<div class='box' style='position:absolute;left:50%;top:50%;width:300px;height:200px;background:white;'></div>");
-		$(".box").click(function(){
-			$(".box").remove();
-			game.unpause();
-		});
 		setTimeout(function(){
+			game.unpause();
 			new RemoveDoorCommand(game, id).exec();
 		}, 3000);
 	};

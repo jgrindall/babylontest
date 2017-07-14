@@ -37,7 +37,7 @@ define([], function(){
 		}
 	});
 
-	data.push({
+	/*data.push({
 		"type":"baddie",
 		"data":{
 			"texture":"baddie",
@@ -48,6 +48,31 @@ define([], function(){
 			"strategy":{
 				"move":"hunt"
 			}
+		}
+	});
+	*/
+
+	data.push({
+		"type":"wall",
+		"data":{
+			"texture": Math.random() < 0.5 ? "bricks" : "crate",
+			"position":[3, 3]
+		}
+	});
+
+	data.push({
+		"type":"wall",
+		"data":{
+			"texture": Math.random() < 0.5 ? "bricks" : "crate",
+			"position":[3, 4]
+		}
+	});
+
+	data.push({
+		"type":"wall",
+		"data":{
+			"texture": Math.random() < 0.5 ? "bricks" : "crate",
+			"position":[3, 5]
 		}
 	});
 
@@ -75,17 +100,6 @@ define([], function(){
 			});*/
 		}
 	}
-
-	data.push({
-		"type":"door",
-		"data":{
-			"texture":"door",
-			"position":[
-				5,
-				5
-			]
-		}
-	});
 
 	var lights = [
 		{

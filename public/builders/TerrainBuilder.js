@@ -35,7 +35,7 @@ define(["utils/GeomUtils", "utils/ImageUtils"],
 	};
 
 	var TerrainBuilder = {
-		
+
 	};
 
 	TerrainBuilder.addWalls = function(scene, a, meshCache){
@@ -57,8 +57,9 @@ define(["utils/GeomUtils", "utils/ImageUtils"],
 		var y = SIZE/2, TOP_LEFT = {"x":0, "z":SIZE_I * SIZE};
 		_.each(quads, function(quad){
 			var size, box, x, z;
-			size = (quad[2] >= quad[3]) ? [quad[2], quad[3]] : [quad[3], quad[2]];
-			box = meshCache.getBox(scene, size);
+			box = meshCache.getBox(scene, [quad[2], quad[3]]);
+			BABYLON.Tags.EnableFor(box);
+			BABYLON.Tags.AddTagsTo(box, "box");
 			x = TOP_LEFT.x + (quad[1] + quad[2]/2)*SIZE;
 			z = TOP_LEFT.z - (quad[0] + quad[3]/2)*SIZE;
 			if(quad[2] < quad[3]){

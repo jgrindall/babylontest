@@ -28,7 +28,7 @@ define([], function(){
 		var cached = this._cache[key];
 		if(cached){
 			this._cacheI++;
-			return cached.createInstance(key + "_index: " + this._cacheI);
+			return cached.createInstance(key + "_index_" + this._cacheI);
 		}
 		return null;
 	};
@@ -55,7 +55,11 @@ define([], function(){
 	};
 
 	MeshCache.prototype.getBox = function(scene, size){
-		var mesh, key = "box_" + size[0] + "_" + size[1];
+		size = (size[0] >= size[1]) ? [size[0], size[1]] : [size[1], size[0]];
+		var mesh, w, h, key;
+		w = size[0];
+		h = size[1];
+		key = "box_" + w + "_" + h;
 		mesh = this.get(key);
 		if(mesh){
 			mesh.checkCollisions = true;
