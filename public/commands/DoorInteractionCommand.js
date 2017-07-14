@@ -1,6 +1,6 @@
-define(["commands/RemoveDoorCommand"],
+define(["commands/RemoveDoorCommand", "commands/RefreshHuntCommand"],
 
-	function(RemoveDoorCommand){
+	function(RemoveDoorCommand, RefreshHuntCommand){
 	"use strict";
 
 	var DoorInteractionCommand = function(game, id){
@@ -14,7 +14,8 @@ define(["commands/RemoveDoorCommand"],
 		setTimeout(function(){
 			game.unpause();
 			new RemoveDoorCommand(game, id).exec();
-		}, 3000);
+			new RefreshHuntCommand(game).exec();
+		}, 500);
 	};
 
 	return DoorInteractionCommand;

@@ -6,7 +6,6 @@ define(["utils/GridUtils", "utils/PathFinding"], function(GridUtils, PathFinding
 	var UpdateHuntProcessor = function(game){
 		this.num = 0;
 		this.game = game;
-		this.pfGrid = new PF.Grid(GridUtils.transpose(game.grid.solid));
 		this.init();
 	};
 
@@ -21,7 +20,7 @@ define(["utils/GridUtils", "utils/PathFinding"], function(GridUtils, PathFinding
 		if(sComp.move === "hunt"){
 			mesh = manager.getComponentDataForEntity('MeshComponent', id).mesh;
 			baddiePos = GridUtils.babylonToIJ(mesh.position);
-			sComp.path = PathFinding.getAStarPath(baddiePos, this.pfGrid, playerPos);
+			sComp.path = PathFinding.getAStarPath(baddiePos, this.game.grid.pfGrid, playerPos);
 		}
 	};
 

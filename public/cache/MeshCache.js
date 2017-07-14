@@ -91,6 +91,7 @@ define([], function(){
 		var mesh, key = "door_" + texture, mesh0, mesh1, mesh2, mesh3;
 		mesh = this.get(key);
 		if(mesh){
+			mesh.checkCollisions = true;
 			return mesh;
 		}
 		else{
@@ -111,13 +112,17 @@ define([], function(){
 	};
 
 	MeshCache.prototype.getFire = function(scene, size){
-		var mesh, key = "fire" + "_" + size[0] + "_" + size[1];
+		size = (size[0] >= size[1]) ? [size[0], size[1]] : [size[1], size[0]];
+		var mesh, key, w, h;
+		w = size[0];
+		h = size[1];
+		key = "fire" + "_" + w + "_" + h;
 		mesh = this.get(key);
 		if(mesh){
 			return mesh;
 		}
 		else{
-			mesh = BABYLON.MeshBuilder.CreatePlane(key, {"height": SIZE*size[0], "width":SIZE*size[1]}, scene);
+			mesh = BABYLON.MeshBuilder.CreatePlane(key, {"height": SIZE*w, "width":SIZE*h}, scene);
 			mesh.rotate(new BABYLON.Vector3(1, 0, 0), Math.PI / 2, BABYLON.Space.Local);
 			mesh.material = this.materialsCache.fireMaterial;
 			this.add(scene, mesh, key);
@@ -126,13 +131,15 @@ define([], function(){
 	};
 
 	MeshCache.prototype.getWater = function(scene, size){
-		var mesh, key = "water" + "_" + size[0] + "_" + size[1];
+		size = (size[0] >= size[1]) ? [size[0], size[1]] : [size[1], size[0]];
+		var mesh, key, w, h;
+		key  = "water" + "_" + w + "_" + h;
 		mesh = this.get(key);
 		if(mesh){
 			return mesh;
 		}
 		else{
-			mesh = BABYLON.MeshBuilder.CreatePlane(key, {"height": SIZE*size[0], "width":SIZE*size[1]}, scene);
+			mesh = BABYLON.MeshBuilder.CreatePlane(key, {"height": SIZE*w, "width":SIZE*h}, scene);
 			mesh.rotate(new BABYLON.Vector3(1, 0, 0), Math.PI / 2, BABYLON.Space.Local);
 			mesh.material = this.materialsCache.waterMaterial;
 			this.add(scene, mesh, key);

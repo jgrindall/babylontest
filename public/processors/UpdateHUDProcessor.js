@@ -12,7 +12,7 @@ define(["utils/GridUtils"], function(GridUtils){
 	};
 
 	UpdateHUDProcessor.prototype.getWalls = function () {
-		return this.game.grid.greedy.solid.quads;
+		return this.game.grid.greedy.wall.quads;
 	};
 
 	UpdateHUDProcessor.prototype.getWater = function () {
@@ -24,7 +24,7 @@ define(["utils/GridUtils"], function(GridUtils){
 	};
 
 	UpdateHUDProcessor.prototype.getDoors = function () {
-		return this.game.grid.doors;
+		return this.game.grid.greedy.door.quads;
 	};
 
 	UpdateHUDProcessor.prototype.getPlayer = function () {

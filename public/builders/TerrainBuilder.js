@@ -4,7 +4,7 @@ define(["utils/GeomUtils", "utils/ImageUtils"],
 
 	"use strict";
 
-	var _getWallAt = function(scene, start, dir, key, len, meshCache){
+	var _addWallAt = function(scene, start, dir, key, len, meshCache){
 		var plane = meshCache.getPlane(scene, len, key);
 		var TOP_LEFT = {"x":0, "z":SIZE_I * SIZE}, y = SIZE/2;
 		if(dir === "s"){
@@ -38,38 +38,37 @@ define(["utils/GeomUtils", "utils/ImageUtils"],
 
 	};
 
-	TerrainBuilder.addWalls = function(scene, a, meshCache){
-		var _i, _j, SIZE_I = a.length, SIZE_J = a[0].length, walls = [];
+	TerrainBuilder.addWalls = function(scene, grid, meshCache){
+		var _i, _j, SIZE_I = grid.length, SIZE_J = grid[0].length;
 		for(_i = 0; _i < SIZE_I; _i++){
 			for(_j = 0; _j < SIZE_J; _j++){
+				var wallData = grid[_i][_j].data.walls;
 				_.each(["n", "s", "w", "e"], function(dir){
-					var wallData = a[_i][_j].data.walls;
 					if(wallData[dir] >= 1){
-						walls.push(_getWallAt(scene, [_i, _j], dir, a[_i][_j].data.texture, wallData[dir], meshCache));
+						_addWallAt(scene, [_i, _j], dir, grid[_i][_j].data.texture, wallData[dir], meshCache);
 					}
 				});
 			}
 		}
-		return walls;
 	};
 
-	TerrainBuilder.addBoxes = function(scene, quads, meshCache){
+	TerrainBuilder.addBoxes = function(scene, quads, meshCache, tag){
 		var y = SIZE/2, TOP_LEFT = {"x":0, "z":SIZE_I * SIZE};
 		_.each(quads, function(quad){
-			var size, box, x, z;
-			box = meshCache.getBox(scene, [quad[2], quad[3]]);
-			BABYLON.Tags.EnableFor(box);
-			BABYLON.Tags.AddTagsTo(box, "box");
+			var mesh, x, z;
+			mesh = meshCache.getBox(scene, [quad[2], quad[3]]);
+			if(tag){
+				BABYLON.Tags.EnableFor(mesh);
+				BABYLON.Tags.AddTagsTo(mesh, tag);
+			}
 			x = TOP_LEFT.x + (quad[1] + quad[2]/2)*SIZE;
 			z = TOP_LEFT.z - (quad[0] + quad[3]/2)*SIZE;
 			if(quad[2] < quad[3]){
-				box.rotation = new BABYLON.Vector3(0, Math.PI/2, 0);
+				mesh.rotation = new BABYLON.Vector3(0, Math.PI/2, 0);
 			}
-			box.isVisible = false;
-			box.position.x = x;
-			box.position.z = z;
-			box.position.y = y;
-			box.freezeWorldMatrix();
+			mesh.isVisible = false;
+			mesh.position = new BABYLON.Vector3(x, y, z);
+			mesh.freezeWorldMatrix();
 		});
 	};
 

@@ -70,11 +70,9 @@ define(["utils/GeomUtils", "utils/ImageUtils"],
 		},
 		addWater: function(scene, quads, meshCache){
 			var TOP_LEFT = {"x":0, "z":SIZE_I * SIZE};
-			var music = new BABYLON.Sound("Violons", "assets/water.wav", scene, function () {}, { loop: true, autoplay: true,  maxDistance: 12 });
+			//var music = new BABYLON.Sound("Violons", "assets/water.wav", scene, function () {}, { loop: true, autoplay: true,  maxDistance: 12 });
 			_.each(quads, function(quad){
-				var size, plane;
-				size = (quad[2] >= quad[3]) ? [quad[2], quad[3]] : [quad[3], quad[2]];
-				plane = meshCache.getWater(scene, size);
+				var plane = meshCache.getWater(scene, [quad[2], quad[3]]);
 				plane.position.x = TOP_LEFT.x + (quad[1] + quad[2]/2)*SIZE;
 				plane.position.z = TOP_LEFT.z - (quad[0] + quad[3]/2)*SIZE;
 				plane.position.y = 0.001;
@@ -82,16 +80,14 @@ define(["utils/GeomUtils", "utils/ImageUtils"],
 					plane.rotate(new BABYLON.Vector3(0, 0, 1), Math.PI/2, BABYLON.Space.Local);
 				}
 				plane.freezeWorldMatrix();
-				music.attachToMesh(plane);
+				//music.attachToMesh(plane);
 			});
 		},
 		addFire: function(scene, quads, meshCache){
 			var TOP_LEFT = {"x":0, "z":SIZE_I * SIZE};
-			var music = new BABYLON.Sound("Violons", "assets/fire.mp3", scene, function () {}, { loop: true, autoplay: true,  maxDistance: 12 });
+			//var music = new BABYLON.Sound("Violons", "assets/fire.mp3", scene, function () {}, { loop: true, autoplay: true,  maxDistance: 12 });
 			_.each(quads, function(quad){
-				var size, plane;
-				size = (quad[2] >= quad[3]) ? [quad[2], quad[3]] : [quad[3], quad[2]];
-				plane = meshCache.getFire(scene, size);
+				var plane = meshCache.getFire(scene, [quad[2], quad[3]]);
 				if(quad[3] < quad[2]){
 					plane.rotate(new BABYLON.Vector3(0, 0, 1), Math.PI/2, BABYLON.Space.Local);
 				}
@@ -99,7 +95,7 @@ define(["utils/GeomUtils", "utils/ImageUtils"],
 				plane.position.z = TOP_LEFT.z - (quad[0] + quad[3]/2)*SIZE;
 				plane.position.y = 0.001;
 				plane.freezeWorldMatrix();
-				music.attachToMesh(plane);
+				//music.attachToMesh(plane);
 				//https://doc.babylonjs.com/overviews/playing_sounds_and_music#creating-a-spatial-3d-sound
 			});
 		}

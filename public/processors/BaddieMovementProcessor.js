@@ -117,8 +117,7 @@ define(["utils/GridUtils"], function(GridUtils){
 	BaddieMovementProcessor.prototype.updateBaddie = function (id) {
 		var move, sComp, meshComp;
 		sComp = this.game.manager.getComponentDataForEntity('BaddieStrategyComponent', id);
-		if(typeof sComp.vel === "undefined"){
-			// not defined yet
+		if(typeof sComp.vel === "undefined" || typeof sComp.path === "undefined"){
 			meshComp = this.game.manager.getComponentDataForEntity('MeshComponent', id);
 			this.addPath(sComp, meshComp);
 		}

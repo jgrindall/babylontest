@@ -4,7 +4,6 @@ define([], function(){
 	for(i = 0; i < SIZE_I; i++){
 		for(j = 0; j < SIZE_J; j++){
 			if(i === 0 || i === SIZE_I - 1 || j === 0 || j === SIZE_J - 1){
-				/*
 				data.push({
 					"type":"wall",
 					"data":{
@@ -12,8 +11,6 @@ define([], function(){
 						"position":[i, j]
 					}
 				});
-
-				*/
 			}
 		}
 	}
@@ -37,20 +34,47 @@ define([], function(){
 		}
 	});
 
-	/*data.push({
+	data.push({
 		"type":"baddie",
 		"data":{
 			"texture":"baddie",
 			"position":[
-				14,
+				12,
 				7
+			],
+			"strategy":{
+				"move":"north-south"
+			}
+		}
+	});
+
+	data.push({
+		"type":"baddie",
+		"data":{
+			"texture":"baddie",
+			"position":[
+				5,
+				13
+			],
+			"strategy":{
+				"move":"west-east"
+			}
+		}
+	});
+
+	data.push({
+		"type":"baddie",
+		"data":{
+			"texture":"baddie",
+			"position":[
+				5,
+				12
 			],
 			"strategy":{
 				"move":"hunt"
 			}
 		}
 	});
-	*/
 
 	data.push({
 		"type":"wall",
@@ -76,8 +100,8 @@ define([], function(){
 		}
 	});
 
-	for(var q1 = 4; q1 < 6; q1+=1){
-		for(var q2 = 4; q2 < 6; q2+=1){
+	for(var q1 = 4; q1 < 9; q1+=1){
+		for(var q2 = 4; q2 < 9; q2+=1){
 			data.push({
 				"type":"door",
 				"data":{
