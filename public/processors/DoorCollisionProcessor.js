@@ -1,9 +1,9 @@
 define(["utils/GridUtils"], function(GridUtils){
 	"use strict";
 
-	var TOLERANCE_0 = SIZE/3;
-	var TOLERANCE_1 = SIZE;
-	var TOLERANCE_ANGLE = 0.4;
+	var TOLERANCE_0 = SIZE/4;
+	var TOLERANCE_1 = 3*SIZE/4;
+	var TOLERANCE_ANGLE = 0.25;
 
 	var CHECKS = {
 		"s":{
