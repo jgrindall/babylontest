@@ -11,6 +11,6 @@ define(["builders/TreeBuilder"], function(TreeBuilder){
 		});
 	};
 
-	return AddObjectsTask;
+	return BuildTreesTask;
 
 });

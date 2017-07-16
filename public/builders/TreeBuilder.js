@@ -4,18 +4,18 @@ define(["utils/GridUtils"],
 
 	"use strict";
 
-	var ObjectBuilder = {
+	var TreeBuilder = {
 
 	};
 
-	ObjectBuilder.addObject = function(pos, scene, texture, meshCache){
-		var y = SIZE/4, container, mesh, babylonPos, mat;
+	TreeBuilder.addTree = function(pos, scene, texture, meshCache){
+		var y = SIZE/2, mesh, babylonPos, mat;
 		babylonPos = GridUtils.ijToBabylon(pos[0], pos[1]);
-		mesh = meshCache.getObject(scene, texture);
+		mesh = meshCache.getTree(scene, texture);
 		mesh.position = new BABYLON.Vector3(babylonPos.x, y, babylonPos.z);
 		return mesh;
 	};
 
-	return ObjectBuilder;
+	return TreeBuilder;
 
 });
