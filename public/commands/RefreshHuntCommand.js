@@ -13,7 +13,6 @@ define(["builders/GridBuilder", "utils/GridUtils"],
 			var sComp = manager.getComponentDataForEntity('BaddieStrategyComponent', id);
 			delete sComp.vel;
 			delete sComp.path;
-			console.log("DEL", id, sComp);
 		});
 	};
 

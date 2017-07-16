@@ -3,9 +3,9 @@ window.SIZE_I = 26;
 window.SIZE_J = 26;
 window.SIZE = 10;
 
-require(["Game", "DATA", "tasks/BuildTerrainTask", "tasks/BuildEnvironmentTask", "tasks/AddBaddiesTask", "tasks/AddControlsTask", "tasks/AddDoorsTask", "tasks/AddObjectsTask", "tasks/AddPlayerTask", "tasks/AddMusicTask"],
+require(["Game", "DATA", "tasks/BuildTerrainTask", "tasks/BuildTreesTask", "tasks/BuildEnvironmentTask", "tasks/AddBaddiesTask", "tasks/AddControlsTask", "tasks/AddDoorsTask", "tasks/AddObjectsTask", "tasks/AddPlayerTask", "tasks/AddMusicTask"],
 
-	function(Game, DATA, BuildTerrainTask, BuildEnvironmentTask, AddBaddiesTask, AddControlsTask, AddDoorsTask, AddObjectsTask, AddPlayerTask, AddMusicTask) {
+	function(Game, DATA, BuildTerrainTask, BuildTreesTask, BuildEnvironmentTask, AddBaddiesTask, AddControlsTask, AddDoorsTask, AddObjectsTask, AddPlayerTask, AddMusicTask) {
 
 		"use strict";
 
@@ -22,6 +22,7 @@ require(["Game", "DATA", "tasks/BuildTerrainTask", "tasks/BuildEnvironmentTask",
 			var g = new Game(window.engine)
 			.registerTask(BuildEnvironmentTask)
 			.registerTask(BuildTerrainTask)
+			.registerTask(BuildTreesTask)
 			.registerTask(AddPlayerTask)
 			.registerTask(AddBaddiesTask)
 			.registerTask(AddControlsTask)

@@ -39,6 +39,21 @@ define([], function(){
 		return mesh;
 	};
 
+	MeshCache.prototype.getTree = function(scene, texture){
+		var mesh, key = "tree_" + texture;
+		mesh = this.get(key);
+		if(mesh){
+			mesh.billboardMode = BABYLON.Mesh.BILLBOARDMODE_ALL;
+			return mesh;
+		}
+		else{
+			mesh = this.getPlaneWithTexture(key, 0.75, 0.75, texture, scene);
+			mesh.convertToUnIndexedMesh();
+			this.add(scene, mesh, key);
+			return this.getTree(scene, texture);
+		}
+	};
+
 	MeshCache.prototype.getObject = function(scene, texture){
 		var mesh, key = "object_" + texture;
 		mesh = this.get(key);

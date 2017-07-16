@@ -9,7 +9,7 @@ define(["utils/GridUtils", "cache/AnimationCache"],
 	};
 
 	CharacterBuilder.addBaddie = function(pos, scene, meshCache, manager, id, obj, grid, playerPos){
-		var y = SIZE/2, container, mesh, babylonPos, texture;
+		var y = SIZE/2, mesh, babylonPos, texture;
 		var meshComp = manager.getComponentDataForEntity('MeshComponent', id);
 		var strategyComp = manager.getComponentDataForEntity('BaddieStrategyComponent', id);
 		babylonPos = GridUtils.ijToBabylon(pos[0], pos[1]);

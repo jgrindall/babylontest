@@ -1,4 +1,3 @@
-
 define(["cache/MeshCache", "builders/GridBuilder", "builders/SceneBuilder",
 
 	"cache/MaterialsCache", "lib/entity-manager", "Listener", "CommandQueue",

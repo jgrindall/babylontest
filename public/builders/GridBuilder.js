@@ -11,13 +11,13 @@ define(["utils/GridUtils", "utils/GreedyMeshAlgo"],
 	GridBuilder.update = function(g){
 		g.objects = GridUtils.listByType(g.grid, ["object"]);
 		g.baddies = GridUtils.listByType(g.grid, ["baddie"]);
-		console.log(g.baddies);
+		g.trees = GridUtils.listByType(g.grid, ["tree"]);
 		g.doors = GridUtils.listByType(g.grid, ["door"]);
 		g.solid = GridUtils.markByType(g.grid, ["water", "wall", "door"]);
 		g.pfGrid = new PF.Grid(GridUtils.transpose(g.solid));
 		g.greedy = {
 			"wall":GreedyMeshAlgo.get(GridUtils.markByType(g.grid, "wall")),
-			"boxes":GreedyMeshAlgo.get(GridUtils.markByType(g.grid, ["water", "wall"])),
+			"boxes":GreedyMeshAlgo.get(GridUtils.markByType(g.grid, ["water", "wall", "tree"])),
 			"door":GreedyMeshAlgo.get(GridUtils.markByType(g.grid, "door")),
 			"water":GreedyMeshAlgo.get(GridUtils.markByType(g.grid, "water")),
 			"fire":GreedyMeshAlgo.get(GridUtils.markByType(g.grid, "fire"))
