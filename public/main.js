@@ -1,6 +1,6 @@
 
-window.SIZE_I = 26;
-window.SIZE_J = 26;
+window.SIZE_I = 18;
+window.SIZE_J = 18;
 window.SIZE = 10;
 
 require(["Game", "DATA", "tasks/BuildTerrainTask", "tasks/BuildTreesTask", "tasks/BuildEnvironmentTask", "tasks/AddBaddiesTask", "tasks/AddControlsTask", "tasks/AddDoorsTask", "tasks/AddObjectsTask", "tasks/AddPlayerTask", "tasks/AddMusicTask"],
