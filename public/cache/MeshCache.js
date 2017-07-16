@@ -33,9 +33,9 @@ define([], function(){
 		return null;
 	};
 
-	MeshCache.prototype.getPlaneWithTexture = function(key, scaleW, scaleH, texture, scene){
+	MeshCache.prototype.getPlaneWithTexture = function(key, scaleW, scaleH, rptX, texture, scene){
 		var mesh = BABYLON.MeshBuilder.CreatePlane(key, {"height": SIZE*scaleH, "width":SIZE*scaleW}, scene);
-		this.materialsCache.applyToMesh(mesh, 1, texture);
+		this.materialsCache.applyToMesh(mesh, rptX, texture);
 		return mesh;
 	};
 
@@ -47,7 +47,7 @@ define([], function(){
 			return mesh;
 		}
 		else{
-			mesh = this.getPlaneWithTexture(key, 1, 1, texture, scene);
+			mesh = this.getPlaneWithTexture(key, 1, 1, 1, texture, scene);
 			mesh.convertToUnIndexedMesh();
 			this.add(scene, mesh, key);
 			return this.getTree(scene, texture);
@@ -62,7 +62,7 @@ define([], function(){
 			return mesh;
 		}
 		else{
-			mesh = this.getPlaneWithTexture(key, 0.333, 0.333, texture, scene);
+			mesh = this.getPlaneWithTexture(key, 0.333, 0.333, 1, texture, scene);
 			mesh.convertToUnIndexedMesh();
 			this.add(scene, mesh, key);
 			return this.getObject(scene, texture);
@@ -95,7 +95,7 @@ define([], function(){
 			return mesh;
 		}
 		else{
-			mesh = this.getPlaneWithTexture(key, size, 1, texture, scene);
+			mesh = this.getPlaneWithTexture(key, size, 1, size, texture, scene);
 			mesh.convertToUnIndexedMesh();
 			this.add(scene, mesh, key);
 			return this.getPlane(scene, size, texture);
@@ -110,10 +110,10 @@ define([], function(){
 			return mesh;
 		}
 		else{
-			mesh0 = this.getPlaneWithTexture(key, 1, 1, "door", scene);
-			mesh1 = this.getPlaneWithTexture(key, 1, 1, "door", scene);
-			mesh2 = this.getPlaneWithTexture(key, 1, 1, "door", scene);
-			mesh3 = this.getPlaneWithTexture(key, 1, 1, "door", scene);
+			mesh0 = this.getPlaneWithTexture(key, 1, 1, 1, "door", scene);
+			mesh1 = this.getPlaneWithTexture(key, 1, 1, 1, "door", scene);
+			mesh2 = this.getPlaneWithTexture(key, 1, 1, 1, "door", scene);
+			mesh3 = this.getPlaneWithTexture(key, 1, 1, 1, "door", scene);
 			mesh1.position.z = SIZE/2;
 			mesh3.position.z = -SIZE/2;
 			mesh0.position.x = -SIZE/2;
@@ -170,7 +170,7 @@ define([], function(){
 			return mesh;
 		}
 		else{
-			mesh = this.getPlaneWithTexture(key, 0.75, 0.75, texture, scene);
+			mesh = this.getPlaneWithTexture(key, 0.75, 0.75, 1, texture, scene);
 			mesh.convertToUnIndexedMesh();
 			this.add(scene, mesh, key);
 			return this.getBaddie(scene, texture);
