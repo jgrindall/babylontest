@@ -12,7 +12,7 @@ define(["builders/LightBuilder", "builders/EffectBuilder"],
 		var scene = new BABYLON.Scene(engine);
 		scene.collisionsEnabled = true;
 		LightBuilder.build(scene, window._LIGHTS);
-		EffectBuilder.build(scene, window._EFFECTS);
+		//EffectBuilder.build(scene, window._EFFECTS);
 		return scene;
 	};
 
