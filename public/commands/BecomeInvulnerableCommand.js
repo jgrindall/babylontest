@@ -8,6 +8,7 @@ define([], function(){
 	BecomeInvulnerableCommand.prototype.exec = function(){
 		var hComp = this.game.manager.getComponentDataForEntity('HealthComponent', this.game.playerId);
 		hComp.isRegenerating = true;
+		this.game.health.updateRegnerating(true);
 	};
 
 	return BecomeInvulnerableCommand;

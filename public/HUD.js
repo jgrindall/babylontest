@@ -94,8 +94,11 @@ define(["utils/GridUtils"], function(GridUtils){
 	};
 
 	HUD.prototype.update = function(data){
-		this.ctx.clearRect(0, 0, 300, 200);
 		this.data = data;
+		this.ctx.clearRect(0, 0, 300, 200);
+		this.ctx.translate(150, 100);
+  		this.ctx.rotate(this.data.player.angle);
+    	this.ctx.translate(-150, -100);
 		this.drawWalls();
 		this.drawDoors();
 		this.drawWater();

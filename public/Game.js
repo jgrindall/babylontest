@@ -2,25 +2,13 @@ define(["cache/MeshCache", "builders/GridBuilder", "builders/SceneBuilder",
 
 	"cache/MaterialsCache", "lib/entity-manager", "Listener", "CommandQueue",
 
-"components/Components", "processors/CameraMatchPlayerProcessor",
-
-"processors/UpdateHUDProcessor",
-
-"processors/PlayerMovementProcessor", "processors/TerrainCollisionProcessor",
-
-"processors/BaddieMovementProcessor", "processors/UpdateHuntProcessor", "processors/DoorCollisionProcessor",
-
-"processors/BaddieCollisionProcessor", "processors/ObjectCollisionProcessor"],
+"components/Components"],
 
 	function(MeshCache, GridBuilder, SceneBuilder,
 
 		MaterialsCache, EntityManager, Listener, CommandQueue,
 
-	Components, CameraMatchPlayerProcessor, UpdateHUDProcessor,
-
-	PlayerMovementProcessor, TerrainCollisionProcessor, BaddieMovementProcessor, UpdateHuntProcessor, DoorCollisionProcessor,
-
-	BaddieCollisionProcessor, ObjectCollisionProcessor) {
+	Components) {
 
 		"use strict";
 
@@ -29,7 +17,8 @@ define(["cache/MeshCache", "builders/GridBuilder", "builders/SceneBuilder",
 			this.renderFn = this.render.bind(this);
 			this.engine = engine;
 			window.engine = engine;
-			this.processors = [];
+			this._processorClasses = [];
+			this._processors = [];
 			this.scene = SceneBuilder.makeScene(this.engine);
 			this.manager = new EntityManager(new Listener(this));
 			Components.addTo(this.manager);
@@ -53,21 +42,23 @@ define(["cache/MeshCache", "builders/GridBuilder", "builders/SceneBuilder",
 			return this;
 		};
 
+		Game.prototype.registerProcessor = function(Klass){
+			this._processorClasses.push(Klass);
+			return this;
+		};
+
+		Game.prototype.addProcessor = function(Klass){
+			var p = new Klass(this);
+			this._processors.push(p);
+			this.manager.addProcessor(p);
+		};
+
 		Game.prototype.addToQueue = function(comm, time){
 			this.queue.add(comm, time);
 		};
 
 		Game.prototype.startProcessors = function(){
-			this.processors.push(new PlayerMovementProcessor(this));
-			this.processors.push(new CameraMatchPlayerProcessor(this));
-			this.processors.push(new BaddieMovementProcessor(this));
-			this.processors.push(new BaddieCollisionProcessor(this));
-			this.processors.push(new TerrainCollisionProcessor(this));
-			this.processors.push(new ObjectCollisionProcessor(this));
-			this.processors.push(new UpdateHuntProcessor(this));
-			this.processors.push(new UpdateHUDProcessor(this));
-			this.processors.push(new DoorCollisionProcessor(this));
-			_.each(this.processors, this.manager.addProcessor.bind(this.manager));
+			_.each(this._processorClasses, this.addProcessor.bind(this));
 		};
 
 		Game.prototype.pause = function(){
@@ -86,7 +77,7 @@ define(["cache/MeshCache", "builders/GridBuilder", "builders/SceneBuilder",
 			}
 			if(this.scene){
 				this.scene.render();
-				$("p.fps").text(this.engine.getFps().toFixed(0));
+				//$("p.fps").text(this.engine.getFps().toFixed(0));
 			}
 			if(this.manager){
 				this.manager.update(this.scene.getLastFrameDuration());

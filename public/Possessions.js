@@ -30,15 +30,28 @@ define([], function(){
 		this.$el.remove();
 	};
 
+	Possessions.prototype.add = function(count, val, i){
+		var $el = $("<div/>").addClass("possession");
+		var GAP = 140;
+		var $inner = $("<div/>").addClass("possessionInner");
+		$el.append($inner);
+		var img = new Image();
+		var base64 = this.materialsCache.getBase64ForKey(val);
+		img.src = base64;
+		this.$el.append($el);
+		$inner.append(img).append("<span>" + count + "</span>");
+		$el.css({
+			"left":0
+		});
+	};
+
 	Possessions.prototype.update = function(arr){
 		this.$el.empty();
-		var _this = this;
+		var _this = this, i = 0;
 		var count = _count(arr);
 		_.each(count, function(count, val){
-			var img = new Image();
-			var base64 = _this.materialsCache.getBase64ForKey(val);
-			img.src = base64;
-			_this.$el.append(img).append("x " + count);
+			_this.add(count, val, i);
+			i++;
 		});
 	};
 

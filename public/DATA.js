@@ -177,13 +177,13 @@ define([], function(){
 			"position":[0, 1, 0],
 			"diffuse":[0.2, 0.2, 0.2],
 			"groundColor": [0.4, 0.4, 0.4],
-			"intensity": 0.9
+			"intensity": 0.7
 		},
 		{
 			"type":"dir",
 			"diffuse":[1, 1, 1],
 			"direction":[-0.5, -0.5, 0],
-			"intensity": 0.9
+			"intensity": 0.7
 		}
 	];
 

@@ -29,8 +29,10 @@ define(["utils/GridUtils"], function(GridUtils){
 
 	UpdateHUDProcessor.prototype.getPlayer = function () {
 		var position = this.game.manager.getComponentDataForEntity('MeshComponent', this.game.playerId).mesh.position;
+		var speedComp = this.game.manager.getComponentDataForEntity('SpeedComponent', this.game.playerId);
 		return {
-			"position":GridUtils.babylonToIJ(position)
+			"position":GridUtils.babylonToIJ(position),
+			"angle":speedComp.angle
 		};
 	};
 

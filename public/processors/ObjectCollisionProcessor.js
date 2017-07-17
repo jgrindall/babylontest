@@ -13,7 +13,6 @@ define([], function(){
 	ObjectCollisionProcessor.prototype.update = function () {
 		var manager = this.game.manager, _this = this, toDeleteIds = [];
 		var playerMesh = manager.getComponentDataForEntity('MeshComponent', this.game.playerId).mesh;
-		$("span").text("No");
 		_.each(this.game.objectIds, function(objectId){
 			var mesh0 = manager.getComponentDataForEntity('MeshComponent', objectId).mesh;
 			var dx = mesh0.position.x - playerMesh.position.x;
