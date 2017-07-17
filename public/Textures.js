@@ -19,12 +19,13 @@ define([], function(){
 		var c = document.createElement("canvas"), context = c.getContext("2d"), SIZE = 64, loadImages, drawImages;
 		c.width = SIZE;
 		c.height = SIZE*urls.length;
+		var PADDING_Y = 1;
 		loadImages = function(){
 			return Promise.all(_.map(urls, Textures.loadImage));
 		};
 		drawImages = function(images){
 			_.each(images, function(img, i){
-				context.drawImage(img, 0, SIZE*i, SIZE, SIZE);
+				context.drawImage(img, 0, SIZE*i + PADDING_Y, SIZE, SIZE - 2*PADDING_Y);
 			});
 			return c;
 		};

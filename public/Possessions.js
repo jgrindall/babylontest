@@ -3,6 +3,7 @@ define([], function(){
 
 	var _count = function(arr){
 		var c = {};
+		this._state = "none";
 		_.each(arr, function(obj){
 			c[obj.data.texture] = c[obj.data.texture] || 0;
 			c[obj.data.texture]++;
@@ -43,6 +44,10 @@ define([], function(){
 		$el.css({
 			"left":0
 		});
+	};
+
+	Possessions.prototype.setState = function(s){
+
 	};
 
 	Possessions.prototype.update = function(arr){
