@@ -3,7 +3,6 @@ define([], function(){
 
 	var _count = function(arr){
 		var c = {};
-		this._state = "none";
 		_.each(arr, function(obj){
 			c[obj.data.texture] = c[obj.data.texture] || 0;
 			c[obj.data.texture]++;
@@ -11,9 +10,20 @@ define([], function(){
 		return c;
 	};
 
-	var Possessions = function(materialsCache){
+	var Possessions = function(manager, materialsCache){
 		this.$el = $("<div/>");
+		this.$button = $("<button>Do it!</button>")
+		.hide()
+		.css({
+		    "position": "absolute",
+		    "right": 0,
+		    "top": "-30px",
+		    "font-size":"20px"
+		})
+		.on("click", this.onClick.bind(this));
 		this.materialsCache = materialsCache;
+		this.manager = manager;
+		this._state = "none";
 		this.$el.css({
 			"border":"2px solid black",
 			"position":"fixed",
@@ -24,7 +34,12 @@ define([], function(){
 			"height":"100px",
 			"z-index":100
 		});
+		this.$el.append(this.$button);
 		$("body").append(this.$el);
+	};
+
+	Possessions.prototype.onClick = function(){
+		this.manager.listener.emit("doorInteraction", {"id":this._doorId});
 	};
 
 	Possessions.prototype.destroy = function(){
@@ -42,16 +57,35 @@ define([], function(){
 		this.$el.append($el);
 		$inner.append(img).append("<span>" + count + "</span>");
 		$el.css({
-			"left":0
+			"left":"20px"
 		});
 	};
 
-	Possessions.prototype.setState = function(s){
+	Possessions.prototype.updateState = function(s){
+		this._state = s;
+		if(s === "activatable"){
+			this.$button.show();
+		}
+		else{
+			this.$button.hide();
+		}
+		return this;
+	};
 
+	Possessions.prototype.setDoorId = function(id){
+		this._doorId = id;
+		return this;
+	};
+
+	Possessions.prototype.setState = function(s){
+		if(this._state !== s){
+			this.updateState(s);
+		}
+		return this;
 	};
 
 	Possessions.prototype.update = function(arr){
-		this.$el.empty();
+		this.$el.find(".possession").remove();
 		var _this = this, i = 0;
 		var count = _count(arr);
 		_.each(count, function(count, val){

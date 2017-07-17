@@ -80,10 +80,9 @@ define(["utils/GridUtils"], function(GridUtils){
 			var doorMesh = manager.getComponentDataForEntity('MeshComponent', id).mesh;
 			return !!_getDir(doorMesh.position);
 		});
-		this.game.possessions.setState(doorIdHit ? "activatable" : "none");
-		if(doorIdHit){
-			manager.listener.emit("doorInteraction", {"id":doorIdHit});
-		}
+		this.game.possessions
+		.setState(doorIdHit ? "activatable" : "none")
+		.setDoorId(doorIdHit);
 	};
 
 	return DoorCollisionProcessor;
