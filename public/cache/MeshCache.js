@@ -148,6 +148,8 @@ define([], function(){
 	MeshCache.prototype.getWater = function(scene, size){
 		size = (size[0] >= size[1]) ? [size[0], size[1]] : [size[1], size[0]];
 		var mesh, key, w, h;
+		w = size[0];
+		h = size[1];
 		key  = "water" + "_" + w + "_" + h;
 		mesh = this.get(key);
 		if(mesh){

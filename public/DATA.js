@@ -109,6 +109,42 @@ define([], function(){
 			"position":[3, 5]
 		}
 	});
+	
+	
+	data.push({
+				"type":"water",
+				"data":{
+					"texture":"water",
+					"position":[
+						12,
+						12
+					]
+				}
+			});
+			
+			data.push({
+				"type":"water",
+				"data":{
+					"texture":"water",
+					"position":[
+						12,
+						13
+					]
+				}
+			});
+			
+			data.push({
+				"type":"water",
+				"data":{
+					"texture":"water",
+					"position":[
+						12,
+						14
+					]
+				}
+			});
+			
+			
 
 	for(var q1 = 4; q1 < 9; q1+=1){
 		for(var q2 = 4; q2 < 9; q2+=1){
