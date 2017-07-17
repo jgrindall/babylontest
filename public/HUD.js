@@ -97,7 +97,7 @@ define(["utils/GridUtils"], function(GridUtils){
 		this.data = data;
 		this.ctx.clearRect(0, 0, 300, 200);
 		this.ctx.translate(150, 100);
-  		this.ctx.rotate(this.data.player.angle);
+  		this.ctx.rotate(-this.data.player.angle);
 		this.drawWalls();
 		this.drawDoors();
 		this.drawWater();
@@ -105,7 +105,7 @@ define(["utils/GridUtils"], function(GridUtils){
 		this.addPlayer();
 		this.addBaddies();
 		this.addObjects();
-		this.ctx.rotate(-this.data.player.angle);
+		this.ctx.rotate(+this.data.player.angle);
 		this.ctx.translate(-150, -100);
 	};
 
