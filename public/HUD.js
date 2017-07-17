@@ -5,16 +5,17 @@ define(["utils/GridUtils"], function(GridUtils){
 
 	var HUD = function(options){
 		this.canvas = document.createElement("canvas");
-		this.canvas.width = 300;
-		this.canvas.height = 200;
+		this.canvas.width = 250;
+		this.canvas.height = 250;
 		this.ctx = this.canvas.getContext("2d");
 		this.$canvas = $(this.canvas);
 		this.$canvas.css({
-			"border":"2px solid black",
+			"border":"1px solid #222",
 			"position":"fixed",
 			"top":0,
 			"right":0,
-			"z-index":100
+			"z-index":100,
+			"background":"rgba(50,50,50,0.5)"
 		});
 		$("body").append(this.canvas);
 	};
@@ -83,14 +84,14 @@ define(["utils/GridUtils"], function(GridUtils){
 	HUD.prototype.update = function(data){
 		this.data = data;
 		var p = this.data.player.position;
-		this.centre = {"x":p.j*HUD_SIZE + HUD_SIZE/2 - 150, "y":p.i*HUD_SIZE + HUD_SIZE/2 - 100};
+		this.centre = {"x":p.j*HUD_SIZE + HUD_SIZE/2 - 125, "y":p.i*HUD_SIZE + HUD_SIZE/2 - 125};
 		var tx = -this.centre.x;
 		var ty = -this.centre.y;
-		this.ctx.clearRect(0, 0, 300, 200);
+		this.ctx.clearRect(0, 0, 250, 250);
 		this.ctx.save();
-		this.ctx.translate(150, 100);
+		this.ctx.translate(125, 125);
   		this.ctx.rotate(-this.data.player.angle);
-  		this.ctx.translate(-150, -100);
+  		this.ctx.translate(-125, -125);
   		this.drawWalls();
 		this.drawDoors();
 		this.drawWater();
