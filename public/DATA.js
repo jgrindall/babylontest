@@ -33,6 +33,8 @@ define([], function(){
 			]
 		}
 	});
+
+
 	data.push({
 		"type":"tree",
 		"data":{
@@ -40,6 +42,30 @@ define([], function(){
 			"position":[
 				9,
 				9
+			]
+		}
+	});
+
+
+	data.push({
+		"type":"tree",
+		"data":{
+			"texture":"tree",
+			"position":[
+				15,
+				3
+			]
+		}
+	});
+
+
+	data.push({
+		"type":"tree",
+		"data":{
+			"texture":"tree",
+			"position":[
+				15,
+				6
 			]
 		}
 	});
@@ -140,6 +166,50 @@ define([], function(){
 					"position":[
 						12,
 						14
+					]
+				}
+			});
+
+			data.push({
+				"type":"water",
+				"data":{
+					"texture":"water",
+					"position":[
+						12,
+						15
+					]
+				}
+			});
+
+			data.push({
+				"type":"water",
+				"data":{
+					"texture":"water",
+					"position":[
+						13,
+						13
+					]
+				}
+			});
+			
+			data.push({
+				"type":"water",
+				"data":{
+					"texture":"water",
+					"position":[
+						13,
+						14
+					]
+				}
+			});
+
+			data.push({
+				"type":"water",
+				"data":{
+					"texture":"water",
+					"position":[
+						13,
+						15
 					]
 				}
 			});

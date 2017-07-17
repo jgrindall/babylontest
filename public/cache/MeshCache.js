@@ -62,7 +62,7 @@ define([], function(){
 			return mesh;
 		}
 		else{
-			mesh = this.getPlaneWithTexture(key, 0.333, 0.333, 1, texture, scene);
+			mesh = this.getPlaneWithTexture(key, 0.25, 0.25, 1, texture, scene);
 			mesh.convertToUnIndexedMesh();
 			this.add(scene, mesh, key);
 			return this.getObject(scene, texture);
