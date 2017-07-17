@@ -24,89 +24,81 @@ define(["utils/GridUtils"], function(GridUtils){
 	};
 
 	HUD.prototype.drawWalls = function(){
-		var ctx = this.ctx;
+		var ctx = this.ctx, c = this.centre;
 		ctx.fillStyle = "#999999";
 		_.each(this.data.walls, function(wall){
-			ctx.fillRect(wall[1]*HUD_SIZE, wall[0]*HUD_SIZE, wall[2]*HUD_SIZE, wall[3]*HUD_SIZE);
+			ctx.fillRect(wall[1]*HUD_SIZE - c.x, wall[0]*HUD_SIZE - c.y, wall[2]*HUD_SIZE, wall[3]*HUD_SIZE);
 		});
 	};
 
 	HUD.prototype.drawDoors = function(){
-		var ctx = this.ctx;
+		var ctx = this.ctx, c = this.centre;
 		ctx.fillStyle = "#666666";
 		_.each(this.data.doors, function(wall){
-			ctx.fillRect(wall[1]*HUD_SIZE, wall[0]*HUD_SIZE, wall[2]*HUD_SIZE, wall[3]*HUD_SIZE);
+			ctx.fillRect(wall[1]*HUD_SIZE - c.x, wall[0]*HUD_SIZE - c.y, wall[2]*HUD_SIZE, wall[3]*HUD_SIZE);
 		});
 	};
 
 	HUD.prototype.drawWater = function(){
-		var ctx = this.ctx;
+		var ctx = this.ctx, c = this.centre;
 		ctx.fillStyle = "#0077ee";
 		_.each(this.data.water, function(wall){
-			ctx.fillRect(wall[1]*HUD_SIZE, wall[0]*HUD_SIZE, wall[2]*HUD_SIZE, wall[3]*HUD_SIZE);
+			ctx.fillRect(wall[1]*HUD_SIZE - c.x, wall[0]*HUD_SIZE - c.y, wall[2]*HUD_SIZE, wall[3]*HUD_SIZE);
 		});
 	};
 
 	HUD.prototype.drawFire = function(){
-		var ctx = this.ctx;
+		var ctx = this.ctx, c = this.centre;
 		ctx.fillStyle = "#cc44dd";
 		_.each(this.data.fire, function(wall){
-			ctx.fillRect(wall[1]*HUD_SIZE, wall[0]*HUD_SIZE, wall[2]*HUD_SIZE, wall[3]*HUD_SIZE);
+			ctx.fillRect(wall[1]*HUD_SIZE - c.x, wall[0]*HUD_SIZE - c.y, wall[2]*HUD_SIZE, wall[3]*HUD_SIZE);
 		});
 	};
 
 	HUD.prototype.addPlayer = function(){
-		var p = this.data.player.position;
+		var p = this.data.player.position, c = this.centre;
 		this.ctx.fillStyle = "#22dd99";
-		this.ctx.fillRect(p.j*HUD_SIZE, p.i*HUD_SIZE, 1*HUD_SIZE, 1*HUD_SIZE);
+		this.ctx.fillRect(p.j*HUD_SIZE - c.x, p.i*HUD_SIZE - c.y, 1*HUD_SIZE, 1*HUD_SIZE);
 	};
 
 	HUD.prototype.addObjects = function(){
-		var ctx = this.ctx;
+		var ctx = this.ctx, c = this.centre;
 		ctx.fillStyle = "#ffff33";
 		_.each(this.data.objects, function(obj){
 			var p = obj.position;
-			ctx.fillRect(p.j*HUD_SIZE, p.i*HUD_SIZE, 1*HUD_SIZE, 1*HUD_SIZE);
+			ctx.fillRect(p.j*HUD_SIZE - c.x, p.i*HUD_SIZE - c.y, 1*HUD_SIZE, 1*HUD_SIZE);
 		});
 	};
 
 	HUD.prototype.addBaddies = function(){
-		var ctx = this.ctx;
+		var ctx = this.ctx, c = this.centre;
 		ctx.fillStyle = "#dd2222";
 		ctx.lineStyle = "#dddddd";
 		_.each(this.data.baddies, function(baddie){
 			var p = baddie.position;
-			ctx.fillRect(p.j*HUD_SIZE, p.i*HUD_SIZE, 1*HUD_SIZE, 1*HUD_SIZE);
-			var path = baddie.path;
-			if(!path){
-				return;
-			}
-			_.each(path.sections, function(section){
-				var start, end;
-				start = GridUtils.babylonToIJ(section.start);
-				end = GridUtils.babylonToIJ(section.end);
-				ctx.beginPath();
-				ctx.moveTo(start.j*HUD_SIZE + HUD_SIZE/2, start.i*HUD_SIZE + HUD_SIZE/2);
-				ctx.lineTo(end.j*HUD_SIZE + HUD_SIZE/2, end.i*HUD_SIZE + HUD_SIZE/2);
-				ctx.stroke();
-			});
+			ctx.fillRect(p.j*HUD_SIZE - c.x, p.i*HUD_SIZE - c.y, 1*HUD_SIZE, 1*HUD_SIZE);
 		});
 	};
 
 	HUD.prototype.update = function(data){
 		this.data = data;
+		var p = this.data.player.position;
+		this.centre = {"x":p.j*HUD_SIZE + HUD_SIZE/2 - 150, "y":p.i*HUD_SIZE + HUD_SIZE/2 - 100};
+		var tx = -this.centre.x;
+		var ty = -this.centre.y;
 		this.ctx.clearRect(0, 0, 300, 200);
+		this.ctx.save();
 		this.ctx.translate(150, 100);
   		this.ctx.rotate(-this.data.player.angle);
-		this.drawWalls();
+  		this.ctx.translate(-150, -100);
+  		this.drawWalls();
 		this.drawDoors();
 		this.drawWater();
 		this.drawFire();
 		this.addPlayer();
 		this.addBaddies();
 		this.addObjects();
-		this.ctx.rotate(+this.data.player.angle);
-		this.ctx.translate(-150, -100);
+		this.ctx.restore();
 	};
 
 	return HUD;
