@@ -16,7 +16,7 @@ define(["FogSettings"], function(FogSettings){
 	var EffectBuilder = {
 		build:function(scene, effectsData){
 			scene.ambientColor = _color3FromArray(effectsData.ambientColor);
-			FogSettings.add(scene, effectsData.fog);
+			//FogSettings.add(scene, effectsData.fog);
 			scene.gravity = _vector3FromArray(effectsData.gravity);
 		}
 	};
