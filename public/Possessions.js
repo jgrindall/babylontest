@@ -39,6 +39,7 @@ define([], function(){
 	};
 
 	Possessions.prototype.onClick = function(){
+		this.setState("active");
 		this.manager.listener.emit("doorInteraction", {"id":this._doorId});
 	};
 
