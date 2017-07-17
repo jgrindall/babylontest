@@ -8,20 +8,24 @@ define(["utils/GridUtils", "utils/GreedyMeshAlgo"],
 
 	};
 
+	var SOLID = ["water", "wall", "door", "tree"];  //for pathfinder
+
+	var BOX = ["water", "wall", "tree"]; //permanent boxes should be drawn
+
 	GridBuilder.update = function(g){
-		g.objects = GridUtils.listByType(g.grid, ["object"]);
-		g.baddies = GridUtils.listByType(g.grid, ["baddie"]);
-		g.trees = GridUtils.listByType(g.grid, ["tree"]);
-		g.doors = GridUtils.listByType(g.grid, ["door"]);
-		g.solid = GridUtils.markByType(g.grid, ["water", "wall", "door"]);
+		var types = _.uniq(_.pluck(_.flatten(g.grid), "type"));
+		g.solid = GridUtils.markByType(g.grid, SOLID);
+		g.types = {};
+		_.each(types, function(type){
+			g.types[type] = GridUtils.listByType(g.grid, type);
+		});
 		g.pfGrid = new PF.Grid(GridUtils.transpose(g.solid));
 		g.greedy = {
-			"wall":GreedyMeshAlgo.get(GridUtils.markByType(g.grid, "wall")),
-			"boxes":GreedyMeshAlgo.get(GridUtils.markByType(g.grid, ["water", "wall", "tree"])),
-			"door":GreedyMeshAlgo.get(GridUtils.markByType(g.grid, "door")),
-			"water":GreedyMeshAlgo.get(GridUtils.markByType(g.grid, "water")),
-			"fire":GreedyMeshAlgo.get(GridUtils.markByType(g.grid, "fire"))
+			"boxes":GreedyMeshAlgo.get(GridUtils.markByType(g.grid, BOX))
 		};
+		_.each(types, function(type){
+			g.greedy[type] = GreedyMeshAlgo.get(GridUtils.markByType(g.grid, type));
+		});
 	};
 
 	GridBuilder.build = function(scene, meshCache){
@@ -31,7 +35,7 @@ define(["utils/GridUtils", "utils/GreedyMeshAlgo"],
 		g.grid = GridUtils.arrayToGrid(window._DATA);
 		GridUtils.addDirectionsOfWalls(g.grid);
 		GridUtils.extendWalls(g.grid);
-		GridBuilder.update (g);
+		GridBuilder.update(g);
 		return g;
 	};
 

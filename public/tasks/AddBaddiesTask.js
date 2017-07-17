@@ -5,7 +5,7 @@ define(["builders/CharacterBuilder"], function(CharacterBuilder){
 	var AddBaddiesTask = function(game){
 		game.baddieIds = [];
 		var manager = game.manager, scene = game.scene, meshCache = game.meshCache;
-		var baddies = game.grid.baddies;
+		var baddies = game.grid.types["baddie"];
 		var playerPos = [2, 13];
 		var grid = game.grid;
 		_.each(baddies, function(obj){

@@ -5,7 +5,7 @@ define(["builders/DoorBuilder"], function(DoorBuilder){
 	var AddDoorsTask = function(game){
 		game.doorIds = [];
 		var manager = game.manager, scene = game.scene, meshCache = game.meshCache;
-		var doors = game.grid.doors;
+		var doors = game.grid.types["door"];
 		_.each(doors, function(obj){
 			var id, mesh;
 			id = manager.createEntity(['DoorComponent', 'MeshComponent']);
