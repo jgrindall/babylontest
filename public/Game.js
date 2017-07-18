@@ -1,34 +1,30 @@
 define(["cache/MeshCache",
 
-	"cache/MaterialsCache", "lib/entity-manager", "Listener", "CommandQueue",
-
-"components/Components"],
+	"cache/MaterialsCache", "lib/entity-manager", "CommandQueue"],
 
 	function(MeshCache,
 
-		MaterialsCache, EntityManager, Listener, CommandQueue,
-
-	Components) {
+		MaterialsCache, EntityManager, CommandQueue) {
 
 		"use strict";
 
 		var Game = function(data, canvas){
 			this._paused = false;
 			this.data = data;
-			this.renderFn = this.render.bind(this);
 			this.engine = new BABYLON.Engine(canvas, false, null, false);
 			this.scene = new BABYLON.Scene(this.engine);
 			this.scene.collisionsEnabled = true;
-			this._processorClasses = [];
-			this._processors = [];
-			this.manager = new EntityManager(new Listener(this));
-			Components.addTo(this.manager);
-			this._tasks = [];
-			this.queue = new CommandQueue();
+			this._components = 			[];
+			this._processorClasses = 	[];
+			this._processors = 			[];
+			this._tasks = 				[];
+			this.manager = 				new EntityManager();
+			this.queue = 				new CommandQueue();
 		};
 
-		Game.prototype.loadJSON = function(){
-
+		Game.prototype.setListener = function(listener){
+			this.manager.listener = listener;
+			return this;
 		};
 
 		Game.prototype.registerTask = function(task){
@@ -49,6 +45,15 @@ define(["cache/MeshCache",
 
 		Game.prototype.addToQueue = function(comm, time){
 			this.queue.add(comm, time);
+		};
+
+		Game.prototype.registerComponents = function(arr){
+			this._components = this._components.concat(arr);
+			return this;
+		};
+
+		Game.prototype.addComponent = function(comp){
+			this.manager.addComponent(comp.name, comp);
 		};
 
 		Game.prototype.pause = function(){
@@ -78,8 +83,10 @@ define(["cache/MeshCache",
 		};
 
 		Game.prototype.onMaterialsLoaded = function(){
+			_.each(this._components, this.addComponent.bind(this));
 			_.each(this._tasks, this.executeTask.bind(this));
 			_.each(this._processorClasses, this.addProcessor.bind(this));
+			this.renderFn = this.render.bind(this);
 			this.engine.runRenderLoop(this.renderFn);
 			this.trigger("loaded");
 		};

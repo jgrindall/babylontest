@@ -15,14 +15,8 @@ define(["components/HealthComponent", "components/ObjectComponent", "components/
 
 		var ALL = [ObjectComponent, HealthComponent, MessageComponent, PossessionsComponent, DoorComponent, MeshComponent, SpeedComponent, BaddieStrategyComponent, CameraComponent];
 
-		var Components = {};
-
-		Components.addTo = function(manager){
-			_.each(ALL, function(c){
-				manager.addComponent(c.name, c);
-			});
+		return {
+			"ALL":ALL
 		};
-
-		return Components;
-
-});
+	}
+);

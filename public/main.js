@@ -3,7 +3,7 @@ window.SIZE_I = 18;
 window.SIZE_J = 18;
 window.SIZE = 10;
 
-require(["Game", "DATA", "tasks/BuildTerrainTask", "tasks/BuildTreesTask", "tasks/BuildEnvironmentTask",
+require(["Game", "DATA", "components/Components", "tasks/BuildTerrainTask", "tasks/BuildTreesTask", "tasks/BuildEnvironmentTask",
 
 	"tasks/AddBaddiesTask", "tasks/AddControlsTask", "tasks/BuildGridTask",
 
@@ -11,7 +11,7 @@ require(["Game", "DATA", "tasks/BuildTerrainTask", "tasks/BuildTreesTask", "task
 
 	"tasks/AddObjectsTask", "tasks/AddPlayerTask", "tasks/AddMusicTask", "processors/CameraMatchPlayerProcessor",
 
-"processors/UpdateHUDProcessor",
+"processors/UpdateHUDProcessor", "Listener",
 
 "processors/PlayerMovementProcessor", "processors/TerrainCollisionProcessor",
 
@@ -19,11 +19,11 @@ require(["Game", "DATA", "tasks/BuildTerrainTask", "tasks/BuildTreesTask", "task
 
 "processors/BaddieCollisionProcessor", "processors/ObjectCollisionProcessor"],
 
-	function(Game, DATA, BuildTerrainTask, BuildTreesTask, BuildEnvironmentTask,
+	function(Game, DATA, Components, BuildTerrainTask, BuildTreesTask, BuildEnvironmentTask,
 
 		AddBaddiesTask, AddControlsTask, BuildGridTask, AddCameraTask, AddDoorsTask, AddLightsTask,
 
-		AddObjectsTask, AddPlayerTask, AddMusicTask, CameraMatchPlayerProcessor, UpdateHUDProcessor,
+		AddObjectsTask, AddPlayerTask, AddMusicTask, CameraMatchPlayerProcessor, UpdateHUDProcessor, Listener,
 
 	PlayerMovementProcessor, TerrainCollisionProcessor, BaddieMovementProcessor, UpdateHuntProcessor, DoorCollisionProcessor,
 
@@ -31,10 +31,9 @@ require(["Game", "DATA", "tasks/BuildTerrainTask", "tasks/BuildTreesTask", "task
 
 		"use strict";
 
-		var launch;
-
-		launch = function(){
+		var launch = function(){
 			var g = new Game(DATA, document.querySelector("#renderCanvas"))
+			.registerComponents(Components.ALL)
 			.registerTask(AddLightsTask)
 			.registerTask(BuildGridTask)
 			.registerTask(AddCameraTask)
@@ -55,7 +54,9 @@ require(["Game", "DATA", "tasks/BuildTerrainTask", "tasks/BuildTreesTask", "task
 			.registerProcessor(ObjectCollisionProcessor)
 			.registerProcessor(UpdateHuntProcessor)
 			.registerProcessor(UpdateHUDProcessor)
-			.registerProcessor(DoorCollisionProcessor)
+			.registerProcessor(DoorCollisionProcessor);
+
+			g.setListener(new Listener(g))
 			.start()
 			.on("loaded", function(){
 				//g.destroy();
