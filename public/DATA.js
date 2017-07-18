@@ -213,6 +213,40 @@ define([], function(){
 					]
 				}
 			});
+
+
+			data.push({
+				"type":"water",
+				"data":{
+					"texture":"water",
+					"position":[
+						14,
+						13
+					]
+				}
+			});
+			
+			data.push({
+				"type":"water",
+				"data":{
+					"texture":"water",
+					"position":[
+						14,
+						14
+					]
+				}
+			});
+
+			data.push({
+				"type":"water",
+				"data":{
+					"texture":"water",
+					"position":[
+						14,
+						15
+					]
+				}
+			});
 			
 			
 
