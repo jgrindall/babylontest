@@ -1,10 +1,10 @@
-define(["cache/MeshCache", "builders/GridBuilder", "builders/SceneBuilder",
+define(["cache/MeshCache",
 
 	"cache/MaterialsCache", "lib/entity-manager", "Listener", "CommandQueue",
 
 "components/Components"],
 
-	function(MeshCache, GridBuilder, SceneBuilder,
+	function(MeshCache,
 
 		MaterialsCache, EntityManager, Listener, CommandQueue,
 
@@ -12,29 +12,23 @@ define(["cache/MeshCache", "builders/GridBuilder", "builders/SceneBuilder",
 
 		"use strict";
 
-		var Game = function(engine){
+		var Game = function(data, canvas){
 			this._paused = false;
+			this.data = data;
 			this.renderFn = this.render.bind(this);
-			this.engine = engine;
-			window.engine = engine;
+			this.engine = new BABYLON.Engine(canvas, false, null, false);
+			this.scene = new BABYLON.Scene(this.engine);
+			this.scene.collisionsEnabled = true;
 			this._processorClasses = [];
 			this._processors = [];
-			this.scene = SceneBuilder.makeScene(this.engine);
 			this.manager = new EntityManager(new Listener(this));
 			Components.addTo(this.manager);
 			this._tasks = [];
-			this.materialsCache = new MaterialsCache(window._TEXTURES);
-			this.meshCache = new MeshCache(this.materialsCache);
 			this.queue = new CommandQueue();
 		};
 
 		Game.prototype.loadJSON = function(){
 
-		};
-
-		Game.prototype.start = function(){
-			this.materialsCache.load(this.scene, this.init.bind(this));
-			return this;
 		};
 
 		Game.prototype.registerTask = function(task){
@@ -57,10 +51,6 @@ define(["cache/MeshCache", "builders/GridBuilder", "builders/SceneBuilder",
 			this.queue.add(comm, time);
 		};
 
-		Game.prototype.startProcessors = function(){
-			_.each(this._processorClasses, this.addProcessor.bind(this));
-		};
-
 		Game.prototype.pause = function(){
 			this.gamePad.pause();
 			this._paused = true;
@@ -77,7 +67,6 @@ define(["cache/MeshCache", "builders/GridBuilder", "builders/SceneBuilder",
 			}
 			if(this.scene){
 				this.scene.render();
-				//$("p.fps").text(this.engine.getFps().toFixed(0));
 			}
 			if(this.manager){
 				this.manager.update(this.scene.getLastFrameDuration());
@@ -88,13 +77,18 @@ define(["cache/MeshCache", "builders/GridBuilder", "builders/SceneBuilder",
 			task(this);
 		};
 
-		Game.prototype.init = function(){
-			this.grid = GridBuilder.build(this.scene, this.meshCache);
-			this.camera = new BABYLON.FreeCamera("FreeCamera", new BABYLON.Vector3(0, 0, 0), this.scene);
+		Game.prototype.onMaterialsLoaded = function(){
 			_.each(this._tasks, this.executeTask.bind(this));
-			this.startProcessors();
+			_.each(this._processorClasses, this.addProcessor.bind(this));
 			this.engine.runRenderLoop(this.renderFn);
 			this.trigger("loaded");
+		};
+
+		Game.prototype.start = function(){
+			this.materialsCache = new MaterialsCache(this.data.textureCache);
+			this.meshCache = new MeshCache(this.materialsCache);
+			this.materialsCache.load(this.scene, this.onMaterialsLoaded.bind(this));
+			return this;
 		};
 
 		Game.prototype.destroy = function(){

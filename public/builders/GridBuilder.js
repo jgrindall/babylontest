@@ -28,11 +28,11 @@ define(["utils/GridUtils", "utils/GreedyMeshAlgo"],
 		});
 	};
 
-	GridBuilder.build = function(scene, meshCache){
+	GridBuilder.build = function(scene, meshCache, data){
 		var g = {
 			//
 		};
-		g.grid = GridUtils.arrayToGrid(window._DATA);
+		g.grid = GridUtils.arrayToGrid(data);
 		GridUtils.addDirectionsOfWalls(g.grid);
 		GridUtils.extendWalls(g.grid);
 		GridBuilder.update(g);

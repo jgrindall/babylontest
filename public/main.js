@@ -5,7 +5,9 @@ window.SIZE = 10;
 
 require(["Game", "DATA", "tasks/BuildTerrainTask", "tasks/BuildTreesTask", "tasks/BuildEnvironmentTask",
 
-	"tasks/AddBaddiesTask", "tasks/AddControlsTask", "tasks/AddDoorsTask",
+	"tasks/AddBaddiesTask", "tasks/AddControlsTask", "tasks/BuildGridTask",
+
+	"tasks/AddCameraTask", "tasks/AddDoorsTask", "tasks/AddLightsTask",
 
 	"tasks/AddObjectsTask", "tasks/AddPlayerTask", "tasks/AddMusicTask", "processors/CameraMatchPlayerProcessor",
 
@@ -19,7 +21,7 @@ require(["Game", "DATA", "tasks/BuildTerrainTask", "tasks/BuildTreesTask", "task
 
 	function(Game, DATA, BuildTerrainTask, BuildTreesTask, BuildEnvironmentTask,
 
-		AddBaddiesTask, AddControlsTask, AddDoorsTask,
+		AddBaddiesTask, AddControlsTask, BuildGridTask, AddCameraTask, AddDoorsTask, AddLightsTask,
 
 		AddObjectsTask, AddPlayerTask, AddMusicTask, CameraMatchPlayerProcessor, UpdateHUDProcessor,
 
@@ -29,17 +31,13 @@ require(["Game", "DATA", "tasks/BuildTerrainTask", "tasks/BuildTreesTask", "task
 
 		"use strict";
 
-		window._DATA = DATA.data;
-		window._LIGHTS = DATA.lights;
-		window._EFFECTS = DATA.effects;
-		window._TEXTURES = DATA.textures;
-
-		window.engine = new BABYLON.Engine(document.querySelector("#renderCanvas"), false, null, false);
-
 		var launch;
 
 		launch = function(){
-			var g = new Game(window.engine)
+			var g = new Game(DATA, document.querySelector("#renderCanvas"))
+			.registerTask(AddLightsTask)
+			.registerTask(BuildGridTask)
+			.registerTask(AddCameraTask)
 			.registerTask(BuildEnvironmentTask)
 			.registerTask(BuildTerrainTask)
 			.registerTask(BuildTreesTask)

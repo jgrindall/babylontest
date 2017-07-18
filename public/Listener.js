@@ -6,11 +6,10 @@ define(["commands/ObjectCollectionCommand", "commands/DoorInteractionCommand", "
 
 	var Listener  = function(game){
 		this.game = game;
-		this.playerId = game.playerId;
 	};
 
 	Listener.prototype.emit = function(type, options){
-		var manager = this.game.manager, playerId = this.game.playerId;
+		var manager = this.game.manager;
 		if(type === "objectCollect"){
 			new ObjectCollectionCommand(this.game, options.toDeleteIds).exec();
 		}
