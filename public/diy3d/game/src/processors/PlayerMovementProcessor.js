@@ -16,13 +16,14 @@ define([], function(){
 	};
 
 	PlayerMovementProcessor.prototype.update = function () {
-		var speedData, sf, manager = this.game.manager;
+	    var speedData, sf, manager = this.game.manager;
 		sf = (60/this.game.engine.getFps());  // a sort of correction factor to take into account slow fps - move the objects more
 		var dx, dz, meshComp, speedComp;
 		meshComp = manager.getComponentDataForEntity('MeshComponent', this.game.playerId);
 		speedComp = manager.getComponentDataForEntity('SpeedComponent', this.game.playerId);
 		speedComp.angle += speedComp.ang_speed * sf;
-		//TODO - not a while loop
+
+        //TODO - not a while loop
 		while(speedComp.angle > PI2){
 			speedComp.angle -= PI2;
 		}

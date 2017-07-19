@@ -33,9 +33,25 @@ require(["diy3d/game/src/Game", "diy3d/game/src/DATA", "diy3d/game/src/component
 	BaddieCollisionProcessor, ObjectCollisionProcessor) {
 
 		"use strict";
-
+		
+		var canvas, engine;
+		
 		var launch = function(){
-			var g = new Game(DATA, document.querySelector("#renderCanvas"))
+			
+			
+			canvas = document.createElement("canvas");
+            canvas.width = 1024;
+            canvas.height = 768;
+            $(canvas).attr("id", "gameCanvas");
+            $("body").prepend(canvas);
+            engine = new BABYLON.Engine(canvas, false, null, false);
+		    var $container = $("body");
+		    $container
+                .append($("<div/>").attr("id", "zone_hud"))
+                .append($("<div/>").attr("id", "zone_health"))
+                .append($("<div/>").attr("id", "zone_possessions"))
+                .append($("<div/>").attr("id", "zone_joystick"));   // joystick last since it comes on top
+			var g = new Game(DATA, canvas, engine, $container)
 			.registerComponents(Components.ALL)
 			.registerTask(AddLightsTask)
 			.registerTask(BuildGridTask)
@@ -62,13 +78,7 @@ require(["diy3d/game/src/Game", "diy3d/game/src/DATA", "diy3d/game/src/component
 			g.setListener(new Listener(g))
 			.start()
 			.on("loaded", function(){
-				//g.destroy();
-				setTimeout(function(){
-					//g.pause();
-				}, 5000);
-				setTimeout(function(){
-					//g.unpause();
-				}, 10000);
+				alert("loaded");
 			});
 		};
 

@@ -93,6 +93,7 @@ define(["diy3d/game/src/cache/MeshCache",
 				return;
 			}
 			if(this.scene){
+				console.log("r");
 				this.scene.render();
 			}
 			if(this.manager){
