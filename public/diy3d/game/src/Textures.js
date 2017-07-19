@@ -1,11 +1,11 @@
-define([], function(){
+define(["diy3d/game/src/utils/ImageUtils"], function(ImageUtils){
 
 	"use strict";
 
 	var Textures = {};
 
 	Textures.loadImage = function(url){
-		return new Promise(function(resolve, reject) {
+		return new Promise(function(resolve) {
 	    	var image = new Image();
 	    	image.onload = function() {
 	      		resolve(image);
@@ -29,7 +29,7 @@ define([], function(){
 			});
 			return c;
 		};
-		return new Promise(function(resolve, reject) {
+		return new Promise(function(resolve) {
 			resolve(
 				loadImages()
 				.then(drawImages)
@@ -37,21 +37,8 @@ define([], function(){
 		});
 	};
 
-	Textures.flipCanvas = function(canvas){
-		var c, context;
-		c = document.createElement("canvas");
-		c.width = canvas.width;
-		c.height = canvas.height;
-		context = c.getContext("2d");
-		context.translate(0, c.height);
-		context.scale(1, -1);
-		context.drawImage(canvas, 0, 0);
-		return c;
-	};
-
 	Textures.getTextureFromCanvas = function(canvas, scene){
-		var url = canvas.toDataURL();
-		return new BABYLON.Texture("data:b64", scene, false, true, BABYLON.Texture.PLANAR_MODE, null, null, url, true);
+		return new BABYLON.Texture("data:b64", scene, false, true, BABYLON.Texture.PLANAR_MODE, null, null, canvas.toDataURL(), true);
 	};
 
 	return Textures;

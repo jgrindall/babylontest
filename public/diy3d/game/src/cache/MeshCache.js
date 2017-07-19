@@ -139,7 +139,7 @@ define([], function(){
 		else{
 			mesh = BABYLON.MeshBuilder.CreatePlane(key, {"height": SIZE*w, "width":SIZE*h}, scene);
 			mesh.rotate(new BABYLON.Vector3(1, 0, 0), Math.PI / 2, BABYLON.Space.Local);
-			mesh.material = this.materialsCache.fireMaterial;
+			mesh.material = this.materialsCache.getMaterial("fire");
 			this.add(scene, mesh, key);
 			return this.getFire(scene, size);
 		}
@@ -158,7 +158,7 @@ define([], function(){
 		else{
 			mesh = BABYLON.MeshBuilder.CreatePlane(key, {"height": SIZE*w, "width":SIZE*h}, scene);
 			mesh.rotate(new BABYLON.Vector3(1, 0, 0), Math.PI / 2, BABYLON.Space.Local);
-			mesh.material = this.materialsCache.waterMaterial;
+			mesh.material = this.materialsCache.getMaterial("water");
 			this.add(scene, mesh, key);
 			return this.getWater(scene, size);
 		}

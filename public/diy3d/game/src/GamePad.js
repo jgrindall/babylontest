@@ -1,11 +1,21 @@
 define([], function(){
 	"use strict";
 
-	var RADIUS = 80;
+	var RADIUS = 80, ONEOVER = 1/RADIUS;
 
-	var GamePad = function(id){
-		this.update = new MiniRunner('update');
-		this.make(id);
+	var GamePad = function(selector){
+		this.update = new window.MiniRunner('update');
+        this.manager = window.nipplejs.create({
+            zone: document.getElementById(selector),
+            mode: 'static',
+            size:2*RADIUS,
+            position: {
+                left: '50%',
+                top: '50%'
+            },
+            color: 'purple'
+        });
+        this.unpause();
 	};
 
 	GamePad.prototype.pause = function(){
@@ -16,34 +26,19 @@ define([], function(){
 		var update = this.update;
 		this.manager.on("move", function(e, data){
 			var d, a;
-			d = (data.distance / RADIUS);// from 0 to 1
+			d = (data.distance * ONEOVER);// from 0 to 1
 			a = data.angle.degree;
 			update.emit("change", {d:d, a:a});
 		});
-		this.manager.on("end", function(e, data){
+		this.manager.on("end", function(){
 			update.emit("end");
 		});
-	};
-
-	GamePad.prototype.make = function(id){
-		this.manager = nipplejs.create({
-			zone: document.getElementById(id),
-			mode: 'static',
-			size:2*RADIUS,
-			position: {
-				left: '50%',
-				top: '50%'
-			},
-			color: 'red'
-		});
-		this.unpause();
 	};
 
 	GamePad.prototype.destroy = function(){
 		this.manager.off();
 		this.update = null;
 		this.manager = null;
-		//TODO - MORE NEEDED
 	};
 
 	return GamePad;

@@ -1,3 +1,5 @@
+var baseURL = "http://" + window.location.host;
+
 define([], function(){
 	"use strict";
 
@@ -7,7 +9,7 @@ define([], function(){
 
 	ShowDamageCommand.prototype.exec = function(){
 		var camera = this.game.camera;
-		var postProcess = new BABYLON.PostProcess("Down sample", "/damage", ["degree"], null, 1, camera);
+		var postProcess = new BABYLON.PostProcess("Down sample", baseURL + "/scripts/diy3d/game/src/damage", ["degree"], null, 1, camera);
 		var maxN = 70;
 		var N = maxN;
 		var DEGREE = 0.5;

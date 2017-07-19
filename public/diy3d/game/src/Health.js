@@ -1,20 +1,18 @@
 define([], function(){
 	"use strict";
 
-	var Health = function(){
-		this.$el = $("<div/>");
-		this.$bar = $("<div/>");
-		this.$inner = $("<div/>");
+	var Health = function(selector){
+		this.$el = $("<div/>").addClass("bg");
+		this.$bar = $("<div/>").addClass("bar");
+		this.$inner = $("<div/>").addClass("inner");
 		this.$el.css({
 			"border":"1px solid #222",
-			"position":"fixed",
+			"position":"absolute",
 			"background":"rgba(180,180,180,0.85)",
-			"top":"10px",
-			"left":"50%",
-			"margin-left":"-125px",
-			"width":"250px",
-			"height":"30px",
-			"z-index":100,
+			"top":"0",
+			"left":"0",
+			"width":"100%",
+			"height":"100%",
 			"border-radius": "4px"
 		});
 		this.$bar.css({
@@ -33,13 +31,12 @@ define([], function(){
 			"left":"2px",
 			"right":"2px",
 			"bottom":"2px",
-			"background":"green",
 			"border-radius": "2px",
     		"background": "rgba(200,200,200,0.12)"
 		});
 		this.$el.append(this.$bar);
 		this.$bar.append(this.$inner);
-		$("body").append(this.$el);
+		$(selector).append(this.$el);
 		this.update(100);
 	};
 

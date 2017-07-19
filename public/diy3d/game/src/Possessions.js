@@ -10,8 +10,8 @@ define([], function(){
 		return c;
 	};
 
-	var Possessions = function(manager, materialsCache){
-		this.$el = $("<div/>");
+	var Possessions = function(manager, materialsCache, selector){
+		this.$el = $("<div/>").addClass("possessionsContainer");
 		this.$button = $("<button>Do it!</button>")
 		.hide()
 		.css({
@@ -24,18 +24,8 @@ define([], function(){
 		this.materialsCache = materialsCache;
 		this.manager = manager;
 		this._state = "none";
-		this.$el.css({
-			"border":"2px solid black",
-			"position":"fixed",
-			"background":"rgba(200,200,200,0.2)",
-			"bottom":0,
-			"right":0,
-			"left":0,
-			"height":"100px",
-			"z-index":100
-		});
 		this.$el.append(this.$button);
-		$("body").append(this.$el);
+		$(selector).append(this.$el);
 	};
 
 	Possessions.prototype.onClick = function(){

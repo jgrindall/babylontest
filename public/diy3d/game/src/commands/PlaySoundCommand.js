@@ -6,7 +6,7 @@ define([], function(){
 	};
 
 	PlaySoundCommand.prototype.exec = function(){
-		var music = new BABYLON.Sound("ouch", "assets/alarm.mp3", this.game.scene, null, { loop: false, autoplay: true });
+		var music = new BABYLON.Sound("ouch", "/images/diy3d/assets/alarm.mp3", this.game.scene, null, { loop: false, autoplay: true });
 	};
 
 	return PlaySoundCommand;
