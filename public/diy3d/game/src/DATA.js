@@ -40,6 +40,24 @@ define([], function(){
 		}
 	});
 
+
+	for(i = 8; i < 12; i++){
+		for(j = 8; j < 12; j++){
+			data.push({
+				"type":"tree",
+				"data":{
+					"texture": "tree",
+					"position":[i, j]
+				}
+			});
+		}
+	}
+
+
+
+
+
+
 	data.push({
 		"type":"wall",
 		"data":{
@@ -56,15 +74,27 @@ define([], function(){
 		}
 	});
 	
+
+
+
+	data.push({
+		"type":"object",
+		"data":{
+			"texture": "key",
+			"position":[7, 7]
+		}
+	});
+
+
 	
 
 	var lights = [
 		{
 			"type":"hemi",
-			"position":[0, 1, 0],
-			"diffuse":[0.2, 0.2, 0.2],
-			"groundColor": [0.4, 0.4, 0.4],
-			"intensity": 0.7
+			"position":[0, 3, 0],
+			"diffuse":[0.6, 0.6, 0.6],
+			"groundColor": [0.8, 0.8, 0.8],
+			"intensity": 1
 		}
 	];
 
@@ -84,7 +114,6 @@ define([], function(){
 		"lights":lights,
 		"effects":{
 			"ambientColor": [0.8, 0.8, 0.8],
-			"fog": "thick",
 			"gravity": [0, 0, 0]
 		}
 	};

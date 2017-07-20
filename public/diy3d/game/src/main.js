@@ -6,11 +6,13 @@ window.SIZE_I = 18;
 window.SIZE_J = 18;
 window.SIZE = 10;
 
-require(["diy3d/game/src/Game", "diy3d/game/src/DATA", "diy3d/game/src/components/Components", "diy3d/game/src/tasks/BuildTerrainTask", "diy3d/game/src/tasks/BuildTreesTask", "diy3d/game/src/tasks/BuildEnvironmentTask",
+require(["diy3d/game/src/Game", "diy3d/game/src/DATA", "diy3d/game/src/components/Components", "diy3d/game/src/tasks/BuildTerrainTask",
+
+	"diy3d/game/src/tasks/BuildTreesTask", "diy3d/game/src/tasks/BuildEnvironmentTask",
 
 	"diy3d/game/src/tasks/AddBaddiesTask", "diy3d/game/src/tasks/AddControlsTask", "diy3d/game/src/tasks/BuildGridTask",
 
-	"diy3d/game/src/tasks/AddCameraTask", "diy3d/game/src/tasks/AddDoorsTask", "diy3d/game/src/tasks/AddLightsTask",
+	"diy3d/game/src/tasks/AddDoorsTask", "diy3d/game/src/tasks/AddLightsTask",
 
 	"diy3d/game/src/tasks/AddObjectsTask", "diy3d/game/src/tasks/AddPlayerTask", "diy3d/game/src/tasks/AddMusicTask", "diy3d/game/src/processors/CameraMatchPlayerProcessor",
 
@@ -22,40 +24,46 @@ require(["diy3d/game/src/Game", "diy3d/game/src/DATA", "diy3d/game/src/component
 
 "diy3d/game/src/processors/BaddieCollisionProcessor", "diy3d/game/src/processors/ObjectCollisionProcessor"],
 
-	function(Game, DATA, Components, BuildTerrainTask, BuildTreesTask, BuildEnvironmentTask,
+	function(Game, DATA, Components, BuildTerrainTask,
 
-		AddBaddiesTask, AddControlsTask, BuildGridTask, AddCameraTask, AddDoorsTask, AddLightsTask,
+		BuildTreesTask, BuildEnvironmentTask,
 
-		AddObjectsTask, AddPlayerTask, AddMusicTask, CameraMatchPlayerProcessor, UpdateHUDProcessor, Listener,
+		AddBaddiesTask, AddControlsTask, BuildGridTask,
 
-	PlayerMovementProcessor, TerrainCollisionProcessor, BaddieMovementProcessor, UpdateHuntProcessor, DoorCollisionProcessor,
+		AddDoorsTask, AddLightsTask,
+
+		AddObjectsTask, AddPlayerTask, AddMusicTask, CameraMatchPlayerProcessor,
+
+		UpdateHUDProcessor, Listener,
+
+	PlayerMovementProcessor, TerrainCollisionProcessor,
+
+	BaddieMovementProcessor, UpdateHuntProcessor, DoorCollisionProcessor,
 
 	BaddieCollisionProcessor, ObjectCollisionProcessor) {
 
 		"use strict";
-		
+
 		var canvas, engine;
-		
+
 		var launch = function(){
-			
-			
+
 			canvas = document.createElement("canvas");
             canvas.width = 1024;
             canvas.height = 768;
             $(canvas).attr("id", "gameCanvas");
-            $("body").prepend(canvas);
-            engine = new BABYLON.Engine(canvas, false, null, false);
-		    var $container = $("body");
+            var $container = $("body");
 		    $container
                 .append($("<div/>").attr("id", "zone_hud"))
                 .append($("<div/>").attr("id", "zone_health"))
                 .append($("<div/>").attr("id", "zone_possessions"))
                 .append($("<div/>").attr("id", "zone_joystick"));   // joystick last since it comes on top
+            $("body").append(canvas);
+            engine = new BABYLON.Engine(canvas, false, null, false);
 			var g = new Game(DATA, canvas, engine, $container)
 			.registerComponents(Components.ALL)
 			.registerTask(AddLightsTask)
 			.registerTask(BuildGridTask)
-			.registerTask(AddCameraTask)
 			.registerTask(BuildEnvironmentTask)
 			.registerTask(BuildTerrainTask)
 			.registerTask(BuildTreesTask)
@@ -68,13 +76,9 @@ require(["diy3d/game/src/Game", "diy3d/game/src/DATA", "diy3d/game/src/component
 			.registerProcessor(PlayerMovementProcessor)
 			.registerProcessor(CameraMatchPlayerProcessor)
 			.registerProcessor(BaddieMovementProcessor)
-			.registerProcessor(BaddieCollisionProcessor)
-			.registerProcessor(TerrainCollisionProcessor)
 			.registerProcessor(ObjectCollisionProcessor)
-			.registerProcessor(UpdateHuntProcessor)
-			.registerProcessor(UpdateHUDProcessor)
-			.registerProcessor(DoorCollisionProcessor);
-
+			.registerProcessor(BaddieCollisionProcessor)
+			.registerProcessor(UpdateHUDProcessor);
 			g.setListener(new Listener(g))
 			.start()
 			.on("loaded", function(){
