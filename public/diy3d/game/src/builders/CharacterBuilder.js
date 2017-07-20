@@ -17,7 +17,7 @@ define(["diy3d/game/src/utils/GridUtils", "diy3d/game/src/cache/AnimationCache"]
 		mesh.position = new BABYLON.Vector3(babylonPos.x, y, babylonPos.z);
 		meshComp.mesh = mesh;
 		strategyComp.move = obj.data.strategy.move;
-		scene.beginDirectAnimation(mesh, [AnimationCache.get("rot")], 0, 20, true);
+		//scene.beginDirectAnimation(mesh, [AnimationCache.get("rot")], 0, 20, true);
 	};
 
 	CharacterBuilder.addPlayer = function(pos, scene){
