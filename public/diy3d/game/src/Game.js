@@ -96,6 +96,7 @@ define(["diy3d/game/src/cache/MeshCache",
 			}
 			if(this.scene){
 				this.scene.render();
+				$("span.debug").text(this.engine.getFps().toFixed(0));
 			}
 			if(this.manager){
 				this.manager.update(this.scene.getLastFrameDuration());
