@@ -8,9 +8,13 @@ define([], function(){
 		this.canvas.width = 250;
 		this.canvas.height = 250;
 		this.ctx = this.canvas.getContext("2d");
-		this.$canvas = $(this.canvas);
+		this.$canvas = $(this.canvas).hide();
 		this.$canvas.addClass("hudCanvas");
 		$(selector).append(this.canvas);
+	};
+
+	HUD.prototype.show = function(){
+		this.$canvas.show();
 	};
 
 	HUD.prototype.destroy = function(){

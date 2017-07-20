@@ -2,7 +2,7 @@ define([], function(){
 	"use strict";
 
 	var Health = function(selector){
-		this.$el = $("<div/>").addClass("bg");
+		this.$el = $("<div/>").addClass("bg").hide();
 		this.$bar = $("<div/>").addClass("bar");
 		this.$inner = $("<div/>").addClass("inner");
 		this.$el.css({
@@ -38,6 +38,10 @@ define([], function(){
 		this.$bar.append(this.$inner);
 		$(selector).append(this.$el);
 		this.update(100);
+	};
+
+	Health.prototype.show = function(){
+		this.$el.show();
 	};
 
 	Health.prototype.destroy = function(){

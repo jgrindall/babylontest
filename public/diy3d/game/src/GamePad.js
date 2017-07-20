@@ -15,7 +15,12 @@ define([], function(){
             },
             color: 'purple'
         });
+        $(this.manager.get(0).el).hide();
         this.unpause();
+	};
+
+	GamePad.prototype.show = function(){
+		$(this.manager.get(0).el).show();
 	};
 
 	GamePad.prototype.pause = function(){
