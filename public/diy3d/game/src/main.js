@@ -74,7 +74,6 @@ require(["diy3d/game/src/Game", "diy3d/game/src/DATA", "diy3d/game/src/component
 			.registerTask(AddObjectsTask)
 			.registerTask(AddMusicTask)
 			.registerProcessor(PlayerMovementProcessor)
-			.registerProcessor(CameraMatchPlayerProcessor)
 			.registerProcessor(BaddieMovementProcessor)
 			.registerProcessor(ObjectCollisionProcessor)
 			.registerProcessor(BaddieCollisionProcessor)
