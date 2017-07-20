@@ -1,6 +1,8 @@
 define([], function(){
 	"use strict";
 
+	var TOL_SQR = SIZE*SIZE/4;
+
 	var ObjectCollisionProcessor = function(game){
 		this.game = game;
 		this.init();
@@ -11,16 +13,17 @@ define([], function(){
 	};
 
 	ObjectCollisionProcessor.prototype.update = function () {
-		var manager = this.game.manager, _this = this, toDeleteIds = [];
-		var playerMesh = manager.getComponentDataForEntity('MeshComponent', this.game.playerId).mesh;
-		_.each(this.game.objectIds, function(objectId){
-			var mesh0 = manager.getComponentDataForEntity('MeshComponent', objectId).mesh;
-			var dx = mesh0.position.x - playerMesh.position.x;
-			var dz = mesh0.position.z - playerMesh.position.z;
-			var dSqr = dx*dx + dz*dz;
-			if (dSqr < SIZE*SIZE/4) {
-				toDeleteIds.push(objectId);
+		var manager = this.game.manager, _this = this, toDeleteIds = [], playerPos, meshes;
+		playerPos = this.game.camera.position;
+		toDeleteIds = _.filter(this.game.objectIds, function(objectId){
+			var mesh, dx, dz;
+			mesh = manager.getComponentDataForEntity('MeshComponent', objectId).mesh;
+			dx = mesh.position.x - playerPos.x;
+			dz = mesh.position.z - playerPos.z;
+			if(dx < -SIZE || dx > SIZE || dz < -SIZE || dz > SIZE){
+				return false;
 			}
+			return (dx*dx + dz*dz < TOL_SQR);
 		});
 		if(toDeleteIds.length >= 1){
 			this.game.manager.listener.emit("objectCollect", {"toDeleteIds": toDeleteIds});
