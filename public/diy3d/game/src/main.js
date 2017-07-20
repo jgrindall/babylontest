@@ -2,8 +2,8 @@ requirejs.config({
 	"baseUrl": '/'
 });
 
-window.SIZE_I = 18;
-window.SIZE_J = 18;
+window.SIZE_I = 16;
+window.SIZE_J = 16;
 window.SIZE = 10;
 
 require(["diy3d/game/src/Game", "diy3d/game/src/DATA", "diy3d/game/src/components/Components", "diy3d/game/src/tasks/BuildTerrainTask",
@@ -52,6 +52,7 @@ require(["diy3d/game/src/Game", "diy3d/game/src/DATA", "diy3d/game/src/component
             canvas.width = 1024;
             canvas.height = 768;
             $(canvas).attr("id", "gameCanvas");
+            $("body").append("<span class='debug' style='position:fixed;z-index:1000;top:0;right:0;'></span>");
             var $container = $("body");
 		    $container
                 .append($("<div/>").attr("id", "zone_hud"))
@@ -75,9 +76,8 @@ require(["diy3d/game/src/Game", "diy3d/game/src/DATA", "diy3d/game/src/component
 			.registerTask(AddMusicTask)
 			.registerProcessor(PlayerMovementProcessor)
 			.registerProcessor(BaddieMovementProcessor)
-			.registerProcessor(ObjectCollisionProcessor)
 			.registerProcessor(BaddieCollisionProcessor)
-			.registerProcessor(UpdateHUDProcessor);
+			.registerProcessor(ObjectCollisionProcessor);
 			g.setListener(new Listener(g))
 			.start()
 			.on("loaded", function(){
