@@ -7,11 +7,11 @@ define(["diy3d/game/src/Textures", "diy3d/game/src/utils/MeshUtils", "diy3d/game
 	"use strict";
 
 	var _hasFire = function(data){
-	    return 1;
+	    return 0;
     };
 
     var _hasWater = function(data){
-        return 1;
+        return 0;
     };
 
 	var MaterialsCache = function(scene){
