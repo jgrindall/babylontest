@@ -40,6 +40,14 @@ define([], function(){
 		}
 	});
 
+	data.push({
+		"type":"water",
+		"data":{
+			"texture": "water",
+			"position":[2, 2]
+		}
+	});
+
 
 	for(i = 8; i < 12; i++){
 		for(j = 8; j < 12; j++){

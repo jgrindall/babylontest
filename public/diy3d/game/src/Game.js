@@ -157,6 +157,8 @@ define(["diy3d/game/src/cache/MeshCache",
                 this.possessions.destroy();
                 this.possessions = null;
             }
+            this.queue.clear();
+            this.queue = null;
             this.materialsCache.destroy();
             this.meshCache.clear();
 			this.manager.listener = null;

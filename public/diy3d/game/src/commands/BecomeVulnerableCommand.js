@@ -6,9 +6,14 @@ define([], function(){
 	};
 
 	BecomeVulnerableCommand.prototype.exec = function(){
-		var hComp = this.game.manager.getComponentDataForEntity('HealthComponent', this.game.playerId);
-		hComp.isRegenerating = false;
-		this.game.health.updateRegnerating(false);
+		var hComp;
+		if(typeof this.game.playerId !== "undefined" && this.game.playerId !== null){
+			hComp = this.game.manager.getComponentDataForEntity('HealthComponent', this.game.playerId);
+			if(hComp){
+				hComp.isRegenerating = false;
+				this.game.health.updateRegnerating(false);
+			}
+		}
 	};
 
 	return BecomeVulnerableCommand;
