@@ -16,6 +16,7 @@ define(["diy3d/game/src/cache/MeshCache",
 			this.engine = engine;
 			this.scene = new BABYLON.Scene(this.engine);
 			this.scene.collisionsEnabled = true;
+			this.scene.clearColor = new BABYLON.Color4(1,1,1,1);
             this.onResizeHandler = this.onResize.bind(this);
             this.camera = new BABYLON.FreeCamera("FreeCamera", new BABYLON.Vector3(0, 0, 0), this.scene);
 			this._components = 			[];
@@ -24,6 +25,7 @@ define(["diy3d/game/src/cache/MeshCache",
 			this.manager = 				new EntityManager();
 			this.queue = 				new CommandQueue();
             $(window).on('resize', this.onResizeHandler);
+            this.engine.resize();
 		};
 
         Game.prototype.onResize = function(){
@@ -87,18 +89,32 @@ define(["diy3d/game/src/cache/MeshCache",
 		Game.prototype.render = function(){
 		    this._RENDERCOUNT++;
 		    if(this._RENDERCOUNT === 20){
-                this.trigger("loaded");
+                this.loaded();
             }
 			if(this._paused){
 				return;
 			}
 			if(this.scene){
-				console.log("r");
 				this.scene.render();
 			}
 			if(this.manager){
 				this.manager.update(this.scene.getLastFrameDuration());
 			}
+		};
+
+		Game.prototype.loaded = function(){
+			if(this.hud) {
+                this.hud.show();
+            }
+            if(this.gamePad) {
+                this.gamePad.show();
+            }
+            if(this.health){
+                this.health.show();
+            }
+            if(this.possessions){
+                this.possessions.show();
+            }
 		};
 
 		Game.prototype.executeTask = function(task){
