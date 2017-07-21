@@ -36,7 +36,7 @@ define(["diy3d/game/src/Textures", "diy3d/game/src/utils/MeshUtils", "diy3d/game
 
     MaterialsCache.prototype.addFire = function(){
         var fireTexture, fireMaterial;
-        fireTexture = new BABYLON.FireProceduralTexture("fire", 4, this.scene);
+        fireTexture = new BABYLON.FireProceduralTexture("fire", 2, this.scene);
         fireTexture.speed = new BABYLON.Vector2(10, 8);
         fireMaterial = new BABYLON.StandardMaterial("fire", this.scene);
         fireMaterial.diffuseTexture = fireTexture;

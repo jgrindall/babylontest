@@ -12,9 +12,17 @@
 		<script src='/diy3d/game/lib/babylon.custom.js'></script>
         <script src='https://cdnjs.cloudflare.com/ajax/libs/backbone.js/1.3.3/backbone-min.js'></script>
         <script src='/diy3d/game/lib/babylon.fireMaterial.min.js'></script>
+        <script src="/diy3d/game/lib/VirtualJoystick.js"></script>
 
         <style>
-            #renderCanvas{
+        body{
+          margin: 0;
+          padding:0;
+        }
+            #gameCanvas{
+              position: absolute;
+              top:0;
+              left:0;
                 width:100%;
                 height:100%;
             }
@@ -28,14 +36,18 @@
               position: absolute;
                 top:0px;
                 right:0px;
-                width:200px;
-                height:200px;
+                width:250px;
+                height:250px;
             }
 
-			#zone_joystick{
-                position: absolute;
-                bottom:120px;
-                right:120px;
+			     #zone_joystick{
+                position: absolute !important;
+                bottom:10px;
+                right:10px;
+                width:200px;
+                height:200px;
+                background: rgba(200,10,10,0.2);
+                z-index: 4;
             }
             p.pos, p.dir{
                 font-size:smaller;

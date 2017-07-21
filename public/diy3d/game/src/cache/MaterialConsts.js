@@ -17,7 +17,7 @@ define([], function(){
 		"LTBLUE":LTBLUE,
 		"WHITE":WHITE,
 		"WATER" : [
-			BLUE2,
+			WHITE,
 			LTBLUE,
 			BLUE4,
 			WHITE,

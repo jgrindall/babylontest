@@ -126,6 +126,7 @@ define(["diy3d/game/src/cache/MeshCache",
 			_.each(this._tasks,                 this.executeTask.bind(this));
 			_.each(this._processorClasses,      this.addProcessor.bind(this));
 			this.renderFn = this.render.bind(this);
+			 var fireTexture = new BABYLON.FireProceduralTexture("fire", 256, this.scene);
 			this.engine.runRenderLoop(this.renderFn);
 		};
 

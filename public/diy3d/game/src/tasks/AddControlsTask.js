@@ -6,8 +6,8 @@ define(["diy3d/game/src/HUD", "diy3d/game/src/GamePad", "diy3d/game/src/Possessi
 		game.hud = new HUD("#zone_hud");
         game.health = new Health("#zone_health");
         game.possessions = new Possessions(game.manager, game.materialsCache, "#zone_possessions");
-        game.gamePad = new GamePad("zone_joystick");
-        GamePadUtils.linkGamePadToId(game.manager, game.gamePad, game.playerId);
+        game.gamePad = new GamePad("#zone_joystick");
+        //GamePadUtils.linkGamePadToId(game.manager, game.gamePad, game.playerId);
 	};
 
 	return AddControlsTask;
