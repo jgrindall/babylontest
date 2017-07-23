@@ -2,8 +2,8 @@ requirejs.config({
 	"baseUrl": '/'
 });
 
-window.SIZE_I = 48;
-window.SIZE_J = 48;
+window.SIZE_I = 18;
+window.SIZE_J = 18;
 window.SIZE = 10;
 
 require(["diy3d/game/src/Game", "diy3d/game/src/DATA", "diy3d/game/src/components/Components", "diy3d/game/src/tasks/BuildTerrainTask",

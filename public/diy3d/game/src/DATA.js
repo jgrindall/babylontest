@@ -41,19 +41,15 @@ define([], function(){
 	});
 
 
-	for(i = 8; i < 42; i++){
-		for(j = 8; j < 42; j++){
-			
-
+	for(i = 8; i < 12; i++){
+		for(j = 8; j < 12; j++){
 			data.push({
-				"type":"object",
+				"type":"tree",
 				"data":{
-					"texture": "key",
-					"position":[i + 1, j]
+					"texture": "tree",
+					"position":[i, j]
 				}
 			});
-
-
 		}
 	}
 
@@ -114,7 +110,7 @@ define([], function(){
 			"position":[0, 3, 0],
 			"diffuse":[0.6, 0.6, 0.6],
 			"groundColor": [0.8, 0.8, 0.8],
-			"intensity": 1
+			"intensity": 0.7
 		}
 	];
 
