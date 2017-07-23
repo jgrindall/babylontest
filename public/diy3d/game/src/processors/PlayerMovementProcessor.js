@@ -12,32 +12,33 @@ define([], function(){
 	};
 
 	PlayerMovementProcessor.prototype.update = function () {
-	    var speedData, sf, manager = this.game.manager, data, meshComp, speedComp, dx, dz;
+	    var speedData, manager = this.game.manager, data, meshComp, speedComp, dx, dz;
 	    data = this.gamePad.getData();
 		meshComp = manager.getComponentDataForEntity('MeshComponent', this.game.playerId);
 		speedComp = manager.getComponentDataForEntity('SpeedComponent', this.game.playerId);
 	    speedComp.ang_speed = 0;
 	    speedComp.speed = 0;
+	    var scale = 60/this.game.engine.getFps();
 
 	    if(Math.abs(data.dy) < 0.5 && data.dx > 0.05){
 	    	// pure right
-	    	speedComp.ang_speed = 1;
+	    	speedComp.ang_speed = 1*scale;
 	    	speedComp.speed = 0;
 	    }
 	    else if(Math.abs(data.dy) < 0.5 && data.dx < -0.05){
 	    	// pure left
-	    	speedComp.ang_speed = -1;
+	    	speedComp.ang_speed = -1*scale;
 	    	speedComp.speed = 0;
 	    }
 	    else if(Math.abs(data.dx) < 0.25 && data.dy > 0.25){
 	    	// pure up
 	    	speedComp.ang_speed = 0;
-	    	speedComp.speed = -1;
+	    	speedComp.speed = -1*scale;
 	    }
 	    else if(Math.abs(data.dx) < 0.25 && data.dy < -0.25){
 	    	// pure down
 	    	speedComp.ang_speed = 0;
-	    	speedComp.speed = 1;
+	    	speedComp.speed = 1*scale;
 	    }
 		speedComp.angle += speedComp.ang_speed * 0.025;
 		meshComp.mesh.rotationQuaternion = BABYLON.Quaternion.RotationAxis(new BABYLON.Vector3(0, 1, 0), speedComp.angle);
