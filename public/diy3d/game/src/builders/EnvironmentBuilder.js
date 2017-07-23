@@ -91,7 +91,7 @@ define(["diy3d/game/src/utils/GeomUtils", "diy3d/game/src/utils/ImageUtils"],
 		addFire: function(scene, quads, meshCache, materialsCache){
 			var TOP_LEFT = {"x":0, "z":SIZE_I * SIZE};
 			_.each(quads, function(quad){
-				var plane = meshCache.getFire(scene, [quad[2], quad[3]]);
+				var particleSystem, plane = meshCache.getFire(scene, [quad[2], quad[3]]);
 				if(quad[3] < quad[2]){
 					plane.rotate(new BABYLON.Vector3(0, 0, 1), Math.PI/2, BABYLON.Space.Local);
 				}
@@ -99,6 +99,27 @@ define(["diy3d/game/src/utils/GeomUtils", "diy3d/game/src/utils/ImageUtils"],
 				plane.position.z = TOP_LEFT.z - (quad[0] + quad[3]/2)*SIZE;
 				plane.position.y = 0.001;
 				plane.freezeWorldMatrix();
+				particleSystem = new BABYLON.ParticleSystem("particles", 256, scene);
+			    particleSystem.particleTexture = new BABYLON.Texture("/images/diy3d/assets/fire.png", scene);
+			    particleSystem.emitter = plane;
+			    particleSystem.color1 = new BABYLON.Color4(1.1, 0.2, 0.2, 1.0);
+    			particleSystem.color2 = new BABYLON.Color4(1.1, 0.1, 0.1, 1.0);
+    			particleSystem.colorDead = new BABYLON.Color4(0, 0, 0.0, 1.0);
+			    particleSystem.minEmitBox = new BABYLON.Vector3(0, 0, 0);
+			    particleSystem.maxEmitBox = new BABYLON.Vector3(quad[2]*SIZE/2, 0, quad[3]*SIZE/2);
+			    particleSystem.minSize = 0.1;
+			    particleSystem.maxSize = 0.6;
+			    particleSystem.minLifeTime = 0.25;
+			    particleSystem.maxLifeTime = 0.75;
+			    particleSystem.emitRate = 1000;
+			    particleSystem.blendMode = BABYLON.ParticleSystem.BLENDMODE_ONEONE;
+			    particleSystem.gravity = new BABYLON.Vector3(0, -10, 0);
+			    particleSystem.direction1 = new BABYLON.Vector3(-7, 8, 3);
+			    particleSystem.direction2 = new BABYLON.Vector3(7, 8, -3);
+			    particleSystem.minEmitPower = 1;
+			    particleSystem.maxEmitPower = 3;
+			    particleSystem.updateSpeed = 0.005;
+			    particleSystem.start();
 			});
 		}
 	};
