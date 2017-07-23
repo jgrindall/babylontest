@@ -1,5 +1,7 @@
-define([], function(){
+define(["diy3d/game/src/utils/GridUtils"], function(GridUtils){
 	"use strict";
+
+	var SIZESQR = SIZE*SIZE/4;
 
 	var ObjectCollisionProcessor = function(game){
 		this.game = game;
@@ -11,17 +13,31 @@ define([], function(){
 	};
 
 	ObjectCollisionProcessor.prototype.update = function () {
-		var manager = this.game.manager, _this = this, toDeleteIds = [];
-		var playerMesh = manager.getComponentDataForEntity('MeshComponent', this.game.playerId).mesh;
-		_.each(this.game.objectIds, function(objectId){
-			var mesh0 = manager.getComponentDataForEntity('MeshComponent', objectId).mesh;
-			var dx = mesh0.position.x - playerMesh.position.x;
-			var dz = mesh0.position.z - playerMesh.position.z;
-			var dSqr = dx*dx + dz*dz;
-			if (dSqr < SIZE*SIZE/4) {
-				toDeleteIds.push(objectId);
+		var manager = this.game.manager, toDeleteIds = [], playerMesh, playerPos, playerPosIJ, i, ids, id, len, mesh, dx, dz, dSqr;
+		playerMesh = manager.getComponentDataForEntity('MeshComponent', this.game.playerId).mesh;
+		if(manager.getComponentDataForEntity('SpeedComponent', this.game.playerId).speed === 0){
+			return;
+		}
+		playerPos = playerMesh.position;
+		playerPosIJ = GridUtils.babylonToIJ(playerMesh.position);
+		if(this.game.grid.grid[playerPosIJ.i][playerPosIJ.j].type !== "object"){
+			return;
+		}
+		ids = this.game.objectIds;
+		len = ids.length;
+		for(i = 0; i < len; i++){
+			id = ids[i];
+			mesh = manager.getComponentDataForEntity('MeshComponent', id).mesh;
+			dx = mesh.position.x - playerPos.x;
+			dz = mesh.position.z - playerPos.z;
+			if(dx < -SIZE || dx > SIZE || dz < -SIZE || dz > SIZE){
+				continue;
 			}
-		});
+			dSqr = dx*dx + dz*dz;
+			if (dSqr < SIZESQR) {
+				toDeleteIds.push(id);
+			}
+		}
 		if(toDeleteIds.length >= 1){
 			this.game.manager.listener.emit("objectCollect", {"toDeleteIds": toDeleteIds});
 		}

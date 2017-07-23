@@ -9,11 +9,6 @@ define([], function(){
 	var PlayerMovementProcessor = function(game){
 		this.game = game;
 		this.gamePad = this.game.gamePad;
-		this.init();
-	};
-
-	PlayerMovementProcessor.prototype.init = function(){
-		//
 	};
 
 	PlayerMovementProcessor.prototype.update = function () {
@@ -21,8 +16,6 @@ define([], function(){
 	    data = this.gamePad.getData();
 		meshComp = manager.getComponentDataForEntity('MeshComponent', this.game.playerId);
 		speedComp = manager.getComponentDataForEntity('SpeedComponent', this.game.playerId);
-	    console.log(data.dx, data.dy);
-
 	    speedComp.ang_speed = 0;
 	    speedComp.speed = 0;
 

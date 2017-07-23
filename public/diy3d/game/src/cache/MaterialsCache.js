@@ -42,7 +42,7 @@ define(["diy3d/game/src/Textures", "diy3d/game/src/utils/MeshUtils", "diy3d/game
         fireMaterial.diffuseTexture = fireTexture;
         fireMaterial.opacityTexture = fireTexture;
         fireMaterial.ambientColor = new BABYLON.Color4(0.95, 0.1, 0.2, 0.4);
-        //fireMaterial.freeze();
+        fireMaterial.freeze();
         this.materials["fire"] = fireMaterial;
     };
 
@@ -55,7 +55,7 @@ define(["diy3d/game/src/Textures", "diy3d/game/src/utils/MeshUtils", "diy3d/game
         waterMaterial.bumpTexture = waterTexture;
         waterTexture.speed = new BABYLON.Vector2(0.15, 0.15);
         waterTexture.fireColors = MaterialConsts.WATER;
-        //waterMaterial.freeze();
+        waterMaterial.freeze();
         this.materials["water"] = waterMaterial;
     };
 

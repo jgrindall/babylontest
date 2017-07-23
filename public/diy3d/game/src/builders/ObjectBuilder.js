@@ -9,10 +9,8 @@ define(["diy3d/game/src/utils/GridUtils"],
 	};
 
 	ObjectBuilder.addObject = function(pos, scene, texture, meshCache){
-		var y = SIZE/4, container, mesh, babylonPos, mat;
-		babylonPos = GridUtils.ijToBabylon(pos[0], pos[1]);
-		mesh = meshCache.getObject(scene, texture);
-		mesh.position = new BABYLON.Vector3(babylonPos.x, y, babylonPos.z);
+		var mesh = meshCache.getObject(scene, texture);
+		mesh.position = GridUtils.ijToBabylon(pos[0], pos[1], SIZE/4);
 		return mesh;
 	};
 

@@ -12,6 +12,7 @@ define(["diy3d/game/src/cache/MeshCache",
 		    this._paused = false;
             this._RENDERCOUNT = 0;
 			this.data = data;
+			this.scale = data.scale || 10;
 			this.$container = $container;
 			this.engine = engine;
 			this.scene = new BABYLON.Scene(this.engine);
@@ -19,6 +20,7 @@ define(["diy3d/game/src/cache/MeshCache",
 			this.scene.clearColor = new BABYLON.Color4(1,1,1,1);
             this.onResizeHandler = this.onResize.bind(this);
             this.camera = new BABYLON.FreeCamera("FreeCamera", new BABYLON.Vector3(0, 0, 0), this.scene);
+            this.camera.fov = 0.5;
 			this._components = 			[];
 			this._processorClasses = 	[];
 			this._tasks = 				[];
@@ -88,6 +90,7 @@ define(["diy3d/game/src/cache/MeshCache",
 
 		Game.prototype.render = function(){
 		    this._RENDERCOUNT++;
+		    $("span").text(this.engine.getFps().toFixed(0));
 		    if(this._RENDERCOUNT === 20){
                 this.loaded();
             }
@@ -126,7 +129,6 @@ define(["diy3d/game/src/cache/MeshCache",
 			_.each(this._tasks,                 this.executeTask.bind(this));
 			_.each(this._processorClasses,      this.addProcessor.bind(this));
 			this.renderFn = this.render.bind(this);
-			 var fireTexture = new BABYLON.FireProceduralTexture("fire", 256, this.scene);
 			this.engine.runRenderLoop(this.renderFn);
 		};
 
