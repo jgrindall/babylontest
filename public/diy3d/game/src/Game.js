@@ -21,7 +21,7 @@ define(["diy3d/game/src/cache/MeshCache",
             this.onResizeHandler = this.onResize.bind(this);
             this.camera = new BABYLON.FreeCamera("FreeCamera", new BABYLON.Vector3(0, 0, 0), this.scene);
             this.camera.fov = 0.5;
-			this._components = 			[];
+            this._components = 			[];
 			this._processorClasses = 	[];
 			this._tasks = 				[];
 			this.manager = 				new EntityManager();

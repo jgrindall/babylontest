@@ -92,8 +92,10 @@ define(["diy3d/game/src/utils/GridUtils"], function(GridUtils){
 	};
 
 	BaddieMovementProcessor.prototype.addPath = function (sComp, meshComp) {
-		var playerPos = this.game.manager.getComponentDataForEntity('MeshComponent', this.game.playerId).mesh.position;
-		var baddiePos = GridUtils.babylonToIJ(meshComp.mesh.position);
+		var playerPos, baddiePos, playerPosIJ;
+		playerPos = this.game.manager.getComponentDataForEntity('MeshComponent', this.game.playerId).mesh.position;
+		playerPosIJ = GridUtils.babylonToIJ(playerPos);
+		baddiePos = GridUtils.babylonToIJ(meshComp.mesh.position);
 		if(sComp.move === "north-south"){
 			sComp.vel = {'x':0, 'z':1};
 		}
@@ -103,7 +105,7 @@ define(["diy3d/game/src/utils/GridUtils"], function(GridUtils){
 		else{
 			sComp.vel = {'x':0, 'z':0};
 		}
-		sComp.path = GridUtils.getPath(sComp.move, [baddiePos.i, baddiePos.j], this.game.grid.solid, [2, 13]);
+		sComp.path = GridUtils.getPath(sComp.move, [baddiePos.i, baddiePos.j], this.game.grid.solid, [playerPosIJ.i, playerPosIJ.j]);
 	};
 
 	BaddieMovementProcessor.prototype.updateBaddie = function (id) {

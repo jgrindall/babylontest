@@ -33,6 +33,20 @@ define([], function(){
 	});
 
 	data.push({
+		"type":"baddie",
+		"data":{
+			"texture":"baddie",
+			"position":[
+				1,
+				1
+			],
+			"strategy":{
+				"move":"west-east"
+			}
+		}
+	});
+
+	data.push({
 		"type":"wall",
 		"data":{
 			"texture": Math.random() < 0.5 ? "bricks" : "crate",

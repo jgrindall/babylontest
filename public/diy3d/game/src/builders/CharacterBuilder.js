@@ -8,7 +8,7 @@ define(["diy3d/game/src/utils/GridUtils", "diy3d/game/src/cache/AnimationCache"]
 
 	};
 
-	CharacterBuilder.addBaddie = function(pos, scene, meshCache, manager, id, obj, grid, playerPos){
+	CharacterBuilder.addBaddie = function(pos, scene, meshCache, manager, id, obj, grid){
 		var y = SIZE/2, mesh, texture, meshComp, strategyComp;
 		meshComp = manager.getComponentDataForEntity('MeshComponent', id);
 		strategyComp = manager.getComponentDataForEntity('BaddieStrategyComponent', id);
