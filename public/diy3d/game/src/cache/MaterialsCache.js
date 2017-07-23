@@ -53,7 +53,7 @@ define(["diy3d/game/src/Textures", "diy3d/game/src/utils/MeshUtils", "diy3d/game
         waterMaterial.diffuseColor = MaterialConsts.BLUE1;
         waterMaterial.opacityTexture = waterTexture;
         waterMaterial.bumpTexture = waterTexture;
-        waterTexture.speed = new BABYLON.Vector2(0.15, 0.15);
+        waterTexture.speed = new BABYLON.Vector2(0.2, 0.2);
         waterTexture.fireColors = MaterialConsts.WATER;
         waterMaterial.freeze();
         this.materials["water"] = waterMaterial;
