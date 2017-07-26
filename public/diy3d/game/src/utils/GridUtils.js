@@ -3,6 +3,9 @@ define([], function(){
 
 	"use strict";
 
+	var TOP_LEFT = {"x":0, "z":SIZE_I * SIZE};
+
+	var SIZE2 = SIZE/2;
 
 	var GridUtils = {};
 
@@ -68,19 +71,14 @@ define([], function(){
 		}
 	};
 
-	GridUtils.ijToBabylon = function(i, j){
-		var topLeft = {"x":0, "z":SIZE_I * SIZE};
-		return {
-			x:topLeft.x + j*SIZE + SIZE/2,
-			z:topLeft.z - i*SIZE - SIZE/2
-		};
+	GridUtils.ijToBabylon = function(i, j, y){
+		return new BABYLON.Vector3(TOP_LEFT.x + j*SIZE + SIZE2, y, TOP_LEFT.z - i*SIZE - SIZE2);
 	};
 
 	GridUtils.babylonToIJ = function(pos){
-		var topLeft = {"x":0, "z":SIZE_I * SIZE};
 		return {
 			j:Math.floor(pos.x / SIZE),
-			i:Math.floor((topLeft.z - pos.z) / SIZE)
+			i:Math.floor((TOP_LEFT.z - pos.z) / SIZE)
 		};
 	};
 

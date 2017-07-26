@@ -1,32 +1,33 @@
 define([], function(){
 	"use strict";
 
+	var SIZESQR = SIZE*SIZE/4;
+
 	var BaddieCollisionProcessor = function(game){
 		this.game = game;
-		this.init();
+		this.manager = game.manager;
+		this.playerId = this.game.playerId;
 	};
 
-	BaddieCollisionProcessor.prototype.init = function(){
-		//
-	};
-
-	BaddieCollisionProcessor.prototype.getFirstBaddieHit = function(playerPos){
-		var manager = this.game.manager, DSQR = SIZE*SIZE/4;
+	BaddieCollisionProcessor.prototype._getFirstBaddieHit = function(playerPos){
+		var manager = this.game.manager;
 		return _.find(this.game.baddieIds, function(id){
-			var mesh0 = manager.getComponentDataForEntity('MeshComponent', id).mesh;
-			var dx = mesh0.position.x - playerPos.x;
-			var dz = mesh0.position.z - playerPos.z;
-			return dx*dx + dz*dz < DSQR;
+			var mesh, dx, dz;
+			mesh = manager.getComponentDataForEntity('MeshComponent', id).mesh;
+			dx = mesh.position.x - playerPos.x;
+			dz = mesh.position.z - playerPos.z;
+			return dx*dx + dz*dz < SIZESQR;
 		});
 	};
 
 	BaddieCollisionProcessor.prototype.update = function () {
-		var health = this.game.manager.getComponentDataForEntity('HealthComponent', this.game.playerId);
+		var health, playerPos, firstBaddieHit;
+		health = this.manager.getComponentDataForEntity('HealthComponent', this.playerId);
 		if(health.isRegenerating){
 			return;
 		}
-		var playerPos = this.game.manager.getComponentDataForEntity('MeshComponent', this.game.playerId).mesh.position;
-		var firstBaddieHit = this.getFirstBaddieHit(playerPos);
+		playerPos = this.manager.getComponentDataForEntity('MeshComponent', this.playerId).mesh.position;
+		firstBaddieHit = this._getFirstBaddieHit(playerPos);
 		if(firstBaddieHit){
 			this.game.manager.listener.emit("baddieCollision", {"firstBaddieHit": firstBaddieHit});
 		}

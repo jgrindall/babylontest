@@ -9,10 +9,8 @@ define(["diy3d/game/src/utils/GridUtils"],
 	};
 
 	TreeBuilder.addTree = function(pos, scene, texture, meshCache){
-		var y = SIZE/2, mesh, babylonPos, mat;
-		babylonPos = GridUtils.ijToBabylon(pos[0], pos[1]);
-		mesh = meshCache.getTree(scene, texture);
-		mesh.position = new BABYLON.Vector3(babylonPos.x, y, babylonPos.z);
+		var mesh = meshCache.getTree(scene, texture);
+		mesh.position = GridUtils.ijToBabylon(pos[0], pos[1], SIZE/2);
 		return mesh;
 	};
 
