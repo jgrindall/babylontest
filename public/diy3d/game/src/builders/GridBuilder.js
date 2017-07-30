@@ -33,7 +33,8 @@ define(["diy3d/game/src/utils/GridUtils", "diy3d/game/src/utils/GreedyMeshAlgo"]
 		var g = {};
 		g.grid = GridUtils.arrayToGrid(data);
 		GridUtils.addDirectionsOfWalls(g.grid);
-		GridUtils.extendWalls(g.grid);
+		console.log(g.grid);
+		//GridUtils.extendWalls(g.grid);
 		GridBuilder.update(g);
 		return g;
 	};

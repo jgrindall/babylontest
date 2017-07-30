@@ -1,24 +1,172 @@
-define([], function(){
+define(["diy3d/game/src/utils/GridUtils"], function(GridUtils){
 
 	"use strict";
 
-	var FRICTION = 0.7;
-
-	var PI2 = 2*Math.PI;
-
-	var PIOVER2 = Math.PI/2;
-
-	var ALPHA = Math.PI * 35/180;
-
-	var MIN_RADIUS = 0.2;
-
-	var ANG_SPEED = 0.025;
+	var FRICTION = 		0.7;
+	var PI2 = 			2*Math.PI;
+	var PIOVER2 = 		Math.PI/2;
+	var ALPHA = 		Math.PI * 35/180;
+	var MIN_RADIUS = 	0.2;
+	var ANG_SPEED = 	0.025;
 
 	var PlayerMovementProcessor = function(game){
 		this.game = game;
 		this.playerId = this.game.playerId;
 		this.camera = this.game.camera;
 		this.gamePad = this.game.gamePad;
+		this.data = this.game.grid.solid;
+	};
+
+	PlayerMovementProcessor.prototype.isFull = function(i, j){
+		if(i < 0 || i >= SIZE_I || j < 0 || j >= SIZE_J){
+			return true;
+		}
+		return (this.data[i][j] === 1);
+	};
+
+	PlayerMovementProcessor.prototype.resolve = function(pos, movex, movez){
+		var tileI, tileJ, dx, dy, n, x, w, e, sw, nw, sw, se, left, top, isFull, newPos, newPosIJ;
+		var PLAYER_SIZE = SIZE/4;
+		newPos = {
+			x: pos.x + movex,
+			z: pos.z + movez,
+		};
+		var ij = GridUtils.babylonToIJ(newPos);
+		var i = ij.i;
+		var j = ij.j;
+		dx = pos.x - j*SIZE;
+		dy = pos.z - i*SIZE;
+		n = isFull(i - 1, 	j);
+		s = isFull(i + 1, 	j);
+		w = isFull(i, 		j - 1);
+		e = isFull(i, 		j + 1);
+		nw = isFull(i - 1, 	j - 1);
+		ne = isFull(i - 1, 	j + 1);
+		sw = isFull(i + 1, 	j - 1);
+		se = isFull(i + 1, 	j + 1);
+		if(dx >= SIZE - PLAYER_SIZE/2){
+			left = 2;
+		}
+		else if(dx > PLAYER_SIZE/2){
+			left = 1;
+		}
+		if(dy >= SIZE - PLAYER_SIZE/2){
+			top = 2;
+		}
+		else if(dy > PLAYER_SIZE/2){
+			top = 1;
+		}
+		if(top === 0 && left === 1 && n){
+			//b
+			dy = PLAYER_SIZE/2 + EPS;
+		}
+		else if(top === 1 && left === 2 && e){
+			//e
+			dx = SIZE - PLAYER_SIZE/2 - EPS;
+		}
+		else if(top === 2 && left === 1 && s){
+			//h
+			dy = SIZE - PLAYER_SIZE/2 - EPS;
+		}
+		else if(top === 1 && left === 0 && w){
+			//d
+			dx = PLAYER_SIZE/2 + EPS;
+		}
+		else if(top === 0 && left === 0){
+			//a
+			if((n && !nw && !w) || (n && nw && !w)){
+				dy = PLAYER_SIZE/2 + EPS;
+			}
+			else if((!n && !nw && w) || (!n && nw && w)){
+				dx = PLAYER_SIZE/2 + EPS;
+			}
+			else if((n && !nw && w) || (n && nw && w)){
+				dy = PLAYER_SIZE/2 + EPS;
+				dx = PLAYER_SIZE/2 + EPS;
+			}
+			else if(!n && nw && !w){
+				if(dx >= dy){
+					dx = PLAYER_SIZE/2 + EPS;
+				}
+				else{
+					dy = PLAYER_SIZE/2 + EPS;
+				}
+			}
+		}
+		else if(top === 0 && left === 2){
+			//c
+			if((n && !ne && !e) || (n && ne && !e)){
+				dy = PLAYER_SIZE/2 + EPS;
+			}
+			else if((!n && !ne && e) || (!n && ne && e)){
+				dx = SIZE - PLAYER_SIZE/2 - EPS;
+			}
+			else if((n && !ne && e) || (n && ne && e)){
+				dy = PLAYER_SIZE/2 + EPS;
+				dx = SIZE - PLAYER_SIZE/2 - EPS;
+			}
+			else if(!n && ne && !e){
+				if(dx + dy >= SIZE){
+					dx = SIZE - PLAYER_SIZE/2 - EPS;
+				}
+				else{
+					dy = PLAYER_SIZE/2 + EPS;
+				}
+			}
+		}
+		else if(top === 2 && left === 0){
+			//g
+			if((s && !sw && !w) || (s && sw && !w)){
+				dy = SIZE - PLAYER_SIZE/2 - EPS;
+			}
+			else if((!s && !sw && w) || (!s && sw && w)){
+				dx = PLAYER_SIZE/2 + EPS;
+			}
+			else if((s && !sw && w) || (s && sw && w)){
+				dy = SIZE - PLAYER_SIZE/2 - EPS;
+				dx = PLAYER_SIZE/2 + EPS;
+			}
+			else if(!s && sw && !w){
+				if(dx + dy <= SIZE){
+					dx = PLAYER_SIZE/2 + EPS;
+				}
+				else{
+					dy = SIZE - PLAYER_SIZE/2 - EPS;
+				}
+			}
+		}
+		else if(top === 2 && left === 2){
+			//i
+			if((s && !se && !e) || (s && se && !e)){
+				dy = SIZE - PLAYER_SIZE/2 - EPS;
+			}
+			else if((!s && !se && e) || (!s && se && e)){
+				dx = SIZE - PLAYER_SIZE/2 - EPS;
+			}
+			else if((s && !se && e) || (s && se && e)){
+				dy = SIZE - PLAYER_SIZE/2 - EPS;
+				dx = SIZE - PLAYER_SIZE/2 - EPS;
+			}
+			else if(!s && se && !e){
+				if(dx <= dy){
+					dx = SIZE - PLAYER_SIZE/2 - EPS;
+				}
+				else{
+					dy = SIZE - PLAYER_SIZE/2 - EPS;
+				}
+			}
+		}
+		return {
+			x: dx/SIZE + tileJ,
+			z: dy/SIZE + tileI
+		};
+		*/
+	};
+
+	PlayerMovementProcessor.prototype.move = function(mesh, dx, dz){
+		var p = this.resolve(mesh.position, dx, dz);
+		mesh.position.x = p.x;
+		mesh.position.z = p.z;
 	};
 
 	PlayerMovementProcessor.prototype.update = function () {
@@ -100,11 +248,11 @@ define([], function(){
 		speedComp.angle += speedComp.ang_speed * ANG_SPEED;
 		quat = BABYLON.Quaternion.RotationAxis(new BABYLON.Vector3(0, 1, 0), speedComp.angle);
 		meshComp.mesh.rotationQuaternion = quat;
+		this.camera.rotationQuaternion = quat;
 		dx = speedComp.speed*Math.sin(speedComp.angle);
 		dz = speedComp.speed*Math.cos(speedComp.angle);
-		meshComp.mesh.moveWithCollisions(new BABYLON.Vector3(dx, 0, dz));
+		this.move(meshComp.mesh, dx, dz);
 		this.camera.position = meshComp.mesh.position;
-		this.camera.rotationQuaternion = quat;
 	};
 
 	return PlayerMovementProcessor;

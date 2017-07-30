@@ -82,49 +82,15 @@ define([], function(){
 		};
 	};
 
-	GridUtils.extendWalls = function(a){
-		var _i, _j, SIZE_I = a.length, SIZE_J = a[0].length;
-		var addInDir = function(dir, _i, _j, di, dj){
-			var steps = 1, wallCheck, walls = a[_i][_j].data.walls;
-			if(walls[dir] >= 1){
-				while(_j + dj*steps < SIZE_J && _i + di*steps < SIZE_I){
-					wallCheck = a[_i + di][_j + dj].data.walls;
-					if(wallCheck[dir] >= 1 && a[_i][_j].data.texture === a[_i + di*steps][_j + dj*steps].data.texture){
-						walls[dir]++;
-						wallCheck[dir]--;
-					}
-					else{
-						break;
-					}
-					steps++;
-				}
-			}
-		};
-		for(_i = 0; _i < SIZE_I; _i++){
-			for(_j = 0; _j < SIZE_J; _j++){
-				addInDir("n", _i, _j, 0, 1);
-				addInDir("s", _i, _j, 0, 1);
-				addInDir("w", _i, _j, 1, 0);
-				addInDir("e", _i, _j, 1, 0);
-			}
-		}
+	GridUtils.ijToBabylonUnrounded = function(i, j, y){
+		return new BABYLON.Vector3(TOP_LEFT.x + j*SIZE, y, TOP_LEFT.z - i*SIZE);
 	};
 
-	GridUtils.getLengthsNeeded = function(a){
-		var _i, _j, SIZE_I = a.length, SIZE_J = a[0].length, texture, wallData, lengthsNeeded = {};
-		for(_i = 0; _i < SIZE_I; _i++){
-			for(_j = 0; _j < SIZE_J; _j++){
-				if(a[_i][_j].type === "wall"){
-					texture = a[_i][_j].data.texture;
-					wallData = a[_i][_j].data.walls;
-					lengthsNeeded[texture] = lengthsNeeded[texture] || [];
-					lengthsNeeded[texture] = lengthsNeeded[texture].concat([wallData["n"], wallData["s"], wallData["w"], wallData["e"]]);
-					lengthsNeeded[texture] = _.without(lengthsNeeded[texture], 0);
-				 	lengthsNeeded[texture] = _.uniq(lengthsNeeded[texture]);
-				}
-			}
-		}
-		return lengthsNeeded;
+	GridUtils.babylonToIJUnrounded = function(pos){
+		return {
+			j: pos.x / SIZE,
+			i: (TOP_LEFT.z - pos.z) / SIZE
+		};
 	};
 
 	GridUtils.arrayToGrid = function(a){
