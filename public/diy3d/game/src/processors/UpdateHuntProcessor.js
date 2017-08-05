@@ -1,7 +1,7 @@
 define(["diy3d/game/src/utils/GridUtils", "diy3d/game/src/utils/PathFinding"], function(GridUtils, PathFinding){
 	"use strict";
 
-	var FREQUENCY = 250; // do not execute every tick
+	var FREQUENCY = 500; // do not execute every tick
 
 	var UpdateHuntProcessor = function(game){
 		this.num = 0;

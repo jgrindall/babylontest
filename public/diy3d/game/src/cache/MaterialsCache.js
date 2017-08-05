@@ -95,7 +95,7 @@ define(["diy3d/game/src/Textures", "diy3d/game/src/utils/MeshUtils", "diy3d/game
             mesh.material = material;
 	    }
 	    else{
-	        throw "not found" + name;
+	        throw "not found " + name;
         }
 	};
 

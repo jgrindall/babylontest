@@ -39,7 +39,7 @@ define([], function(){
 		    var light0, light1;
 		    if(scene.lights.length === 0) {
                 new BABYLON.HemisphericLight("light0", _vector3FromArray([0, 3, 0]), scene);
-		        new BABYLON.DirectionalLight("light1", _vector3FromArray([1, 0.5, 1]), scene);
+		        //new BABYLON.DirectionalLight("light1", _vector3FromArray([1, 0.5, 1]), scene);
             }
             light0 = scene.lights[0];
             light1 = scene.lights[1];

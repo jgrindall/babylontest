@@ -64,6 +64,11 @@ require(["diy3d/game/src/Game", "diy3d/game/src/components/Components", "diy3d/g
         }
 
 
+        rows[6][9] = {"type": "wall", "name": "wall0", "data":{}};
+        rows[8][9] = {"type": "wall", "name": "wall0", "data":{}};
+        rows[6][11] = {"type": "wall", "name": "wall0", "data":{}};
+        rows[8][11] = {"type": "wall", "name": "wall0", "data":{}};
+
 		var json = {
 			"textureList":{
                 "wall":{
