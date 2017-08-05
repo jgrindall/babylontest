@@ -115,14 +115,13 @@ define(["diy3d/game/src/utils/GridUtils"], function(GridUtils){
 		if(typeof sComp.vel === "undefined" || sComp.vel === null || typeof sComp.path === "undefined" || sComp.path === null){
 			this.addPath(sComp, meshComp);
 		}
-		move = sComp.move;
-		if(move === "north-south" && !_pathIsUnit(move, sComp.path)){
+		if(sComp.move === "north-south" && !_pathIsUnit(sComp.move, sComp.path)){
 			this.moveNorthSouth(id, sComp, meshComp);
 		}
-		else if(move === "west-east" && !_pathIsUnit(move, sComp.path)){
+		else if(sComp.move === "west-east" && !_pathIsUnit(sComp.move, sComp.path)){
 			this.moveWestEast(id, sComp, meshComp);
 		}
-		else if(move === "hunt" && sComp.path && sComp.path.sections){
+		else if(sComp.move === "hunt" && sComp.path && sComp.path.sections){
 			this.moveHunt(id, sComp, meshComp);
 		}
 	};
