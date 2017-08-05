@@ -9,33 +9,46 @@ define([], function(){
 		return new BABYLON.Color3(a[0], a[1], a[2]);
 	};
 
+	var _default = function(light0, light1){
+	    if(light0) {
+            light0.diffuse = _color3FromArray([0.6, 0.6, 0.6]);
+            light0.intensity = 0.7;
+            light0.groundColor = _color3FromArray([0.8, 0.8, 0.8]);
+        }
+        if(light1){
+            light1.diffuse = _color3FromArray([0.6, 0.6, 0.6]);
+            light1.intensity = 0.7;
+        }
+	};
+
+	var _dark = function(light0, light1){
+        if(light0) {
+            light0.diffuse = _color3FromArray([0.4, 0.4, 0.4]);
+            light0.intensity = 0.4;
+            light0.groundColor = _color3FromArray([0.5, 0.5, 0.5]);
+        }
+        if(light1){
+            light1.diffuse = _color3FromArray([0.4, 0.4, 0.4]);
+            light1.intensity = 0.4;
+        }
+    };
+
+
 	var LightBuilder = {
-		build:function(scene, lights){
-			_.each(lights, function(lightData){
-				var light;
-				if(lightData.type === "hemi"){
-					light = new BABYLON.HemisphericLight("Hemi0", _vector3FromArray(lightData.position), scene);
-				}
-				else if(lightData.type === "point"){
-					light = new BABYLON.PointLight("Hemi0", _vector3FromArray(lightData.position), scene);
-				}
-				else if(lightData.type === "dir"){
-					light = new BABYLON.DirectionalLight("Hemi0", _vector3FromArray(lightData.direction), scene);
-				}
-				light.intensity = lightData.intensity;
-				if(lightData.diffuse){
-					light.diffuse = _color3FromArray(lightData.diffuse);
-				}
-				if(lightData.specular){
-					light.specular = _color3FromArray(lightData.specular);
-				}
-				if(lightData.direction){
-					light.direction = _vector3FromArray(lightData.direction);
-				}
-				if(lightData.groundColor){
-					light.groundColor = _color3FromArray(lightData.groundColor);
-				}
-			});
+		build:function(scene, lightData){
+		    var light0, light1;
+		    if(scene.lights.length === 0) {
+                new BABYLON.HemisphericLight("light0", _vector3FromArray([0, 3, 0]), scene);
+		        new BABYLON.DirectionalLight("light1", _vector3FromArray([1, 0.5, 1]), scene);
+            }
+            light0 = scene.lights[0];
+            light1 = scene.lights[1];
+            if (lightData.type === "default") {
+                _default(light0, light1);
+            }
+            else if (lightData.type === "dark") {
+                _dark(light0, light1);
+            }
 		}
 	};
 

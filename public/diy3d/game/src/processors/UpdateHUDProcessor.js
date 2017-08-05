@@ -4,70 +4,50 @@ define(["diy3d/game/src/utils/GridUtils"], function(GridUtils){
 
 	var UpdateHUDProcessor = function(game){
 		this.game = game;
-		this.init();
-	};
-
-	UpdateHUDProcessor.prototype.init = function(){
-		return [];
-	};
-
-	UpdateHUDProcessor.prototype.getWalls = function () {
-		return this.game.grid.greedy.wall.quads;
-	};
-
-	UpdateHUDProcessor.prototype.getWater = function () {
-		return this.game.grid.greedy.water.quads;
-	};
-
-	UpdateHUDProcessor.prototype.getFire = function () {
-		return this.game.grid.greedy.fire.quads;
-	};
-
-	UpdateHUDProcessor.prototype.getDoors = function () {
-		return this.game.grid.greedy.door.quads;
-	};
-
-	UpdateHUDProcessor.prototype.getPlayer = function () {
-		var position = this.game.manager.getComponentDataForEntity('MeshComponent', this.game.playerId).mesh.position;
-		var speedComp = this.game.manager.getComponentDataForEntity('SpeedComponent', this.game.playerId);
-		return {
-			"position":GridUtils.babylonToIJ(position),
-			"angle":speedComp.angle
-		};
 	};
 
 	UpdateHUDProcessor.prototype.getBaddies = function () {
 		var manager = this.game.manager;
-		return _.map(this.game.baddieIds, function(id){
+        //OPTIMISE
+		return _.map(this.game.ids["baddie"], function(id){
 			var position = manager.getComponentDataForEntity('MeshComponent', id).mesh.position;
 			return {
-				"path":manager.getComponentDataForEntity('BaddieStrategyComponent', id).path,
 				"position":GridUtils.babylonToIJ(position)
 			};
 		});
 	};
 
 	UpdateHUDProcessor.prototype.getObjects = function () {
-		var manager = this.game.manager;
-		return _.map(this.game.objectIds, function(id){
-			var position = manager.getComponentDataForEntity('MeshComponent', id).mesh.position;
-			return {
-				"position":GridUtils.babylonToIJ(position)
-			};
+		var visibleMeshes = [], manager = this.game.manager;
+        //OPTIMISE
+		_.each(this.game.ids["object"], function(id) {
+            var mesh = manager.getComponentDataForEntity('MeshComponent', id).mesh;
+            if (mesh.isVisible) {
+                visibleMeshes.push(mesh);
+            }
+        });
+		return _.map(visibleMeshes, function(mesh){
+		    return {
+                "position":GridUtils.babylonToIJ(mesh.position)
+            };
 		});
 	};
 
 	UpdateHUDProcessor.prototype.update = function () {
-		var data = {
-			"walls":this.getWalls(),
-			"water":this.getWater(),
-			"fire":this.getFire(),
-			"player":this.getPlayer(),
-			"baddies":this.getBaddies(),
-			"doors":this.getDoors(),
-			"objects":this.getObjects()
-		};
-		this.game.hud.update(data);
+        var speedComp;
+        if(!this.game.hud){
+            return;
+	    }
+        speedComp = this.game.manager.getComponentDataForEntity('SpeedComponent', this.game.playerId);
+		this.game.hud.update({
+            "walls":this.game.data.types["wall"],
+            "objects":this.getObjects(),
+            "playerPos":GridUtils.babylonToIJ(this.game.camera.position),
+            "playerAngle":speedComp.angle,
+            "baddies":this.getBaddies(),
+            "water":this.game.data.types["water"],
+            "fire":this.game.data.types["fire"]
+        });
 	};
 
 	return UpdateHUDProcessor;

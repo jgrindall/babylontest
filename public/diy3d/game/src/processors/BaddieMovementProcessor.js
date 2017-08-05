@@ -93,7 +93,7 @@ define(["diy3d/game/src/utils/GridUtils"], function(GridUtils){
 
 	BaddieMovementProcessor.prototype.addPath = function (sComp, meshComp) {
 		var playerPos, baddiePos, playerPosIJ;
-		playerPos = this.game.manager.getComponentDataForEntity('MeshComponent', this.game.playerId).mesh.position;
+		playerPos = this.game.camera.position;
 		playerPosIJ = GridUtils.babylonToIJ(playerPos);
 		baddiePos = GridUtils.babylonToIJ(meshComp.mesh.position);
 		if(sComp.move === "north-south"){
@@ -105,14 +105,14 @@ define(["diy3d/game/src/utils/GridUtils"], function(GridUtils){
 		else{
 			sComp.vel = {'x':0, 'z':0};
 		}
-		sComp.path = GridUtils.getPath(sComp.move, [baddiePos.i, baddiePos.j], this.game.grid.solid, [playerPosIJ.i, playerPosIJ.j]);
+		sComp.path = GridUtils.getPath(sComp.move, [baddiePos.i, baddiePos.j], this.game.data.solid, [playerPosIJ.i, playerPosIJ.j]);
 	};
 
 	BaddieMovementProcessor.prototype.updateBaddie = function (id) {
 		var move, sComp, meshComp;
 		sComp = this.game.manager.getComponentDataForEntity('BaddieStrategyComponent', id);
 		meshComp = this.game.manager.getComponentDataForEntity('MeshComponent', id);
-		if(typeof sComp.vel === "undefined" || typeof sComp.path === "undefined"){
+		if(typeof sComp.vel === "undefined" || sComp.vel === null || typeof sComp.path === "undefined" || sComp.path === null){
 			this.addPath(sComp, meshComp);
 		}
 		move = sComp.move;
@@ -128,7 +128,7 @@ define(["diy3d/game/src/utils/GridUtils"], function(GridUtils){
 	};
 
 	BaddieMovementProcessor.prototype.update = function () {
-		var i, ids = this.game.baddieIds, len = ids.length;
+		var i, ids = this.game.ids["baddie"] || [], len = ids.length;
 		for(i = 0; i < len; i++){
 			this.updateBaddie(ids[i]);
 		}

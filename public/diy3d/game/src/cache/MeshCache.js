@@ -1,184 +1,41 @@
-define([], function(){
+define(["diy3d/game/src/utils/MeshUtils", "diy3d/game/src/cache/MeshMaker"], function(MeshUtils, MeshMaker){
 
 	"use strict";
 
-	var MeshCache = function(materialsCache){
-		this.materialsCache = materialsCache;
-		this._cache = {};
-		this._cacheI = 0;
+	var MeshCache = function(game, type){
+		this.game = game;
+		this._type = type;
+        this._maker = new MeshMaker(game, type);
 	};
 
-	MeshCache.prototype.clear = function(){
-		this.materialsCache = null;
-		_.each(this._cache, function(mesh, key){
-			mesh.material = null;
-			mesh.dispose();
-		});
-		this._cache = {};
-		this._cacheI = 0;
-	};
+    MeshCache.prototype._add = function(name){
+        var mesh = this._maker.make(MeshCache._getId(this._type, name));
+        mesh.setEnabled(false);
+        mesh.isVisble = false;
+        this.game.materialsCache.applyToMesh(mesh, this._type, name);
+    };
 
-	MeshCache.prototype.add = function(scene, mesh, key, options){
-		mesh.setEnabled(false);
-		this._cache[key] = mesh;
-		scene.meshes.pop(); // remove it from the display list because it was added automatically
-	};
-
-	MeshCache.prototype.get = function(key){
-		var cached = this._cache[key];
+    MeshCache.prototype.get = function(name, newId){
+        var mesh, cached = this.game.scene.getMeshByID(MeshCache._getId(this._type, name));
 		if(cached){
-			this._cacheI++;
-			return cached.createInstance(key + "_index_" + this._cacheI);
-		}
-		return null;
-	};
-
-	MeshCache.prototype.getPlaneWithTexture = function(key, scaleW, scaleH, rptX, texture, scene){
-		var mesh = BABYLON.MeshBuilder.CreatePlane(key, {"height": SIZE*scaleH, "width":SIZE*scaleW}, scene);
-		this.materialsCache.applyToMesh(mesh, rptX, texture);
-		return mesh;
-	};
-
-	MeshCache.prototype.getTree = function(scene, texture){
-		var mesh, key = "tree_" + texture;
-		mesh = this.get(key);
-		if(mesh){
-			mesh.billboardMode = BABYLON.Mesh.BILLBOARDMODE_ALL;
+		    mesh = cached.createInstance(newId);
+            mesh.billboardMode = cached.billboardMode;
 			return mesh;
 		}
 		else{
-			mesh = this.getPlaneWithTexture(key, 1, 1, 1, texture, scene);
-			mesh.convertToUnIndexedMesh();
-			this.add(scene, mesh, key);
-			return this.getTree(scene, texture);
-		}
+		    throw "cached mesh not found " + name;
+        }
 	};
 
-	MeshCache.prototype.getObject = function(scene, texture){
-		var mesh, key = "object_" + texture;
-		mesh = this.get(key);
-		if(mesh){
-			mesh.billboardMode = BABYLON.Mesh.BILLBOARDMODE_ALL;
-			return mesh;
-		}
-		else{
-			mesh = this.getPlaneWithTexture(key, 0.25, 0.25, 1, texture, scene);
-			mesh.convertToUnIndexedMesh();
-			this.add(scene, mesh, key);
-			return this.getObject(scene, texture);
-		}
-	};
+    MeshCache.prototype.set = function(names){
+        _.each(names, this._add.bind(this));
+        return this;
+    };
 
-	MeshCache.prototype.getBox = function(scene, size){
-		size = (size[0] >= size[1]) ? [size[0], size[1]] : [size[1], size[0]];
-		var mesh, w, h, key;
-		w = size[0];
-		h = size[1];
-		key = "box_" + w + "_" + h;
-		mesh = this.get(key);
-		if(mesh){
-			mesh.checkCollisions = true;
-			return mesh;
-		}
-		else{
-			mesh = BABYLON.MeshBuilder.CreateBox(key, {"height": SIZE, width:SIZE*size[0], "depth":SIZE*size[1]}, scene);
-			mesh.convertToUnIndexedMesh()
-			this.add(scene, mesh, key);
-			return this.getBox(scene, size);
-		}
-	};
+    MeshCache._getId = function(type, name){
+        return type + "_" + name;
+    };
 
-	MeshCache.prototype.getPlane = function(scene, size, texture){
-		var mesh, key = "plane_" + texture + "_" + size;
-		mesh = this.get(key);
-		if(mesh){
-			return mesh;
-		}
-		else{
-			mesh = this.getPlaneWithTexture(key, size, 1, size, texture, scene);
-			mesh.convertToUnIndexedMesh();
-			this.add(scene, mesh, key);
-			return this.getPlane(scene, size, texture);
-		}
-	};
-
-	MeshCache.prototype.getDoor = function(scene, texture){
-		var mesh, key = "door_" + texture, mesh0, mesh1, mesh2, mesh3;
-		mesh = this.get(key);
-		if(mesh){
-			mesh.checkCollisions = true;
-			return mesh;
-		}
-		else{
-			mesh0 = this.getPlaneWithTexture(key, 1, 1, 1, "door", scene);
-			mesh1 = this.getPlaneWithTexture(key, 1, 1, 1, "door", scene);
-			mesh2 = this.getPlaneWithTexture(key, 1, 1, 1, "door", scene);
-			mesh3 = this.getPlaneWithTexture(key, 1, 1, 1, "door", scene);
-			mesh1.position.z = SIZE/2;
-			mesh3.position.z = -SIZE/2;
-			mesh0.position.x = -SIZE/2;
-			mesh2.position.x = SIZE/2;
-			mesh0.rotate(new BABYLON.Vector3(0, 1, 0), Math.PI / 2, BABYLON.Space.Local);
-			mesh2.rotate(new BABYLON.Vector3(0, 1, 0), -Math.PI/2, BABYLON.Space.Local);
-			mesh1.rotate(new BABYLON.Vector3(0, 1, 0), Math.PI, BABYLON.Space.Local);
-			this.add(scene, BABYLON.Mesh.MergeMeshes([mesh0, mesh1, mesh2, mesh3]), key);
-			return this.getDoor(scene, texture);
-		}
-	};
-
-	MeshCache.prototype.getFire = function(scene, size){
-		size = (size[0] >= size[1]) ? [size[0], size[1]] : [size[1], size[0]];
-		var mesh, key, w, h;
-		w = size[0];
-		h = size[1];
-		key = "fire" + "_" + w + "_" + h;
-		mesh = this.get(key);
-		if(mesh){
-			return mesh;
-		}
-		else{
-			mesh = BABYLON.MeshBuilder.CreatePlane(key, {"height": SIZE*w, "width":SIZE*h}, scene);
-			mesh.rotate(new BABYLON.Vector3(1, 0, 0), Math.PI / 2, BABYLON.Space.Local);
-			mesh.material = this.materialsCache.getMaterial("fire");
-			this.add(scene, mesh, key);
-			return this.getFire(scene, size);
-		}
-	};
-
-	MeshCache.prototype.getWater = function(scene, size){
-		size = (size[0] >= size[1]) ? [size[0], size[1]] : [size[1], size[0]];
-		var mesh, key, w, h;
-		w = size[0];
-		h = size[1];
-		key  = "water" + "_" + w + "_" + h;
-		mesh = this.get(key);
-		if(mesh){
-			return mesh;
-		}
-		else{
-			mesh = BABYLON.MeshBuilder.CreatePlane(key, {"height": SIZE*w, "width":SIZE*h}, scene);
-			mesh.rotate(new BABYLON.Vector3(1, 0, 0), Math.PI / 2, BABYLON.Space.Local);
-			mesh.material = this.materialsCache.getMaterial("water");
-			this.add(scene, mesh, key);
-			return this.getWater(scene, size);
-		}
-	};
-
-	MeshCache.prototype.getBaddie = function(scene, texture){
-		var mesh, key = "baddie_" + texture;
-		mesh = this.get(key);
-		if(mesh){
-			mesh.billboardMode = BABYLON.Mesh.BILLBOARDMODE_ALL;
-			return mesh;
-		}
-		else{
-			mesh = this.getPlaneWithTexture(key, 0.75, 0.75, 1, texture, scene);
-			mesh.convertToUnIndexedMesh();
-			this.add(scene, mesh, key);
-			return this.getBaddie(scene, texture);
-		}
-	};
-
-	return MeshCache;
+    return MeshCache;
 
 });

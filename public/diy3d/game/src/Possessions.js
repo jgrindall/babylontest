@@ -3,9 +3,9 @@ define([], function(){
 
 	var _count = function(arr){
 		var c = {};
-		_.each(arr, function(obj){
-			c[obj.data.texture] = c[obj.data.texture] || 0;
-			c[obj.data.texture]++;
+		_.each(arr, function(name){
+			c[name] = c[name] || 0;
+			c[name]++;
 		});
 		return c;
 	};
@@ -34,7 +34,6 @@ define([], function(){
 
 	Possessions.prototype.onClick = function(){
 		this.setState("active");
-		this.manager.listener.emit("doorInteraction", {"id":this._doorId});
 	};
 
 	Possessions.prototype.destroy = function(){
@@ -47,7 +46,7 @@ define([], function(){
 		var $inner = $("<div/>").addClass("possessionInner");
 		$el.append($inner);
 		var img = new Image();
-		var base64 = this.materialsCache.getBase64ForKey(val);
+		var base64 = this.materialsCache.getBase64ForKey("object", val);
 		img.src = base64;
 		this.$el.append($el);
 		$inner.append(img).append("<span>" + count + "</span>");
@@ -64,11 +63,6 @@ define([], function(){
 		else{
 			this.$button.hide();
 		}
-		return this;
-	};
-
-	Possessions.prototype.setDoorId = function(id){
-		this._doorId = id;
 		return this;
 	};
 

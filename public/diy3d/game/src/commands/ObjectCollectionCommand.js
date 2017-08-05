@@ -1,21 +1,21 @@
 define([], function(){
 	"use strict";
 
-	var ObjectCollectionCommand = function(game, toDeleteIds){
+	var ObjectCollectionCommand = function(game, objectIds){
 		this.game = game;
-		this.toDeleteIds = toDeleteIds;
+		this.objectIds = objectIds;
 	};
 
 	ObjectCollectionCommand.prototype.exec = function(){
-		var possComp = this.game.manager.getComponentDataForEntity('PossessionsComponent', this.game.playerId);
-		var objectIds = this.game.objectIds;
-		while(this.toDeleteIds.length >= 1){
-			var objectId = this.toDeleteIds.pop(), index = objectIds.indexOf(objectId), objectData;
+		var objectId, objectData, possComp, meshComp;
+		possComp = this.game.manager.getComponentDataForEntity('PossessionsComponent', this.game.playerId);
+		while(this.objectIds.length >= 1){
+			objectId = this.objectIds.pop();
 			objectData = this.game.manager.getComponentDataForEntity('ObjectComponent', objectId).data;
-			this.game.manager.getComponentDataForEntity('MeshComponent', objectId).mesh.dispose();
-			this.game.manager.removeEntity(objectId);
-			objectIds.splice(index, 1);
-			possComp.possessions.push(objectData);
+			meshComp = this.game.manager.getComponentDataForEntity('MeshComponent', objectId);
+            meshComp.mesh.setEnabled(false);
+            meshComp.mesh.isVisible = false;
+            possComp.possessions.push(objectData.name);
 			this.game.possessions.update(possComp.possessions);
 		}
 	};

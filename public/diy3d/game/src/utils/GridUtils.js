@@ -1,22 +1,18 @@
-define([], function(){
+define(["diy3d/game/src/consts/Consts"], function(Consts){
 	/* helper functions */
 
 	"use strict";
 
-	var TOP_LEFT = {"x":0, "z":SIZE_I * SIZE};
-
-	var SIZE2 = SIZE/2;
-
 	var GridUtils = {};
 
-	GridUtils.makeEmpty = function(SIZE_I, SIZE_J, entry){
+	GridUtils.makeEmpty = function(sizeI, sizeJ, entry){
 		var a = [], _i, _j;
 		if(typeof entry === "undefined"){
 			entry = 0;
 		}
-		for(_i = 0; _i < SIZE_I; _i++){
+		for(_i = 0; _i < sizeI; _i++){
 			a[_i] = [];
-			for(_j = 0; _j < SIZE_J; _j++){
+			for(_j = 0; _j < sizeJ; _j++){
 				if(typeof entry === "object"){
 					a[_i][_j] = _.extend({}, entry);
 				}
@@ -39,14 +35,23 @@ define([], function(){
 		}
 	};
 
+    GridUtils.addPositions = function(a){
+        var _i, _j, sizeI = a.length, sizeJ = a[0].length;
+        for(_i = 0; _i < sizeI; _i++){
+            for(_j = 0; _j < sizeJ; _j++){
+                a[_i][_j].data.position = [_i, _j];
+            }
+        }
+    };
+
 	GridUtils.addDirectionsOfWalls = function(a){
-		var _i, _j, SIZE_I = a.length, SIZE_J = a[0].length, EMPTY, isWall, getWallsAt, fillWithDir, isInside;
+		var _i, _j, sizeI = a.length, sizeJ = a[0].length, EMPTY, isWall, getWallsAt, fillWithDir, isInside;
 		EMPTY = {"n":0, "s":0, "w":0, "e":0};
 		isWall = function(i, j){
 			return (a[i][j].type === "wall");
 		};
 		isInside = function(i, j){
-			return (i >= 0 && j >= 0 && i < SIZE_I && j < SIZE_J);
+			return (i >= 0 && j >= 0 && i < sizeI && j < sizeJ);
 		};
 		fillWithDir = function(walls, _i, _j, dir, di, dj){
 			var checkI = _i + di, checkJ = _j + dj;
@@ -64,30 +69,70 @@ define([], function(){
 			fillWithDir(walls, _i, _j, "e", 0, +1);
 			return walls;
 		};
-		for(_i = 0; _i < SIZE_I; _i++){
-			for(_j = 0; _j < SIZE_J; _j++){
-				a[_i][_j].data.walls = getWallsAt(_i, _j);
+		for(_i = 0; _i < sizeI; _i++){
+			for(_j = 0; _j < sizeJ; _j++){
+			    if(isWall(_i, _j)){
+                    a[_i][_j].data.walls = getWallsAt(_i, _j);
+                }
 			}
 		}
 	};
 
 	GridUtils.ijToBabylon = function(i, j, y){
-		return new BABYLON.Vector3(TOP_LEFT.x + j*SIZE + SIZE2, y, TOP_LEFT.z - i*SIZE - SIZE2);
+		return new BABYLON.Vector3(
+		    Math.round(Consts.TOP_LEFT.x + j*Consts.BOX_SIZE + Consts.BOX_SIZE2),
+            Math.round(y),
+            Math.round(Consts.TOP_LEFT.z - i*Consts.BOX_SIZE - Consts.BOX_SIZE2)
+        );
 	};
 
 	GridUtils.babylonToIJ = function(pos){
-		return {
-			j:Math.floor(pos.x / SIZE),
-			i:Math.floor((TOP_LEFT.z - pos.z) / SIZE)
+	    return {
+			j:Math.floor(pos.x / Consts.BOX_SIZE),
+			i:Math.floor((Consts.TOP_LEFT.z - pos.z) / Consts.BOX_SIZE)
 		};
 	};
 
+    GridUtils.ijToBabylonUnrounded = function(i, j, y){
+        return new BABYLON.Vector3(
+            Consts.TOP_LEFT.x + j*Consts.BOX_SIZE,
+            y,
+            Consts.TOP_LEFT.z - i*Consts.BOX_SIZE - Consts.BOX_SIZE2
+        );
+    };
+
+    GridUtils.babylonToIJUnrounded = function(pos){
+        return {
+            j:pos.x / Consts.BOX_SIZE,
+            i:(Consts.TOP_LEFT.z - pos.z) / Consts.BOX_SIZE
+        };
+    };
+
+    GridUtils.getWalls = function(arr){
+        var output = [], WALLS = ["n", "s", "w", "e"];
+        _.each(arr, function(obj){
+            _.each(WALLS, function(dir){
+                if(obj.data.walls && obj.data.walls[dir] === 1){
+                    output.push({
+                        "type":obj.type,
+                        "name":obj.name,
+                        "data":{
+                            "position":obj.data.position,
+                            "direction":dir
+                        }
+                    });
+                }
+            });
+        });
+        return output;
+    };
+
 	GridUtils.extendWalls = function(a){
-		var _i, _j, SIZE_I = a.length, SIZE_J = a[0].length;
+		var _i, _j, sizeI = a.length, sizeJ = a[0].length;
 		var addInDir = function(dir, _i, _j, di, dj){
 			var steps = 1, wallCheck, walls = a[_i][_j].data.walls;
 			if(walls[dir] >= 1){
-				while(_j + dj*steps < SIZE_J && _i + di*steps < SIZE_I){
+				while(_j + dj*steps < sizeJ && _i + di*steps < sizeI){
 					wallCheck = a[_i + di][_j + dj].data.walls;
 					if(wallCheck[dir] >= 1 && a[_i][_j].data.texture === a[_i + di*steps][_j + dj*steps].data.texture){
 						walls[dir]++;
@@ -100,8 +145,8 @@ define([], function(){
 				}
 			}
 		};
-		for(_i = 0; _i < SIZE_I; _i++){
-			for(_j = 0; _j < SIZE_J; _j++){
+		for(_i = 0; _i < sizeI; _i++){
+			for(_j = 0; _j < sizeJ; _j++){
 				addInDir("n", _i, _j, 0, 1);
 				addInDir("s", _i, _j, 0, 1);
 				addInDir("w", _i, _j, 1, 0);
@@ -110,25 +155,9 @@ define([], function(){
 		}
 	};
 
-	GridUtils.getLengthsNeeded = function(a){
-		var _i, _j, SIZE_I = a.length, SIZE_J = a[0].length, texture, wallData, lengthsNeeded = {};
-		for(_i = 0; _i < SIZE_I; _i++){
-			for(_j = 0; _j < SIZE_J; _j++){
-				if(a[_i][_j].type === "wall"){
-					texture = a[_i][_j].data.texture;
-					wallData = a[_i][_j].data.walls;
-					lengthsNeeded[texture] = lengthsNeeded[texture] || [];
-					lengthsNeeded[texture] = lengthsNeeded[texture].concat([wallData["n"], wallData["s"], wallData["w"], wallData["e"]]);
-					lengthsNeeded[texture] = _.without(lengthsNeeded[texture], 0);
-				 	lengthsNeeded[texture] = _.uniq(lengthsNeeded[texture]);
-				}
-			}
-		}
-		return lengthsNeeded;
-	};
-
 	GridUtils.arrayToGrid = function(a){
-		var g = GridUtils.makeEmpty(SIZE_I, SIZE_J, {"type":"empty", "data":{}});
+	    console.log(a);
+		var g = GridUtils.makeEmpty(Consts.SIZE_I, Consts.SIZE_J, {"type":"empty", "data":{}});
 		_.each(a, function(obj){
 			g[obj.data.position[0]][obj.data.position[1]] = obj;
 		});
@@ -140,9 +169,9 @@ define([], function(){
 		if(!_.isArray(typeArr)){
 			typeArr = [typeArr];
 		}
-		var _i, _j, SIZE_I = a.length, SIZE_J = a[0].length;
-		for(_i = 0; _i < SIZE_I; _i++){
-			for(_j = 0; _j < SIZE_J; _j++){
+		var _i, _j, sizeI = a.length, sizeJ = a[0].length;
+		for(_i = 0; _i < sizeI; _i++){
+			for(_j = 0; _j < sizeJ; _j++){
 				if(typeArr.indexOf(a[_i][_j].type) >= 0){
 					arr.push(a[_i][_j]);
 				}
@@ -160,9 +189,8 @@ define([], function(){
 		});
 	};
 
-	GridUtils.getPath = function(strategy, pos, solid, playerPos){
+	GridUtils.getPath = function(strategy, pos, solid){
 		var i = pos[0], j = pos[1], i0, j0, i1, j1;
-		var TOP_LEFT = {"x":0, "z":window.SIZE_I * window.SIZE};
 		if(strategy === "north-south"){
 			while(solid[i][j] === 0){
 				i--;
@@ -176,9 +204,9 @@ define([], function(){
 			i--;
 			i1 = i;
 			return {
-				"x":SIZE*j,
-				"zmax":TOP_LEFT.z - i0 * SIZE - SIZE/2,
-				"zmin":TOP_LEFT.z - i1 * SIZE - SIZE/2
+				"x":Consts.BOX_SIZE*j,
+				"zmax":Consts.TOP_LEFT.z - i0 * Consts.BOX_SIZE - Consts.BOX_SIZE2,
+				"zmin":Consts.TOP_LEFT.z - i1 * Consts.BOX_SIZE - Consts.BOX_SIZE2
 			};
 		}
 		else if(strategy === "west-east"){
@@ -194,17 +222,17 @@ define([], function(){
 			j--;
 			j1 = j;
 			return {
-				"z":SIZE*i,
-				"xmin":j0 * SIZE + SIZE/2,
-				"xmax":j1 * SIZE + SIZE/2
+				"z":Consts.BOX_SIZE*i,
+				"xmin":j0 * Consts.BOX_SIZE + Consts.BOX_SIZE2,
+				"xmax":j1 * Consts.BOX_SIZE + Consts.BOX_SIZE2
 			};
 		}
 	};
 
 	GridUtils.transpose = function(a){
-		var _i, _j, SIZE_I = a.length, SIZE_J = a[0].length, trans = GridUtils.makeEmpty(SIZE_J, SIZE_I);
-		for(_i = 0; _i < SIZE_I; _i++){
-			for(_j = 0; _j < SIZE_J; _j++){
+		var _i, _j, sizeI = a.length, sizeJ = a[0].length, trans = GridUtils.makeEmpty(sizeJ, sizeI);
+		for(_i = 0; _i < sizeI; _i++){
+			for(_j = 0; _j < sizeJ; _j++){
 				trans[_j][_i] = a[_i][_j];
 			}
 		}
@@ -212,9 +240,9 @@ define([], function(){
 	};
 
 	GridUtils.map = function(a, f){
-		var _i, _j, SIZE_I = a.length, SIZE_J = a[0].length, output = GridUtils.makeEmpty(SIZE_I, SIZE_J);
-		for(_i = 0; _i < SIZE_I; _i++){
-			for(_j = 0; _j < SIZE_J; _j++){
+		var _i, _j, sizeI = a.length, sizeJ = a[0].length, output = GridUtils.makeEmpty(sizeI, sizeJ);
+		for(_i = 0; _i < sizeI; _i++){
+			for(_j = 0; _j < sizeJ; _j++){
 				output[_i][_j] = f(a[_i][_j]);
 			}
 		}

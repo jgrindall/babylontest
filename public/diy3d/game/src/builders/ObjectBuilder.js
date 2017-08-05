@@ -1,19 +1,19 @@
-define(["diy3d/game/src/utils/GridUtils"],
-
-	function(GridUtils){
-
+define(["diy3d/game/src/utils/GridUtils", "diy3d/game/src/consts/Consts"], function(GridUtils, Consts){
 	"use strict";
 
 	var ObjectBuilder = {
-
-	};
-
-	ObjectBuilder.addObject = function(pos, scene, texture, meshCache){
-		var mesh = meshCache.getObject(scene, texture);
-		mesh.position = GridUtils.ijToBabylon(pos[0], pos[1], SIZE/4);
-		return mesh;
+		update:function(game, mesh, entityId, position, obj){
+            mesh.position = GridUtils.ijToBabylon(position[0], position[1], Consts.BOX_SIZE/4);
+            game.manager.getComponentDataForEntity('MeshComponent', entityId).mesh = mesh;
+            game.manager.getComponentDataForEntity('ObjectComponent', entityId).data = obj;  // so that you can collect it
+            mesh.setEnabled(true);
+            mesh.isVisible = true;
+            mesh.id = obj.id;
+            mesh.name = obj.id;
+		}
 	};
 
 	return ObjectBuilder;
 
 });
+
