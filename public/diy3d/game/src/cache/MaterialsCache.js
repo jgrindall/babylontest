@@ -22,6 +22,7 @@ define(["diy3d/game/src/Textures", "diy3d/game/src/utils/MeshUtils", "diy3d/game
                 MeshUtils.destroyTextures(material);
                 material.diffuseTexture = Textures.getTextureFromURL(name, url, _this.scene);
                 material.diffuseTexture.hasAlpha = true;
+                material.checkReadyOnlyOnce = true;
                 material.freeze();
             }
             else{
