@@ -127,36 +127,8 @@ define(["diy3d/game/src/consts/Consts"], function(Consts){
         return output;
     };
 
-	GridUtils.extendWalls = function(a){
-		var _i, _j, sizeI = a.length, sizeJ = a[0].length;
-		var addInDir = function(dir, _i, _j, di, dj){
-			var steps = 1, wallCheck, walls = a[_i][_j].data.walls;
-			if(walls[dir] >= 1){
-				while(_j + dj*steps < sizeJ && _i + di*steps < sizeI){
-					wallCheck = a[_i + di][_j + dj].data.walls;
-					if(wallCheck[dir] >= 1 && a[_i][_j].data.texture === a[_i + di*steps][_j + dj*steps].data.texture){
-						walls[dir]++;
-						wallCheck[dir]--;
-					}
-					else{
-						break;
-					}
-					steps++;
-				}
-			}
-		};
-		for(_i = 0; _i < sizeI; _i++){
-			for(_j = 0; _j < sizeJ; _j++){
-				addInDir("n", _i, _j, 0, 1);
-				addInDir("s", _i, _j, 0, 1);
-				addInDir("w", _i, _j, 1, 0);
-				addInDir("e", _i, _j, 1, 0);
-			}
-		}
-	};
 
 	GridUtils.arrayToGrid = function(a){
-	    console.log(a);
 		var g = GridUtils.makeEmpty(Consts.SIZE_I, Consts.SIZE_J, {"type":"empty", "data":{}});
 		_.each(a, function(obj){
 			g[obj.data.position[0]][obj.data.position[1]] = obj;
@@ -226,6 +198,9 @@ define(["diy3d/game/src/consts/Consts"], function(Consts){
 				"xmin":j0 * Consts.BOX_SIZE + Consts.BOX_SIZE2,
 				"xmax":j1 * Consts.BOX_SIZE + Consts.BOX_SIZE2
 			};
+		}
+		else if(strategy === "random"){
+			return "random";
 		}
 	};
 

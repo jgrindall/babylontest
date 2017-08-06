@@ -45,17 +45,17 @@ define(["diy3d/game/src/utils/GridUtils", "diy3d/game/src/consts/Consts", "diy3d
             if(_this.isFullIJ(GridUtils.babylonToIJ(posToCheck))){
                 return true;
             }
-            posToCheck.x = newPos.x + PLAYER_DIAMETER2;
+            posToCheck.x = newPos.x + PLAYER_DIAMETER2; //ne
             posToCheck.z = newPos.z + PLAYER_DIAMETER2;
             if(_this.isFullIJ(GridUtils.babylonToIJ(posToCheck))){
                 return true;
             }
-            posToCheck.x = newPos.x + PLAYER_DIAMETER2;
+            posToCheck.x = newPos.x + PLAYER_DIAMETER2; //se
             posToCheck.z = newPos.z - PLAYER_DIAMETER2;
             if(_this.isFullIJ(GridUtils.babylonToIJ(posToCheck))){
                 return true;
             }
-            posToCheck.x = newPos.x - PLAYER_DIAMETER2;
+            posToCheck.x = newPos.x - PLAYER_DIAMETER2; //sw
             posToCheck.z = newPos.z - PLAYER_DIAMETER2;
             if(_this.isFullIJ(GridUtils.babylonToIJ(posToCheck))){
                 return true;
