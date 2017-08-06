@@ -5,8 +5,8 @@ define(["diy3d/game/src/utils/GridUtils", "diy3d/game/src/consts/Consts", "diy3d
     var PIOVER2 = Math.PI/2;
     var ALPHA_DEG = 20; // less then 45, this is the sector of the gamepad that is used for each pure direction (u, d, l, r)
     var ALPHA = Math.PI * ALPHA_DEG/180;
-    var MIN_RADIUS = 0.2;
-    var ANG_SPEED = 0.025;
+    var MIN_RADIUS = 0.15;
+    var ANG_SPEED = 0.035;
     var PLAYER_DIAMETER = Consts.BOX_SIZE/8;
     var PLAYER_DIAMETER2 = PLAYER_DIAMETER/2;
     var MIN_X = Consts.BOX_SIZE + PLAYER_DIAMETER2;
@@ -64,7 +64,6 @@ define(["diy3d/game/src/utils/GridUtils", "diy3d/game/src/consts/Consts", "diy3d
         };
         if(_overlaps(t1)){
             //bisect
-            console.log("bisect")
             for(i = 0; i < NUM_ITERATIONS; i++){
                 midPointT = (t0 + t1)/2;
                 if(_overlaps(midPointT)){
@@ -78,12 +77,10 @@ define(["diy3d/game/src/utils/GridUtils", "diy3d/game/src/consts/Consts", "diy3d
             if(midPointT < TOLERANCE){
                 midPointT = 0;
             }
-            console.log(midPointT);
             pos.x = pos.x + movex * midPointT;
             pos.z = pos.z + movez * midPointT;
         }
         else{
-            console.log("ok")
             pos.x = pos.x + movex;
             pos.z = pos.z + movez;
         }
@@ -91,8 +88,8 @@ define(["diy3d/game/src/utils/GridUtils", "diy3d/game/src/consts/Consts", "diy3d
 
     PlayerMovementProcessor.prototype.updateSpeed = function (speedComp, data) {
         var fps, scale, r, scaledR, theta, fps, t;
-        theta = Math.atan2(data.dy, data.dx);
-        r = Math.sqrt(data.dx*data.dx + data.dy*data.dy);
+        theta = data.theta;
+        r = data.r;
         scaledR = (r - MIN_RADIUS) / (1 - MIN_RADIUS);
         speedComp.ang_speed = 0;
         speedComp.speed = 0;
@@ -117,7 +114,7 @@ define(["diy3d/game/src/utils/GridUtils", "diy3d/game/src/consts/Consts", "diy3d
                 //u
                 speedComp.speed = -scaledR;
             }
-            else if(theta> PIOVER2 + ALPHA && theta < Math.PI - ALPHA){
+            else if(theta > PIOVER2 + ALPHA && theta < Math.PI - ALPHA){
                 //ul
                 t = (theta - PIOVER2 - ALPHA) / (PIOVER2 - ALPHA);
                 speedComp.ang_speed = -t*scaledR;

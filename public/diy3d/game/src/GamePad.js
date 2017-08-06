@@ -1,15 +1,20 @@
 define([], function(){
 	"use strict";
 
-	var SIZE, SIZE2, ONEOVER, PI2, HANDLE;
+	var SIZE, SIZE2, ONEOVER, PI2, MAX_DISP_SQR, HANDLE_RAD;
 
-	SIZE = 200;
-	SIZE2 = SIZE/2;
-    ONEOVER = 1/SIZE2;
-	PI2 = 2*Math.PI;
-	HANDLE = 60;
+	SIZE = 				200;
+	SIZE2 = 			SIZE/2;
+    ONEOVER = 			1/SIZE2;
+	PI2 = 				2*Math.PI;
+	HANDLE_RAD = 		56;
+	MAX_DISP_SQR = 		(SIZE2 - HANDLE_RAD)*(SIZE2 - HANDLE_RAD);
 
 	var $document = $(window.document);
+
+	var _guard = function(a, min, max){
+		return Math.min(Math.max(a, min), max);
+	};
 
 	var GamePad = function(selector){
         this.dx = 0;
@@ -35,6 +40,7 @@ define([], function(){
         this.$canvas.off("mousemove touchmove", this.onMoveHandler);
 		this.dx = 0;
 		this.dy = 0;
+		this.r = 0;
 		this.redraw();
 	};
 
@@ -49,12 +55,17 @@ define([], function(){
     };
 
 	GamePad.prototype.redraw = function(){
-		var cx = SIZE2 + this.dx*SIZE2;
-		var cy = SIZE2 + this.dy*SIZE2;
+		var cx, cy;
+		cx = SIZE2 + this.dx;
+		cy = SIZE2 + this.dy;
 		this.ctx.clearRect(0, 0, SIZE, SIZE);
-		this.ctx.fillStyle = "rgba(220,10,10,0.75)";
+		this.ctx.fillStyle = "rgba(220,10,10,0.25)";
     	this.ctx.beginPath();
-    	this.ctx.arc(cx, cy, HANDLE, 0, PI2);
+    	this.ctx.arc(SIZE2, SIZE2, SIZE2, 0, PI2);
+    	this.ctx.fill();
+    	this.ctx.fillStyle = "rgba(220,10,10,0.85)";
+    	this.ctx.beginPath();
+    	this.ctx.arc(cx, cy, HANDLE_RAD, 0, PI2);
     	this.ctx.fill();
 	};
 
@@ -65,17 +76,28 @@ define([], function(){
 	};
 
 	GamePad.prototype.onMove = function(e){
+		var rSqr, sf;
 		e.preventDefault();
 		e.stopPropagation();
-		this.dx = (e.originalEvent.pageX - this.mx) * ONEOVER;
-		this.dy = (e.originalEvent.pageY - this.my) * ONEOVER;
+		this.dx = e.originalEvent.pageX - this.mx;
+		this.dy = e.originalEvent.pageY - this.my;
+		rSqr = this.dx*this.dx + this.dy*this.dy;
+		this.r = Math.sqrt(rSqr/MAX_DISP_SQR); // from 0 to 1
+		if(rSqr > MAX_DISP_SQR){
+			sf = Math.sqrt(MAX_DISP_SQR/rSqr);
+			this.dx *= sf;
+			this.dy *= sf;
+			rSqr = 1;
+			this.r = 1;
+		}
+        this.theta = Math.atan2(this.dy, this.dx);
 		this.redraw();
 	};
 
 	GamePad.prototype.getData = function(){
 		return {
-			dx:this.dx,
-			dy:this.dy
+			theta:this.theta,
+			r:this.r
 		};
 	};
 
