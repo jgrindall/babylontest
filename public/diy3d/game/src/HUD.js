@@ -1,9 +1,10 @@
 define([], function(){
 	"use strict";
 
-    //TODO OPTIMISE ALL
-
-	var HUD_SIZE = 14;
+	var BLOCK_SIZE = 		14;
+	var BLOCK_SIZE2 = 		BLOCK_SIZE/2;
+	var SIZE = 				250;
+	var SIZE2 = 			SIZE/2;
 
 	var PI2 = 2*Math.PI;
 
@@ -15,7 +16,19 @@ define([], function(){
 		this.ctx = this.canvas.getContext("2d");
 		this.$canvas = $(this.canvas).hide();
 		this.$canvas.attr("id", "hudCanvas");
+		this.terrainCanvas = document.createElement("canvas"); // cache the walls and stuff that never move
+		this.terrainCanvas.width = $selector.width();
+		this.terrainCanvas.height = $selector.height();
+		this.terrainImg = new Image();
+		this.terrainCtx = this.terrainCanvas.getContext("2d");
 		$(selector).append(this.canvas);
+	};
+
+	HUD.prototype.cacheGrid = function(data){
+		this.drawWalls(this.terrainCtx, data.types["wall"]);
+		this.drawWater(this.terrainCtx, data.types["water"]);
+		this.drawFire(this.terrainCtx, data.types["fire"]);
+		this.terrainImg.src = this.terrainCanvas.toDataURL();
 	};
 
 	HUD.prototype.show = function(){
@@ -26,72 +39,75 @@ define([], function(){
 		this.$canvas.remove();
 	};
 
-	HUD.prototype.drawWalls = function(){
-		var i, ctx = this.ctx, c = this.centre, len = this.data.walls.length;
+	HUD.prototype.drawTerrain = function(ctx){
+		var c = this.centre;
+		this.ctx.drawImage(this.terrainImg, -c.x, -c.y);
+	};
+
+	HUD.prototype.drawWalls = function(ctx, walls){
+		var i, len = walls.length;
 		ctx.fillStyle = "#777777";
 		for(i = 0; i < len; i++){
-            ctx.fillRect(this.data.walls[i].data.position[1]*HUD_SIZE - c.x, this.data.walls[i].data.position[0]*HUD_SIZE - c.y, HUD_SIZE, HUD_SIZE);
+            ctx.fillRect(walls[i].data.position[1]*BLOCK_SIZE, walls[i].data.position[0]*BLOCK_SIZE, BLOCK_SIZE, BLOCK_SIZE);
         }
 	};
 
-	HUD.prototype.drawWater = function(){
-		var i, ctx = this.ctx, c = this.centre, len = this.data.water.length;
+	HUD.prototype.drawWater = function(ctx, water){
+		var i, len = water.length;
 		ctx.fillStyle = "#389dee";
         for(i = 0; i < len; i++) {
-            ctx.fillRect(this.data.water[i][1]*HUD_SIZE - c.x, this.data.water[i][0]*HUD_SIZE - c.y, this.data.water[i][2]*HUD_SIZE, this.data.water[i][3]*HUD_SIZE);
+            ctx.fillRect(water[i][1]*BLOCK_SIZE, water[i][0]*BLOCK_SIZE, BLOCK_SIZE, BLOCK_SIZE);
         }
 	};
 
-	HUD.prototype.drawFire = function(){
-		var i, ctx = this.ctx, c = this.centre, len = this.data.fire.length;
+	HUD.prototype.drawFire = function(ctx, fire){
+		var i, len = fire.length;
 		ctx.fillStyle = "#dd792f";
         for(i = 0; i < len; i++) {
-			ctx.fillRect(this.data.fire[i][1]*HUD_SIZE - c.x, this.data.fire[i][0]*HUD_SIZE - c.y, this.data.fire[i][2]*HUD_SIZE, this.data.fire[i][3]*HUD_SIZE);
+			ctx.fillRect(fire[i][1]*BLOCK_SIZE, fire[i][0]*BLOCK_SIZE, BLOCK_SIZE, BLOCK_SIZE);
 		}
 	};
 
-	HUD.prototype.addPlayer = function(){
+	HUD.prototype.addPlayer = function(ctx){
 		var p = this.data.playerPos, c = this.centre;
 		this.ctx.fillStyle = "#3cdd5b";
         this.ctx.beginPath();
-        this.ctx.arc(p.j*HUD_SIZE - c.x + HUD_SIZE/2, p.i*HUD_SIZE - c.y + HUD_SIZE/2, HUD_SIZE/2, 0, PI2);
+        this.ctx.arc(p.j*BLOCK_SIZE - c.x + BLOCK_SIZE2, p.i*BLOCK_SIZE - c.y + BLOCK_SIZE2, BLOCK_SIZE2, 0, PI2);
         this.ctx.closePath();
         this.ctx.fill();
 	};
 
-	HUD.prototype.addObjects = function(){
+	HUD.prototype.addObjects = function(ctx){
 		var i, ctx = this.ctx, c = this.centre, len = this.data.objects.length;
 		ctx.fillStyle = "#ffff33";
         for(i = 0; i < len; i++) {
-            ctx.fillRect(this.data.objects[i].position.j*HUD_SIZE - c.x, this.data.objects[i].position.i*HUD_SIZE - c.y, HUD_SIZE, HUD_SIZE);
+            ctx.fillRect(this.data.objects[i].j*BLOCK_SIZE - c.x, this.data.objects[i].i*BLOCK_SIZE - c.y, BLOCK_SIZE, BLOCK_SIZE);
         }
 	};
 
-	HUD.prototype.addBaddies = function(){
+	HUD.prototype.addBaddies = function(ctx){
 		var i, ctx = this.ctx, c = this.centre, len = this.data.baddies.length;
 		ctx.fillStyle = "#dd2222";
         for(i = 0; i < len; i++) {
-            ctx.fillRect(this.data.baddies[i].position.j*HUD_SIZE - c.x, this.data.baddies[i].position.i*HUD_SIZE - c.y, HUD_SIZE, HUD_SIZE);
+            ctx.fillRect(this.data.baddies[i].j*BLOCK_SIZE - c.x, this.data.baddies[i].i*BLOCK_SIZE - c.y, BLOCK_SIZE, BLOCK_SIZE);
         }
 	};
 
 	HUD.prototype.update = function(data){
 		this.data = data;
 		this.centre = {
-		    "x":this.data.playerPos.j*HUD_SIZE + HUD_SIZE/2 - 125,
-            "y":this.data.playerPos.i*HUD_SIZE + HUD_SIZE/2 - 125
+		    "x":this.data.playerPos.j*BLOCK_SIZE + BLOCK_SIZE2 - SIZE2,
+            "y":this.data.playerPos.i*BLOCK_SIZE + BLOCK_SIZE2 - SIZE2
 		};
-		this.ctx.clearRect(0, 0, 250, 250);
+		this.ctx.clearRect(0, 0, SIZE, SIZE);
 		this.ctx.save();
-		this.ctx.translate(125, 125);
+		this.ctx.translate(SIZE2, SIZE2);
   		this.ctx.rotate(-this.data.playerAngle);
-  		this.ctx.translate(-125, -125);
-  		this.drawWalls();
-		this.drawWater();
-		this.drawFire();
-		this.addPlayer();
-		this.addBaddies();
-		this.addObjects();
+  		this.ctx.translate(-SIZE2, -SIZE2);
+  		this.drawTerrain(this.terrainCtx);
+		this.addPlayer(this.ctx);
+		this.addBaddies(this.ctx);
+		this.addObjects(this.ctx);
 		this.ctx.restore();
 	};
 

@@ -8,6 +8,7 @@ define(["diy3d/game/src/HUD", "diy3d/game/src/GamePad", "diy3d/game/src/ExitButt
 	    if(!game.hud) {
             game.hud = new HUD("#zone_hud");
         }
+        game.hud.cacheGrid(game.data);
         if(!game.health) {
             game.health = new Health("#zone_health");
         }

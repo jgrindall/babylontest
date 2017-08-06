@@ -7,30 +7,29 @@ define(["diy3d/game/src/utils/GridUtils"], function(GridUtils){
 	};
 
 	UpdateHUDProcessor.prototype.getBaddies = function () {
-		var manager = this.game.manager;
-        //OPTIMISE
-		return _.map(this.game.ids["baddie"], function(id){
-			var position = manager.getComponentDataForEntity('MeshComponent', id).mesh.position;
-			return {
-				"position":GridUtils.babylonToIJ(position)
-			};
-		});
+		var arr = [], i, len, babylonPos, mesh;
+		if(this.game.ids["baddie"]){
+			len = this.game.ids["baddie"].length;
+			for(i = 0; i < len; i++){
+				mesh = this.game.manager.getComponentDataForEntity('MeshComponent', this.game.ids["baddie"][i]).mesh;
+				arr.push(GridUtils.babylonToIJ(mesh.position));
+			}
+		}
+		return arr;
 	};
 
 	UpdateHUDProcessor.prototype.getObjects = function () {
-		var visibleMeshes = [], manager = this.game.manager;
-        //OPTIMISE
-		_.each(this.game.ids["object"], function(id) {
-            var mesh = manager.getComponentDataForEntity('MeshComponent', id).mesh;
-            if (mesh.isVisible) {
-                visibleMeshes.push(mesh);
-            }
-        });
-		return _.map(visibleMeshes, function(mesh){
-		    return {
-                "position":GridUtils.babylonToIJ(mesh.position)
-            };
-		});
+		var arr = [], i, len, mesh;
+		if(this.game.ids["object"]){
+			len = this.game.ids["object"].length;
+			for(i = 0; i < len; i++){
+				mesh = this.game.manager.getComponentDataForEntity('MeshComponent', this.game.ids["object"][i]).mesh;
+				if (mesh.isVisible) {
+	                arr.push(GridUtils.babylonToIJ(mesh.position));
+	            }
+			};
+		}
+        return arr;
 	};
 
 	UpdateHUDProcessor.prototype.update = function () {
