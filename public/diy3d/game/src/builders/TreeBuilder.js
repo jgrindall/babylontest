@@ -1,17 +1,15 @@
-define(["diy3d/game/src/utils/GridUtils"],
+define(["diy3d/game/src/utils/GridUtils", "diy3d/game/src/consts/Consts"],
 
-	function(GridUtils){
+	function(GridUtils, Consts){
 
 	"use strict";
 
 	var TreeBuilder = {
-
-	};
-
-	TreeBuilder.addTree = function(pos, scene, texture, meshCache){
-		var mesh = meshCache.getTree(scene, texture);
-		mesh.position = GridUtils.ijToBabylon(pos[0], pos[1], SIZE/2);
-		return mesh;
+        update:function(mesh, position, obj){
+            mesh.position = GridUtils.ijToBabylon(position[0], position[1], Consts.BOX_SIZE/2);
+            mesh.id = obj.id;
+            mesh.name = obj.id;
+        }
 	};
 
 	return TreeBuilder;

@@ -1,4 +1,4 @@
-define(["diy3d/game/src/utils/GridUtils"], function(GridUtils){
+define(["diy3d/game/src/utils/GridUtils", "diy3d/game/src/commands/TerrainCollisionCommand"], function(GridUtils, TerrainCollisionCommand){
 	"use strict";
 
 	var TerrainCollisionProcessor = function(game){
@@ -11,19 +11,19 @@ define(["diy3d/game/src/utils/GridUtils"], function(GridUtils){
 	};
 
 	TerrainCollisionProcessor.prototype.update = function () {
-		var health, playerMesh, playerPos, obj;
+		var health, playerPos, obj;
 		health = this.game.manager.getComponentDataForEntity('HealthComponent', this.game.playerId);
 		if(health.isRegenerating){
 			return;
 		}
-		playerMesh = this.game.manager.getComponentDataForEntity('MeshComponent', this.game.playerId).mesh;
-		playerPos = GridUtils.babylonToIJ(playerMesh.position);
-		obj = this.game.grid.grid[playerPos.i][playerPos.j];
+		playerPos = GridUtils.babylonToIJ(this.game.camera.position);
+		obj = this.game.data.grid[playerPos.i][playerPos.j];
 		if(obj.type === "fire"){
-			this.game.manager.listener.emit("terrainCollision", {"obj":obj});
+            new TerrainCollisionCommand(this.game).exec({"obj":obj});
 		}
 	};
 
 	return TerrainCollisionProcessor;
 
 });
+

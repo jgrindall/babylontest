@@ -15,9 +15,11 @@ define(["diy3d/game/src/FogSettings"], function(FogSettings){
 
 	var EffectBuilder = {
 		build:function(scene, effectsData){
-			scene.ambientColor = _color3FromArray(effectsData.ambientColor);
+		    //scene.fogEnabled = false;
+		    //scene.shadowsEnabled = false;
+			//scene.ambientColor = _color3FromArray(effectsData.ambientColor);
 			//FogSettings.add(scene, effectsData.fog);
-			scene.gravity = _vector3FromArray(effectsData.gravity);
+			//scene.gravity = BABYLON.Vector3(a[0], a[1], a[2]);_vector3FromArray(effectsData.gravity);
 		}
 	};
 

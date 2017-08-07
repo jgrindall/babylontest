@@ -1,7 +1,7 @@
 define(["diy3d/game/src/utils/GridUtils", "diy3d/game/src/utils/PathFinding"], function(GridUtils, PathFinding){
 	"use strict";
 
-	var FREQUENCY = 250; // do not execute every tick
+	var FREQUENCY = 500; // do not execute every tick
 
 	var UpdateHuntProcessor = function(game){
 		this.num = 0;
@@ -14,27 +14,25 @@ define(["diy3d/game/src/utils/GridUtils", "diy3d/game/src/utils/PathFinding"], f
 	};
 
 	UpdateHuntProcessor.prototype.updateId = function (playerPos, id) {
-		var manager = this.game.manager;
-		var sComp, mesh, baddiePos;
+		var sComp, mesh, baddiePos, manager = this.game.manager;
 		sComp = manager.getComponentDataForEntity('BaddieStrategyComponent', id);
 		if(sComp.move === "hunt"){
 			mesh = manager.getComponentDataForEntity('MeshComponent', id).mesh;
 			baddiePos = GridUtils.babylonToIJ(mesh.position);
-			sComp.path = PathFinding.getAStarPath(baddiePos, this.game.grid.pfGrid, playerPos);
+			sComp.path = PathFinding.getAStarPath(baddiePos, this.game.data.pfGrid, playerPos);
 		}
 	};
 
 	UpdateHuntProcessor.prototype._update = function () {
-		var position = this.game.manager.getComponentDataForEntity('MeshComponent', this.game.playerId).mesh.position;
-		var playerPos = GridUtils.babylonToIJ(position);
-		_.each(this.game.baddieIds, this.updateId.bind(this, playerPos));
+		_.each(this.game.ids["baddie"], this.updateId.bind(this, GridUtils.babylonToIJ(this.game.camera.position)));
 	};
 
 	UpdateHuntProcessor.prototype.update = function () {
-		if(this.num % FREQUENCY === 0){
+        if(this.num === 0){
 			this._update();
+			this.num = FREQUENCY;
 		}
-		this.num++;
+		this.num--;
 	};
 
 	return UpdateHuntProcessor;

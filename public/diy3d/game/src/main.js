@@ -2,90 +2,127 @@ requirejs.config({
 	"baseUrl": '/'
 });
 
-window.SIZE_I = 16;
-window.SIZE_J = 16;
+window.SIZE_I = 14;
+window.SIZE_J = 18;
 window.SIZE = 10;
 
-require(["diy3d/game/src/Game", "diy3d/game/src/DATA", "diy3d/game/src/components/Components", "diy3d/game/src/tasks/BuildTerrainTask",
 
-	"diy3d/game/src/tasks/BuildTreesTask", "diy3d/game/src/tasks/BuildEnvironmentTask",
+require(["diy3d/game/src/Game", "diy3d/game/src/components/Components", "diy3d/game/src/components/Catalogue",
 
-	"diy3d/game/src/tasks/AddBaddiesTask", "diy3d/game/src/tasks/AddControlsTask", "diy3d/game/src/tasks/BuildGridTask",
+        "diy3d/game/src/tasks/EditWallsTask", "diy3d/game/src/tasks/EditTreesTask",
 
-	"diy3d/game/src/tasks/AddDoorsTask", "diy3d/game/src/tasks/AddLightsTask",
+        "diy3d/game/src/tasks/EditWaterAndFireTask",
 
-	"diy3d/game/src/tasks/AddObjectsTask", "diy3d/game/src/tasks/AddPlayerTask", "diy3d/game/src/tasks/AddMusicTask", "diy3d/game/src/processors/CameraMatchPlayerProcessor",
+	"diy3d/game/src/tasks/EditBaddiesTask", "diy3d/game/src/tasks/AddControlsTask",
 
-"diy3d/game/src/processors/UpdateHUDProcessor", "diy3d/game/src/Listener",
+        "diy3d/game/src/tasks/EditGridTask", "diy3d/game/src/tasks/CacheTask", "diy3d/game/src/tasks/CleanCacheTask",
+
+	"diy3d/game/src/tasks/EditLightsTask", "diy3d/game/src/tasks/EditGroundAndSkyTask",
+
+	"diy3d/game/src/tasks/EditObjectsTask", "diy3d/game/src/tasks/EditPlayerTask", "diy3d/game/src/tasks/EditMusicTask",
+
+"diy3d/game/src/processors/UpdateHUDProcessor",
 
 "diy3d/game/src/processors/PlayerMovementProcessor", "diy3d/game/src/processors/TerrainCollisionProcessor",
 
-"diy3d/game/src/processors/BaddieMovementProcessor", "diy3d/game/src/processors/UpdateHuntProcessor", "diy3d/game/src/processors/DoorCollisionProcessor",
+"diy3d/game/src/processors/BaddieMovementProcessor", "diy3d/game/src/processors/UpdateHuntProcessor",
 
 "diy3d/game/src/processors/BaddieCollisionProcessor", "diy3d/game/src/processors/ObjectCollisionProcessor"],
 
-	function(Game, DATA, Components, BuildTerrainTask,
+	function(Game, Components, Catalogue, EditWallsTask, EditTreesTask,
 
-		BuildTreesTask, BuildEnvironmentTask,
+             EditWaterAndFireTask,
 
-		AddBaddiesTask, AddControlsTask, BuildGridTask,
+		EditBaddiesTask, AddControlsTask, EditGridTask, CacheTask, CleanCacheTask,
 
-		AddDoorsTask, AddLightsTask,
+             EditLightsTask, EditGroundAndSkyTask,
 
-		AddObjectsTask, AddPlayerTask, AddMusicTask, CameraMatchPlayerProcessor,
+		EditObjectsTask, EditPlayerTask, EditMusicTask, UpdateHUDProcessor,
 
-		UpdateHUDProcessor, Listener,
-
-	PlayerMovementProcessor, TerrainCollisionProcessor,
-
-	BaddieMovementProcessor, UpdateHuntProcessor, DoorCollisionProcessor,
+	PlayerMovementProcessor, TerrainCollisionProcessor, BaddieMovementProcessor, UpdateHuntProcessor,
 
 	BaddieCollisionProcessor, ObjectCollisionProcessor) {
 
 		"use strict";
 
-		var canvas, engine;
+		var rows = [];
 
-		var launch = function(){
+		var makeRow = function(){
+            var row = [];
+            for(var i = 0; i < SIZE_J; i++){
+                if(i <= 6){
+                    row.push({"type": "wall", "name": "wall0", "data":{}});
+                }
+                else{
+                    row.push({"type": "empty", "data":{}});
+                }
+            }
+            return row;
+        };
+        for(var i = 0; i < SIZE_I; i++){
+            rows.push(makeRow());
+        }
 
-			canvas = document.createElement("canvas");
-            canvas.width = 1024;
-            canvas.height = 768;
-            $(canvas).attr("id", "gameCanvas");
-            $("body").append("<span class='debug' style='position:fixed;z-index:1000;top:0;right:0;'></span>");
-            var $container = $("body");
-		    $container
-                .append($("<div/>").attr("id", "zone_hud"))
-                .append($("<div/>").attr("id", "zone_health"))
-                .append($("<div/>").attr("id", "zone_possessions"))
-                .append($("<div/>").attr("id", "zone_joystick"));   // joystick last since it comes on top
-            $("body").append(canvas);
-            engine = new BABYLON.Engine(canvas, false, null, false);
-			var g = new Game(DATA, canvas, engine, $container)
-			.registerComponents(Components.ALL)
-			.registerTask(AddLightsTask)
-			.registerTask(BuildGridTask)
-			.registerTask(BuildEnvironmentTask)
-			.registerTask(BuildTerrainTask)
-			.registerTask(BuildTreesTask)
-			.registerTask(AddPlayerTask)
-			.registerTask(AddBaddiesTask)
-			.registerTask(AddControlsTask)
-			.registerTask(AddDoorsTask)
-			.registerTask(AddObjectsTask)
-			.registerTask(AddMusicTask)
-			.registerProcessor(PlayerMovementProcessor)
-			.registerProcessor(BaddieMovementProcessor)
-			.registerProcessor(BaddieCollisionProcessor)
-			.registerProcessor(ObjectCollisionProcessor);
-			g.setListener(new Listener(g))
-			.start()
-			.on("loaded", function(){
-				alert("loaded");
-			});
-		};
 
-		launch();
-	}
+        rows[6][9] = {"type": "wall", "name": "wall0", "data":{}};
+        rows[8][9] = {"type": "wall", "name": "wall0", "data":{}};
+        rows[6][11] = {"type": "wall", "name": "wall0", "data":{}};
+        rows[8][11] = {"type": "wall", "name": "wall0", "data":{}};
+
+		var json = {
+			"textureList":{
+                "wall":{
+                    "wall0":"/images/diy3d/features/bricks.png",
+                    "wall1":"/images/diy3d/features/crate.png"
+                },
+                "baddie":{
+                    "baddie0":"/images/diy3d/features/baddie0.png",
+                    "baddie1":"/images/diy3d/features/baddie1.png"
+                },
+                "object":{
+                    "object0":"/images/diy3d/features/obj0.png",
+                    "object1":"/images/diy3d/features/obj1.png",
+                    "object2":"/images/diy3d/features/obj2.png"
+                },
+                "tree": {
+                    "tree0": "/images/diy3d/features/tree0.png",
+                    "tree1": "/images/diy3d/features/tree1.png"
+                }
+            },
+            "data":{
+                "data" : rows,
+                "light":{
+                    "type":"default"
+                },
+                "player":{
+                    "position":[10, 8]
+                },
+                "ground": "/images/diy3d/features/grassfull.png",
+                "sky":"/images/diy3d/features/skyfull.png"
+            }
+		}
+
+            var game = new Game($("#gameCanvas")[0], $(".gamecontainer"), Components.ALL, Catalogue.ALL)
+                .registerTask(CacheTask)
+                .registerTask(EditLightsTask)
+                .registerTask(EditGridTask)
+                .registerTask(EditGroundAndSkyTask)
+                .registerTask(EditWaterAndFireTask)
+                .registerTask(EditWallsTask)
+                .registerTask(EditTreesTask)
+                .registerTask(EditPlayerTask)
+                .registerTask(EditBaddiesTask)
+                .registerTask(AddControlsTask)
+                .registerTask(EditObjectsTask)
+                .registerTask(EditMusicTask)
+                .registerTask(CleanCacheTask)
+                .registerProcessor(PlayerMovementProcessor)
+                .registerProcessor(BaddieMovementProcessor)
+                .registerProcessor(TerrainCollisionProcessor)
+                .registerProcessor(UpdateHUDProcessor)
+                .registerProcessor(BaddieCollisionProcessor)
+                .registerProcessor(UpdateHuntProcessor)
+                .registerProcessor(ObjectCollisionProcessor);
+               game.load(json);
+        }
 );
-

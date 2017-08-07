@@ -1,260 +1,175 @@
-define(["diy3d/game/src/utils/GridUtils"], function(GridUtils){
 
-	"use strict";
+define(["diy3d/game/src/utils/GridUtils", "diy3d/game/src/consts/Consts", "diy3d/game/src/utils/FMath"], function(GridUtils, Consts, FMath){
 
-	var FRICTION = 		0.7;
-	var PI2 = 			2*Math.PI;
-	var PIOVER2 = 		Math.PI/2;
-	var ALPHA = 		Math.PI * 35/180;
-	var MIN_RADIUS = 	0.2;
-	var ANG_SPEED = 	0.025;
 
-	var PlayerMovementProcessor = function(game){
-		this.game = game;
-		this.playerId = this.game.playerId;
-		this.camera = this.game.camera;
-		this.gamePad = this.game.gamePad;
-		this.data = this.game.grid.solid;
-	};
+    "use strict";
 
-	PlayerMovementProcessor.prototype.isFull = function(i, j){
-		if(i < 0 || i >= SIZE_I || j < 0 || j >= SIZE_J){
-			return true;
-		}
-		return (this.data[i][j] === 1);
-	};
+	var PIOVER2 = Math.PI/2;
+    var ALPHA_DEG = 20; // less then 45, this is the sector of the gamepad that is used for each pure direction (u, d, l, r)
+    var ALPHA = Math.PI * ALPHA_DEG/180;
+    var MIN_RADIUS = 0.15;
+    var ANG_SPEED = 0.035;
+    var PLAYER_DIAMETER = Consts.BOX_SIZE/8;
+    var PLAYER_DIAMETER2 = PLAYER_DIAMETER/2;
+    var MIN_X = Consts.BOX_SIZE + PLAYER_DIAMETER2;
+    var MAX_X = Consts.SIZE_J * Consts.BOX_SIZE - Consts.BOX_SIZE - PLAYER_DIAMETER2;
+    var MIN_Z = Consts.BOX_SIZE + PLAYER_DIAMETER2;
+    var MAX_Z = Consts.SIZE_I * Consts.BOX_SIZE - Consts.BOX_SIZE - PLAYER_DIAMETER2;
+    var FMATH = new FMath();
+    var NUM_ITERATIONS = 5;
+    var TOLERANCE = Math.pow(2, -NUM_ITERATIONS);
 
-	PlayerMovementProcessor.prototype.resolve = function(pos, movex, movez){
-		var tileI, tileJ, dx, dy, n, x, w, e, sw, nw, sw, se, left, top, isFull, newPos, newPosIJ;
-		var PLAYER_SIZE = SIZE/4;
-		newPos = {
-			x: pos.x + movex,
-			z: pos.z + movez,
-		};
-		var ij = GridUtils.babylonToIJ(newPos);
-		var i = ij.i;
-		var j = ij.j;
-		dx = pos.x - j*SIZE;
-		dy = pos.z - i*SIZE;
-		n = isFull(i - 1, 	j);
-		s = isFull(i + 1, 	j);
-		w = isFull(i, 		j - 1);
-		e = isFull(i, 		j + 1);
-		nw = isFull(i - 1, 	j - 1);
-		ne = isFull(i - 1, 	j + 1);
-		sw = isFull(i + 1, 	j - 1);
-		se = isFull(i + 1, 	j + 1);
-		if(dx >= SIZE - PLAYER_SIZE/2){
-			left = 2;
-		}
-		else if(dx > PLAYER_SIZE/2){
-			left = 1;
-		}
-		if(dy >= SIZE - PLAYER_SIZE/2){
-			top = 2;
-		}
-		else if(dy > PLAYER_SIZE/2){
-			top = 1;
-		}
-		if(top === 0 && left === 1 && n){
-			//b
-			dy = PLAYER_SIZE/2 + EPS;
-		}
-		else if(top === 1 && left === 2 && e){
-			//e
-			dx = SIZE - PLAYER_SIZE/2 - EPS;
-		}
-		else if(top === 2 && left === 1 && s){
-			//h
-			dy = SIZE - PLAYER_SIZE/2 - EPS;
-		}
-		else if(top === 1 && left === 0 && w){
-			//d
-			dx = PLAYER_SIZE/2 + EPS;
-		}
-		else if(top === 0 && left === 0){
-			//a
-			if((n && !nw && !w) || (n && nw && !w)){
-				dy = PLAYER_SIZE/2 + EPS;
-			}
-			else if((!n && !nw && w) || (!n && nw && w)){
-				dx = PLAYER_SIZE/2 + EPS;
-			}
-			else if((n && !nw && w) || (n && nw && w)){
-				dy = PLAYER_SIZE/2 + EPS;
-				dx = PLAYER_SIZE/2 + EPS;
-			}
-			else if(!n && nw && !w){
-				if(dx >= dy){
-					dx = PLAYER_SIZE/2 + EPS;
-				}
-				else{
-					dy = PLAYER_SIZE/2 + EPS;
-				}
-			}
-		}
-		else if(top === 0 && left === 2){
-			//c
-			if((n && !ne && !e) || (n && ne && !e)){
-				dy = PLAYER_SIZE/2 + EPS;
-			}
-			else if((!n && !ne && e) || (!n && ne && e)){
-				dx = SIZE - PLAYER_SIZE/2 - EPS;
-			}
-			else if((n && !ne && e) || (n && ne && e)){
-				dy = PLAYER_SIZE/2 + EPS;
-				dx = SIZE - PLAYER_SIZE/2 - EPS;
-			}
-			else if(!n && ne && !e){
-				if(dx + dy >= SIZE){
-					dx = SIZE - PLAYER_SIZE/2 - EPS;
-				}
-				else{
-					dy = PLAYER_SIZE/2 + EPS;
-				}
-			}
-		}
-		else if(top === 2 && left === 0){
-			//g
-			if((s && !sw && !w) || (s && sw && !w)){
-				dy = SIZE - PLAYER_SIZE/2 - EPS;
-			}
-			else if((!s && !sw && w) || (!s && sw && w)){
-				dx = PLAYER_SIZE/2 + EPS;
-			}
-			else if((s && !sw && w) || (s && sw && w)){
-				dy = SIZE - PLAYER_SIZE/2 - EPS;
-				dx = PLAYER_SIZE/2 + EPS;
-			}
-			else if(!s && sw && !w){
-				if(dx + dy <= SIZE){
-					dx = PLAYER_SIZE/2 + EPS;
-				}
-				else{
-					dy = SIZE - PLAYER_SIZE/2 - EPS;
-				}
-			}
-		}
-		else if(top === 2 && left === 2){
-			//i
-			if((s && !se && !e) || (s && se && !e)){
-				dy = SIZE - PLAYER_SIZE/2 - EPS;
-			}
-			else if((!s && !se && e) || (!s && se && e)){
-				dx = SIZE - PLAYER_SIZE/2 - EPS;
-			}
-			else if((s && !se && e) || (s && se && e)){
-				dy = SIZE - PLAYER_SIZE/2 - EPS;
-				dx = SIZE - PLAYER_SIZE/2 - EPS;
-			}
-			else if(!s && se && !e){
-				if(dx <= dy){
-					dx = SIZE - PLAYER_SIZE/2 - EPS;
-				}
-				else{
-					dy = SIZE - PLAYER_SIZE/2 - EPS;
-				}
-			}
-		}
-		return {
-			x: dx/SIZE + tileJ,
-			z: dy/SIZE + tileI
-		};
-		*/
-	};
+    var PlayerMovementProcessor = function(game){
+        this.game = game;
+        this.manager = this.game.manager;
+        this.camera = this.game.camera;
+    };
 
-	PlayerMovementProcessor.prototype.move = function(mesh, dx, dz){
-		var p = this.resolve(mesh.position, dx, dz);
-		mesh.position.x = p.x;
-		mesh.position.z = p.z;
-	};
+    PlayerMovementProcessor.prototype.isFullIJ = function(ij){
+        if(ij.i < 0 || ij.i >= Consts.SIZE_I || ij.j < 0 || ij.j >= Consts.SIZE_J){
+            return true;
+        }
+        return (this.game.data.solid[ij.i][ij.j] === 1);
+    };
 
-	PlayerMovementProcessor.prototype.update = function () {
-	    var speedData, manager = this.game.manager, scale, data, fps, meshComp, speedComp, dx, dz, quat, q, r, t, scaledR;
-	    data = this.gamePad.getData();
-	    q = Math.atan2(data.dy, data.dx);
-	    r = Math.sqrt(data.dx*data.dx + data.dy*data.dy);
-	    scaledR = (r - MIN_RADIUS) / (1 - MIN_RADIUS);
-	    //console.log(q);
-		meshComp = manager.getComponentDataForEntity('MeshComponent', this.playerId);
-		speedComp = manager.getComponentDataForEntity('SpeedComponent', this.playerId);
-		speedComp.ang_speed = 0;
-	    speedComp.speed = 0;
-	    fps = Math.max(10, Math.min(this.game.engine.getFps(), 60));
-	    scale = 60/fps;
-	    if(r < MIN_RADIUS){
-	    	// near the middle
-	    }
-	    else{
-	    	if(q > 0 && q < ALPHA){
-	    		//r
-	    		speedComp.ang_speed = scaledR;
-	    	}
-	    	else if(q > ALPHA && q < PIOVER2 - ALPHA){
-	    		// ru
-	    		t = (q - ALPHA) / (PIOVER2 - 2*ALPHA);
-	    		speedComp.ang_speed = (1 - t)*scaledR;
-	    		speedComp.speed = t * (-scaledR);
-	    	}
-	    	else if(q > PIOVER2 - ALPHA && q < PIOVER2){
-	    		//u
-	    		speedComp.speed = -scaledR;
-	    	}
-	    	else if(q > PIOVER2 && q < PIOVER2 + ALPHA){
-	    		//u
-	    		speedComp.speed = -scaledR;
-	    	}
-	    	else if(q > PIOVER2 + ALPHA && q < Math.PI - ALPHA){
-	    		//ul
-	    		t = (q - PIOVER2 - ALPHA) / (PIOVER2 - ALPHA);
-	    		speedComp.ang_speed = -t*scaledR;
-	    		speedComp.speed = (1 - t) * (-scaledR);
-	    	}
-	    	else if(q > Math.PI - ALPHA && q < Math.PI){
-	    		//l
-	    		speedComp.ang_speed = -scaledR;
-	    	}
-	    	else if(q > -Math.PI && q < -Math.PI + ALPHA){
-	    		//l
-	    		speedComp.ang_speed = -scaledR;
-	    	}
-	    	else if(q > -Math.PI + ALPHA && q < -PIOVER2 - ALPHA){
-	    		//dl
-	    		t = (q + PIOVER2 + ALPHA) / (-PIOVER2 + 2*ALPHA);
-	    		speedComp.ang_speed = -t*scaledR;
-	    		speedComp.speed = (1 - t) * scaledR;
-	    	}
-	    	else if(q > -PIOVER2 - ALPHA && q < -PIOVER2){
-	    		//d
-	    		speedComp.speed = scaledR;
-	    	}
-	    	else if(q > -PIOVER2 && q < -PIOVER2 + ALPHA){
-	    		//d
-	    		speedComp.speed = scaledR;
-	    	}
-	    	else if(q > -PIOVER2 + ALPHA && q < -ALPHA){
-	    		//dl
-	    		t = (q + PIOVER2 - ALPHA) / (PIOVER2 - 2*ALPHA);
-	    		speedComp.ang_speed = t*scaledR;
-	    		speedComp.speed = (1 - t) * scaledR;
-	    	}
-	    	else if(q > -ALPHA && q < 0){
-	    		//r
-	    		speedComp.ang_speed = scaledR;
-	    	}
-	    }
-	    speedComp.speed *= scale;
-	    speedComp.ang_speed *= scale;
-		speedComp.angle += speedComp.ang_speed * ANG_SPEED;
-		quat = BABYLON.Quaternion.RotationAxis(new BABYLON.Vector3(0, 1, 0), speedComp.angle);
-		meshComp.mesh.rotationQuaternion = quat;
-		this.camera.rotationQuaternion = quat;
-		dx = speedComp.speed*Math.sin(speedComp.angle);
-		dz = speedComp.speed*Math.cos(speedComp.angle);
-		this.move(meshComp.mesh, dx, dz);
-		this.camera.position = meshComp.mesh.position;
-	};
+    PlayerMovementProcessor.prototype.resolve = function(pos, movex, movez){
+        var _this = this, i, t0 = 0, t1 = 1, midPointT, _overlaps;
+        _overlaps = function(t){
+            var newPos, posToCheck;
+            newPos = {    // the point I will move to
+                x: pos.x + movex*t,
+                z: pos.z + movez*t
+            };
+            posToCheck = {  //nw
+                x: newPos.x - PLAYER_DIAMETER2,
+                z: newPos.z + PLAYER_DIAMETER2
+            };
+            if(_this.isFullIJ(GridUtils.babylonToIJ(posToCheck))){
+                return true;
+            }
+            posToCheck.x = newPos.x + PLAYER_DIAMETER2; //ne
+            posToCheck.z = newPos.z + PLAYER_DIAMETER2;
+            if(_this.isFullIJ(GridUtils.babylonToIJ(posToCheck))){
+                return true;
+            }
+            posToCheck.x = newPos.x + PLAYER_DIAMETER2; //se
+            posToCheck.z = newPos.z - PLAYER_DIAMETER2;
+            if(_this.isFullIJ(GridUtils.babylonToIJ(posToCheck))){
+                return true;
+            }
+            posToCheck.x = newPos.x - PLAYER_DIAMETER2; //sw
+            posToCheck.z = newPos.z - PLAYER_DIAMETER2;
+            if(_this.isFullIJ(GridUtils.babylonToIJ(posToCheck))){
+                return true;
+            }
+            return false;
+        };
+        if(_overlaps(t1)){
+            //bisect
+            for(i = 0; i < NUM_ITERATIONS; i++){
+                midPointT = (t0 + t1)/2;
+                if(_overlaps(midPointT)){
+                    t1 = midPointT;
+                }
+                else{
+                    t0 = midPointT;
+                }
+            }
+            midPointT = (t0 + t1)/2;
+            if(midPointT < TOLERANCE){
+                midPointT = 0;
+            }
+            pos.x = pos.x + movex * midPointT;
+            pos.z = pos.z + movez * midPointT;
+        }
+        else{
+            pos.x = pos.x + movex;
+            pos.z = pos.z + movez;
+        }
+    };
 
-	return PlayerMovementProcessor;
+    PlayerMovementProcessor.prototype.updateSpeed = function (speedComp, data) {
+        var fps, scale, r, scaledR, theta, fps, t;
+        theta = data.theta;
+        r = data.r;
+        scaledR = (r - MIN_RADIUS) / (1 - MIN_RADIUS);
+        speedComp.ang_speed = 0;
+        speedComp.speed = 0;
+        fps = Math.max(10, Math.min(this.game.engine.getFps(), 60));
+        scale = 60/fps;
+        if(r > MIN_RADIUS){
+            if(theta > 0 && theta < ALPHA){
+                //r
+                speedComp.ang_speed = scaledR;
+            }
+            else if(theta > ALPHA && theta < PIOVER2 - ALPHA){
+                // ru
+                t = (theta - ALPHA) / (PIOVER2 - 2*ALPHA);
+                speedComp.ang_speed = (1 - t)*scaledR;
+                speedComp.speed = t * (-scaledR);
+            }
+            else if(theta > PIOVER2 - ALPHA && theta < PIOVER2){
+                //u
+                speedComp.speed = -scaledR;
+            }
+            else if(theta > PIOVER2 && theta < PIOVER2 + ALPHA){
+                //u
+                speedComp.speed = -scaledR;
+            }
+            else if(theta > PIOVER2 + ALPHA && theta < Math.PI - ALPHA){
+                //ul
+                t = (theta - PIOVER2 - ALPHA) / (PIOVER2 - ALPHA);
+                speedComp.ang_speed = -t*scaledR;
+                speedComp.speed = (1 - t) * (-scaledR);
+            }
+            else if(theta > Math.PI - ALPHA && theta < Math.PI){
+                //l
+                speedComp.ang_speed = -scaledR;
+            }
+            else if(theta > -Math.PI && theta < -Math.PI + ALPHA){
+                //l
+                speedComp.ang_speed = -scaledR;
+            }
+            else if(theta > -Math.PI + ALPHA && theta < -PIOVER2 - ALPHA){
+                //dl
+                t = (theta + PIOVER2 + ALPHA) / (-PIOVER2 + 2*ALPHA);
+                speedComp.ang_speed = -t*scaledR;
+                speedComp.speed = (1 - t) * scaledR;
+            }
+            else if(theta > -PIOVER2 - ALPHA && theta < -PIOVER2){
+                //d
+                speedComp.speed = scaledR;
+            }
+            else if(theta > -PIOVER2 && theta < -PIOVER2 + ALPHA){
+                //d
+                speedComp.speed = scaledR;
+            }
+            else if(theta > -PIOVER2 + ALPHA && theta < -ALPHA){
+                //dl
+                t = (theta + PIOVER2 - ALPHA) / (PIOVER2 - 2*ALPHA);
+                speedComp.ang_speed = t*scaledR;
+                speedComp.speed = (1 - t) * scaledR;
+            }
+            else if(theta > -ALPHA && theta < 0){
+                //r
+                speedComp.ang_speed = scaledR;
+            }
+        }
+        speedComp.speed *= scale;
+        speedComp.ang_speed *= scale;
+    };
+
+    PlayerMovementProcessor.prototype.update = function () {
+        var speedComp, dx, dz;
+        speedComp = this.manager.getComponentDataForEntity('SpeedComponent', this.game.playerId);
+        this.updateSpeed(speedComp, this.game.gamePad.getData());
+        speedComp.angle += speedComp.ang_speed * ANG_SPEED;
+        dx = speedComp.speed*FMATH.sin(speedComp.angle);
+        dz = speedComp.speed*FMATH.cos(speedComp.angle);
+        this.resolve(this.camera.position, dx, dz);
+        this.camera.rotationQuaternion = BABYLON.Quaternion.RotationAxis(new BABYLON.Vector3(0, 1, 0), speedComp.angle);
+    };
+
+    return PlayerMovementProcessor;
 
 });
