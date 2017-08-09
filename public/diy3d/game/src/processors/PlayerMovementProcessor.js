@@ -30,8 +30,8 @@ define(["diy3d/game/src/utils/GridUtils", "diy3d/game/src/consts/Consts", "diy3d
         return (this.game.data.solid[ij.i][ij.j] === 1);
     };
 
-    PlayerMovementProcessor.prototype.resolve = function(pos, movex, movez){
-        var _this = this, i, t0 = 0, t1 = 1, midPointT, _overlaps;
+    PlayerMovementProcessor.prototype.resolve = function(pos, movex, movez, slide){
+        var _this = this, i, t0 = 0, t1 = 1, midPointT, _overlaps, slidex, slidez;
         _overlaps = function(t){
             var newPos, posToCheck;
             newPos = {    // the point I will move to
@@ -75,10 +75,27 @@ define(["diy3d/game/src/utils/GridUtils", "diy3d/game/src/consts/Consts", "diy3d
             }
             midPointT = (t0 + t1)/2;
             if(midPointT < TOLERANCE){
-                midPointT = 0;
+                if(slide){
+                    pos.x = pos.x - movex/100;
+                    pos.z = pos.z - movez/100;
+                    if(movex >= 0){
+                        this.resolve(pos, 0.1, 0, false);
+                    }
+                    else {
+                        this.resolve(pos, -0.1, 0, false);
+                    }
+                    if(movez >= 0){
+                        this.resolve(pos, 0, 0.1, false);
+                    }
+                    else {
+                        this.resolve(pos, 0, -0.1, false);
+                    }
+                }
             }
-            pos.x = pos.x + movex * midPointT;
-            pos.z = pos.z + movez * midPointT;
+            else{
+                pos.x = pos.x + movex * midPointT;
+                pos.z = pos.z + movez * midPointT;
+            }
         }
         else{
             pos.x = pos.x + movex;
@@ -164,7 +181,7 @@ define(["diy3d/game/src/utils/GridUtils", "diy3d/game/src/consts/Consts", "diy3d
         speedComp.angle += speedComp.ang_speed * ANG_SPEED;
         dx = speedComp.speed*FMATH.sin(speedComp.angle);
         dz = speedComp.speed*FMATH.cos(speedComp.angle);
-        this.resolve(this.camera.position, dx, dz);
+        this.resolve(this.camera.position, dx, dz, true);
         this.camera.rotationQuaternion = BABYLON.Quaternion.RotationAxis(new BABYLON.Vector3(0, 1, 0), speedComp.angle);
     };
 
