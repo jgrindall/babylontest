@@ -1,8 +1,10 @@
+
 define(["diy3d/game/src/utils/GridUtils", "diy3d/game/src/consts/Consts", "diy3d/game/src/utils/FMath"], function(GridUtils, Consts, FMath){
+
 
     "use strict";
 
-    var PIOVER2 = Math.PI/2;
+	var PIOVER2 = Math.PI/2;
     var ALPHA_DEG = 20; // less then 45, this is the sector of the gamepad that is used for each pure direction (u, d, l, r)
     var ALPHA = Math.PI * ALPHA_DEG/180;
     var MIN_RADIUS = 0.15;

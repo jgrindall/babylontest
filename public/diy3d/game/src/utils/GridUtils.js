@@ -127,7 +127,6 @@ define(["diy3d/game/src/consts/Consts"], function(Consts){
         return output;
     };
 
-
 	GridUtils.arrayToGrid = function(a){
 		var g = GridUtils.makeEmpty(Consts.SIZE_I, Consts.SIZE_J, {"type":"empty", "data":{}});
 		_.each(a, function(obj){
