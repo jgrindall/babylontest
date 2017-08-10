@@ -19,6 +19,10 @@ define(["diy3d/game/src/utils/GeomUtils", "diy3d/game/src/utils/ImageUtils", "di
         ground.rotation = new BABYLON.Vector3(Math.PI/2, 0, 0);
         ground.freezeWorldMatrix();
         return ground;
+        //or
+        //ground = BABYLON.Mesh.CreateGround(GROUND_ID, groundHeight, groundWidth, 100, game.scene);
+        //ground.optimize(100);
+        //ground.rotation 
     };
 
 	var _addSky = function(game){
