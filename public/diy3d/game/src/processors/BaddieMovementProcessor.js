@@ -53,8 +53,7 @@ define(["diy3d/game/src/utils/GridUtils"], function(GridUtils){
 			"x":position.x + sComp.vel.x*SF,
 			"z":position.z + sComp.vel.z*SF
 		};
-		ij = GridUtils.babylonToIJ(newPos);
-		if(ij.i < 0 || ij.i >= SIZE_I || ij.j < 0 || ij.j >= SIZE_J || this.game.data.solid[ij.i][ij.j] === 1){
+		if(GridUtils.isFullVertices(this.game, newPos, SIZE/2)){
 			sComp.vel = DIRS[Math.floor(Math.random()*4)];
 		}
 		else{
@@ -64,7 +63,7 @@ define(["diy3d/game/src/utils/GridUtils"], function(GridUtils){
 	};
 
 	BaddieMovementProcessor.prototype.moveHunt = function(sComp, meshComp){
-		var position, sectio, _nextSection;
+		var position, section, _nextSection;
 		position = meshComp.mesh.position;
 		section = sComp.path.sections[sComp.path.currentNum];
 		sComp.vel.x = 0;

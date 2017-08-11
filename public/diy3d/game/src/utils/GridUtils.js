@@ -78,6 +78,43 @@ define(["diy3d/game/src/consts/Consts"], function(Consts){
 		}
 	};
 
+	GridUtils.isFullVertices = function(game, pos, radius){
+		var posToCheck = {  //nw
+            x: pos.x - radius,
+            z: pos.z + radius
+        };
+        if(GridUtils.isFullPos(game, posToCheck)){
+            return true;
+        }
+        posToCheck.x = pos.x + radius; //ne
+        posToCheck.z = pos.z + radius;
+        if(GridUtils.isFullPos(game, posToCheck)){
+            return true;
+        }
+        posToCheck.x = pos.x + radius; //se
+        posToCheck.z = pos.z - radius;
+        if(GridUtils.isFullPos(game, posToCheck)){
+            return true;
+        }
+        posToCheck.x = pos.x - radius; //sw
+        posToCheck.z = pos.z - radius;
+        if(GridUtils.isFullPos(game, posToCheck)){
+            return true;
+        }
+        return false;
+	};
+
+	GridUtils.isFullPos = function(game, pos){
+		return GridUtils.isFullIJ(game, GridUtils.babylonToIJ(pos));
+	};
+
+	GridUtils.isFullIJ = function(game, ij){
+		if(ij.i < 0 || ij.i >= Consts.SIZE_I || ij.j < 0 || ij.j >= Consts.SIZE_J){
+            return true;
+        }
+        return (game.data.solid[ij.i][ij.j] === 1);
+	};
+
 	GridUtils.ijToBabylon = function(i, j, y){
 		return new BABYLON.Vector3(
 		    Math.round(Consts.TOP_LEFT.x + j*Consts.BOX_SIZE + Consts.BOX_SIZE2),

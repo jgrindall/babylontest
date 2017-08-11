@@ -25,44 +25,15 @@ define(["diy3d/game/src/utils/GridUtils", "diy3d/game/src/consts/Consts", "diy3d
         this.camera = this.game.camera;
     };
 
-    PlayerMovementProcessor.prototype.isFullIJ = function(ij){
-        if(ij.i < 0 || ij.i >= Consts.SIZE_I || ij.j < 0 || ij.j >= Consts.SIZE_J){
-            return true;
-        }
-        return (this.game.data.solid[ij.i][ij.j] === 1);
-    };
-
     PlayerMovementProcessor.prototype.resolve = function(pos, movex, movez, slide){
-        var _this = this, i, t0 = 0, t1 = 1, midPointT, _overlaps, slidex, slidez;
+        var _this = this, i, t0 = 0, t1 = 1, midPointT, _overlaps, slidex, slidez, game = this.game;
         _overlaps = function(t){
             var newPos, posToCheck;
             newPos = {    // the point I will move to
                 x: pos.x + movex*t,
                 z: pos.z + movez*t
             };
-            posToCheck = {  //nw
-                x: newPos.x - PLAYER_DIAMETER2,
-                z: newPos.z + PLAYER_DIAMETER2
-            };
-            if(_this.isFullIJ(GridUtils.babylonToIJ(posToCheck))){
-                return true;
-            }
-            posToCheck.x = newPos.x + PLAYER_DIAMETER2; //ne
-            posToCheck.z = newPos.z + PLAYER_DIAMETER2;
-            if(_this.isFullIJ(GridUtils.babylonToIJ(posToCheck))){
-                return true;
-            }
-            posToCheck.x = newPos.x + PLAYER_DIAMETER2; //se
-            posToCheck.z = newPos.z - PLAYER_DIAMETER2;
-            if(_this.isFullIJ(GridUtils.babylonToIJ(posToCheck))){
-                return true;
-            }
-            posToCheck.x = newPos.x - PLAYER_DIAMETER2; //sw
-            posToCheck.z = newPos.z - PLAYER_DIAMETER2;
-            if(_this.isFullIJ(GridUtils.babylonToIJ(posToCheck))){
-                return true;
-            }
-            return false;
+            return GridUtils.isFullVertices(game, newPos, PLAYER_DIAMETER2);
         };
         if(_overlaps(t1)){
             //bisect
