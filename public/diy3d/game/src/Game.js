@@ -1,10 +1,10 @@
 define(["diy3d/game/src/cache/MeshCache", "diy3d/game/src/cache/MeshStore",
 
-	"diy3d/game/src/cache/MaterialsCache", "diy3d/game/lib/entity-manager", "diy3d/game/src/CommandQueue"],
+	"diy3d/game/src/cache/MaterialsCache", "diy3d/game/lib/entity-manager", "diy3d/game/src/CommandQueue", "diy3d/game/src/utils/Preloader"],
 
 	function(MeshCache, MeshStore,
 
-		MaterialsCache, EntityManager, CommandQueue) {
+		MaterialsCache, EntityManager, CommandQueue, Preloader) {
 
 		"use strict";
 
@@ -37,8 +37,17 @@ define(["diy3d/game/src/cache/MeshCache", "diy3d/game/src/cache/MeshStore",
             this.addUI();
             this.engine.resize();
             this.setup = _onceify(this.setup, this);
+            this.preloader = new Preloader();
             this.init();
 		};
+
+        Game.prototype.preload = function(urls){
+            var _this = this;
+            this.preloader.add(urls).then(function(){
+                _this.trigger("ready");
+            });
+            return this;
+        };
 
 		Game.prototype.init = function(){
             this.scene = new BABYLON.Scene(this.engine);

@@ -51,7 +51,7 @@ require(["diy3d/game/src/Game", "diy3d/game/src/components/Components", "diy3d/g
             var row = [];
             for(var i = 0; i < SIZE_J; i++){
                 if(i <= 6){
-                    row.push({"type": "wall", "name": "wall0", "data":{}});
+                    row.push({"type": "empty", "data":{}});
                 }
                 else{
                     row.push({"type": "empty", "data":{}});
@@ -64,7 +64,9 @@ require(["diy3d/game/src/Game", "diy3d/game/src/components/Components", "diy3d/g
         }
 
 
-        rows[8][11] = {"type": "baddie", "name": "baddie0", "data":{"move":"random"}};
+        rows[9][11] = {"type": "water", "name": "water", "data":{}};
+        rows[9][12] = {"type": "water", "name": "water", "data":{}};
+        rows[9][1] = {"type": "water", "name": "water", "data":{}};
 
 		var json = {
 			"textureList":{
@@ -100,6 +102,7 @@ require(["diy3d/game/src/Game", "diy3d/game/src/components/Components", "diy3d/g
 		}
 
             var game = new Game($("#gameCanvas")[0], $(".gamecontainer"), Components.ALL, Catalogue.ALL)
+                .preload([{"name":"lava", "src":"/images/diy3d/assets/lava.png"}])
                 .registerTask(CacheTask)
                 .registerTask(EditLightsTask)
                 .registerTask(EditGridTask)
@@ -120,6 +123,8 @@ require(["diy3d/game/src/Game", "diy3d/game/src/components/Components", "diy3d/g
                 .registerProcessor(BaddieCollisionProcessor)
                 .registerProcessor(UpdateHuntProcessor)
                 .registerProcessor(ObjectCollisionProcessor);
-               game.load(json);
+               game.on("ready", function(){
+                    game.load(json);
+               });
         }
 );

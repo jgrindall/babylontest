@@ -36,12 +36,37 @@ define(["diy3d/game/src/utils/GeomUtils", "diy3d/game/src/utils/ImageUtils", "di
         return skybox;
     };
 
+    var _drawWaterAndFire = function(game, base64, water, fire, callback){
+        console.log(water, fire);
+        var canvas = document.createElement("canvas");
+        canvas.width = 900;
+        canvas.height = 700;
+        var img = new Image();
+        var sf = 5;//block/size
+        var lava = game.preloader.get("lava");
+        img.onload = function(){
+            var i, pos;
+            canvas.getContext("2d").drawImage(img, 0, 0, 900, 700);
+            for(i = 0; i < water.length; i++){
+                pos = water[i].data.position;
+                canvas.getContext("2d").drawImage(lava, pos[1]*SIZE*sf, pos[0]*SIZE*sf, SIZE*sf, SIZE*sf);
+            }
+            callback(canvas.toDataURL());
+        };
+        img.src = base64;
+    };
+
 	var EnvironmentBuilder = {
         updateGround:function(game){
             var ground = game.scene.getMeshByID(GROUND_ID) || _addGround(game);
             MeshUtils.destroyTextures(ground.material);
-            ground.material.diffuseTexture = new BABYLON.Texture("/images/diy3d/assets/groundMat.jpg", game.scene);
-            console.log(ground.material.diffuseTexture);
+            _drawWaterAndFire(game, "/images/diy3d/assets/groundMat.jpg",
+                game.data.types["water"],
+                game.data.types["fire"],
+                function(newSrc){
+                    ground.material.diffuseTexture = new BABYLON.Texture(newSrc, game.scene);
+                }
+            );
         },
 		updateSky: function(game){
             //todo - do not do this if it has not changed
