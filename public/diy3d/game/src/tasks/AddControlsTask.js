@@ -1,8 +1,19 @@
-define(["diy3d/game/src/HUD", "diy3d/game/src/GamePad", "diy3d/game/src/ExitButton", "diy3d/game/src/Possessions", "diy3d/game/src/Health"],
+define(["diy3d/game/src/HUD", "diy3d/game/src/GamePad", "diy3d/game/src/KeyGamePad", "diy3d/game/src/ExitButton", "diy3d/game/src/Possessions", "diy3d/game/src/Health"],
 
-    function(HUD, GamePad, ExitButton, Possessions, Health){
+    function(HUD, GamePad, KeyGamePad, ExitButton, Possessions, Health){
 
 	"use strict";
+
+    var gamePadMaker = {
+        make:function(sel){
+            if(0){
+                return new GamePad(sel);
+            }
+            else{
+                return new KeyGamePad(sel);
+            }
+        }
+    };
 
 	var AddControlsTask = function(game){
 	    if(!game.hud) {
@@ -16,7 +27,7 @@ define(["diy3d/game/src/HUD", "diy3d/game/src/GamePad", "diy3d/game/src/ExitButt
             game.possessions = new Possessions(game.manager, game.materialsCache, "#zone_possessions");
         }
         if(!game.gamePad) {
-            game.gamePad = new GamePad("#zone_joystick");
+            game.gamePad = gamePadMaker.make("#zone_joystick");
         }
         if(!game.exitButton) {
             game.exitButton = new ExitButton("#zone_exit", game);
