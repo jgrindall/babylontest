@@ -6,7 +6,7 @@ define(["diy3d/game/src/HUD", "diy3d/game/src/GamePad", "diy3d/game/src/KeyGameP
 
     var gamePadMaker = {
         make:function(sel){
-            if(0){
+            if(1){
                 return new GamePad(sel);
             }
             else{

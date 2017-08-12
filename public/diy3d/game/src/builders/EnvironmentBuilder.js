@@ -67,6 +67,32 @@ define(["diy3d/game/src/utils/GeomUtils", "diy3d/game/src/utils/ImageUtils", "di
                     ground.material.diffuseTexture = new BABYLON.Texture(newSrc, game.scene);
                 }
             );
+            for(var i = 0; i < 100; i++){
+
+                 var particleSystem = new BABYLON.ParticleSystem("particles", 256, game.scene);
+                 particleSystem.particleTexture = new BABYLON.Texture("/images/diy3d/assets/fire.png", game.scene);
+                 particleSystem.emitter = ground;
+                 particleSystem.color1 = new BABYLON.Color4(1.1, 0.2, 0.2, 1.0);
+                 particleSystem.color2 = new BABYLON.Color4(1.1, 0.1, 0.1, 1.0);
+                 particleSystem.colorDead = new BABYLON.Color4(0, 0, 0.0, 1.0);
+                 particleSystem.minEmitBox = new BABYLON.Vector3(0, 0, 0);
+                 particleSystem.maxEmitBox = new BABYLON.Vector3(SIZE, 0, SIZE);
+                 particleSystem.minSize = 0.2;
+                 particleSystem.maxSize = 1;
+                 particleSystem.minLifeTime = 0.1;
+                 particleSystem.maxLifeTime = 0.5;
+                 particleSystem.emitRate = 750;
+                 particleSystem.blendMode = BABYLON.ParticleSystem.BLENDMODE_ONEONE;
+                 particleSystem.gravity = new BABYLON.Vector3(0, -5, 0);
+                 particleSystem.direction1 = new BABYLON.Vector3(-3, 8, 2);
+                 particleSystem.direction2 = new BABYLON.Vector3(1, 8, -3);
+                 particleSystem.minEmitPower = 3;
+                 particleSystem.maxEmitPower = 9;
+                 particleSystem.updateSpeed = 0.01;
+                 particleSystem.start();
+             }
+
+
         },
 		updateSky: function(game){
             //todo - do not do this if it has not changed
