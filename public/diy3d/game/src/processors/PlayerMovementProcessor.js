@@ -86,35 +86,36 @@ define(["diy3d/game/src/utils/GridUtils", "diy3d/game/src/consts/Consts", "diy3d
         fps = Math.max(10, Math.min(this.game.engine.getFps(), 60));
         scale = 60/fps;
         if(r > MIN_RADIUS){
-            if(theta > 0 && theta < ALPHA){
+            if(theta >= 0 && theta <= ALPHA){
                 //r
                 speedComp.ang_speed = scaledR;
             }
-            else if(theta > ALPHA && theta < PIOVER2 - ALPHA){
+            else if(theta >= ALPHA && theta <= PIOVER2 - ALPHA){
                 // ru
                 t = (theta - ALPHA) / (PIOVER2 - 2*ALPHA);
                 speedComp.ang_speed = (1 - t)*scaledR;
                 speedComp.speed = t * (-scaledR);
             }
-            else if(theta > PIOVER2 - ALPHA && theta < PIOVER2){
+            else if(theta >= PIOVER2 - ALPHA && theta <= PIOVER2){
                 //u
                 speedComp.speed = -scaledR;
             }
-            else if(theta > PIOVER2 && theta < PIOVER2 + ALPHA){
+            else if(theta >= PIOVER2 && theta <= PIOVER2 + ALPHA){
                 //u
+                console.log('u');
                 speedComp.speed = -scaledR;
             }
-            else if(theta > PIOVER2 + ALPHA && theta < Math.PI - ALPHA){
+            else if(theta >= PIOVER2 + ALPHA && theta <= Math.PI - ALPHA){
                 //ul
                 t = (theta - PIOVER2 - ALPHA) / (PIOVER2 - ALPHA);
                 speedComp.ang_speed = -t*scaledR;
                 speedComp.speed = (1 - t) * (-scaledR);
             }
-            else if(theta > Math.PI - ALPHA && theta < Math.PI){
+            else if(theta >= Math.PI - ALPHA && theta <= Math.PI){
                 //l
                 speedComp.ang_speed = -scaledR;
             }
-            else if(theta > -Math.PI && theta < -Math.PI + ALPHA){
+            else if(theta >= -Math.PI && theta <= -Math.PI + ALPHA){
                 //l
                 speedComp.ang_speed = -scaledR;
             }
@@ -124,21 +125,21 @@ define(["diy3d/game/src/utils/GridUtils", "diy3d/game/src/consts/Consts", "diy3d
                 speedComp.ang_speed = -t*scaledR;
                 speedComp.speed = (1 - t) * scaledR;
             }
-            else if(theta > -PIOVER2 - ALPHA && theta < -PIOVER2){
+            else if(theta >= -PIOVER2 - ALPHA && theta <= -PIOVER2){
                 //d
                 speedComp.speed = scaledR;
             }
-            else if(theta > -PIOVER2 && theta < -PIOVER2 + ALPHA){
+            else if(theta >= -PIOVER2 && theta <= -PIOVER2 + ALPHA){
                 //d
                 speedComp.speed = scaledR;
             }
-            else if(theta > -PIOVER2 + ALPHA && theta < -ALPHA){
-                //dl
+            else if(theta >= -PIOVER2 + ALPHA && theta <= -ALPHA){
+                //dr
                 t = (theta + PIOVER2 - ALPHA) / (PIOVER2 - 2*ALPHA);
                 speedComp.ang_speed = t*scaledR;
                 speedComp.speed = (1 - t) * scaledR;
             }
-            else if(theta > -ALPHA && theta < 0){
+            else if(theta >= -ALPHA && theta <= 0){
                 //r
                 speedComp.ang_speed = scaledR;
             }
