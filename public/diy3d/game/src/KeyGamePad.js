@@ -5,6 +5,8 @@ define([], function(){
 
 	var R = 0.8;
 
+	var SIZE = 120;
+
 	var MAPPING = {
 		"0001":{
 			theta:Math.PI/2,
@@ -38,18 +40,14 @@ define([], function(){
 			theta:3*Math.PI/4,
 			r:R
 		}
-	}
-
-	var _guard = function(a, min, max){
-		return Math.min(Math.max(a, min), max);
 	};
 
 	var KeyGamePad = function(selector){
         this.canvas = document.createElement("canvas");
         $(selector).append(this.canvas);
 		this.$canvas = $(this.canvas);
-		this.canvas.width = 360;
-		this.canvas.height = 240;
+		this.canvas.width = 3*SIZE;
+		this.canvas.height = 2*SIZE;
 		this.ctx = this.canvas.getContext("2d");
         this.$canvas.hide();
         this._isDown = [0,0,0,0];
@@ -93,11 +91,11 @@ define([], function(){
 
 	KeyGamePad.prototype.redraw = function(){
 		if(this._loaded){
-			this.ctx.clearRect(0, 0, 360, 240);
-			this.ctx.drawImage(this.img, (this._isDown[0] ? 120 : 0), 0, 	120, 120, 0, 120, 120, 120);
-			this.ctx.drawImage(this.img, (this._isDown[1] ? 120 : 0), 120, 	120, 120, 240, 120, 120, 120);
-			this.ctx.drawImage(this.img, (this._isDown[2] ? 120 : 0), 240, 	120, 120, 120, 0, 120, 120);
-			this.ctx.drawImage(this.img, (this._isDown[3] ? 120 : 0), 360, 	120, 120, 120, 120, 120, 120);
+			this.ctx.clearRect(0, 0, 3*SIZE, 2*SIZE);
+			this.ctx.drawImage(this.img, (this._isDown[0] ? SIZE : 0), 0, 		SIZE, SIZE, 0, 			SIZE, 	SIZE, 	SIZE);
+			this.ctx.drawImage(this.img, (this._isDown[1] ? SIZE : 0), SIZE, 	SIZE, SIZE, 2*SIZE, 	SIZE, 	SIZE, 	SIZE);
+			this.ctx.drawImage(this.img, (this._isDown[2] ? SIZE : 0), 2*SIZE, 	SIZE, SIZE, SIZE, 		0, 		SIZE, 	SIZE);
+			this.ctx.drawImage(this.img, (this._isDown[3] ? SIZE : 0), 3*SIZE, 	SIZE, SIZE, SIZE, 		SIZE, 	SIZE, 	SIZE);
 		}
 	};
 
@@ -106,6 +104,7 @@ define([], function(){
 		this.img = new Image();
 		this.img.onload = function(){
 			_this._loaded = true;
+			_this.redraw();
 		};
 		this.img.src = "/images/diy3d/keys.png";
 	};
