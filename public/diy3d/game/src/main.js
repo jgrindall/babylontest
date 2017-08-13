@@ -64,9 +64,9 @@ require(["diy3d/game/src/Game", "diy3d/game/src/components/Components", "diy3d/g
         }
 
 
-        rows[9][11] = {"type": "water", "name": "water", "data":{}};
-        rows[9][12] = {"type": "water", "name": "water", "data":{}};
-        rows[9][1] = {"type": "water", "name": "water", "data":{}};
+        rows[9][11] = {"type": "baddie", "name": "baddie0", "data":{"sfx":"/images/diy3d/assets/alarm.mp3", "move":"random"}};
+
+        rows[8][13] = {"type": "object", "name": "object0", "data":{"sfx":"/images/diy3d/assets/alarm.mp3"}};
 
 		var json = {
 			"textureList":{

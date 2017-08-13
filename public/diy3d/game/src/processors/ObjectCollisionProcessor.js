@@ -38,7 +38,7 @@ define(["diy3d/game/src/utils/GridUtils", "diy3d/game/src/consts/Consts", "diy3d
 			}
 		}
 		if(objectIds.length >= 1){
-            new ObjectCollectionCommand(this.game, objectIds).exec();
+            new ObjectCollectionCommand(this.game, objectIds[0]).exec();
 		}
 	};
 

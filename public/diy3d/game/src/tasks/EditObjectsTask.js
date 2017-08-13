@@ -7,7 +7,7 @@ define(["diy3d/game/src/builders/ObjectBuilder"], function(ObjectBuilder){
         _.each(diff, function(obj){
             var mesh, entityId;
             mesh = game.makeMesh("object", name, obj.id);
-            entityId = game.manager.createEntity(['MeshComponent', 'ObjectComponent']);
+            entityId = game.manager.createEntity(['MeshComponent', 'ObjectComponent', 'SoundComponent']);
             ObjectBuilder.update(game, mesh, entityId, obj.data.position, obj);
             game.addToIds("object", entityId);
         });

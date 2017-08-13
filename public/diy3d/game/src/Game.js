@@ -52,7 +52,7 @@ define(["diy3d/game/src/cache/MeshCache", "diy3d/game/src/cache/MeshStore",
 		Game.prototype.init = function(){
             this.scene = new BABYLON.Scene(this.engine);
             this.scene.clearColor = new BABYLON.Color4(0, 0, 0, 0);
-            this.scene.debugLayer.show({popup:true});
+            //this.scene.debugLayer.show({popup:true});
             this.scene.defaultMaterial.dispose(true, true);
             this.camera = new BABYLON.FreeCamera("FreeCamera", new BABYLON.Vector3(0, 0, 0), this.scene);
             this.damagePostProcess = new BABYLON.PostProcess("damage", baseURL + "/diy3d/game/src/damage", ["degree"], null, 1, this.camera, BABYLON.Texture.NEAREST_SAMPLINGMODE, this.engine, true);

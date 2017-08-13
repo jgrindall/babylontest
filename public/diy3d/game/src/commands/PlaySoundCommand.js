@@ -1,12 +1,21 @@
 define([], function(){
 	"use strict";
 
-	var PlaySoundCommand = function(game){
+	var PlaySoundCommand = function(game, entityId){
 		this.game = game;
+		this.entityId = entityId;
 	};
 
 	PlaySoundCommand.prototype.exec = function(){
-		var music = new BABYLON.Sound("ouch", "/images/diy3d/assets/alarm.mp3", this.game.scene, null, { loop: false, autoplay: true });
+		var soundComp = this.game.manager.getComponentDataForEntity('SoundComponent', this.entityId);
+		if(soundComp && soundComp.sound){
+			try{
+				soundComp.sound.play();
+			}
+			catch(e){
+				// not loaded?
+			}
+		}
 	};
 
 	return PlaySoundCommand;

@@ -3,13 +3,13 @@ define(["diy3d/game/src/components/HealthComponent", "diy3d/game/src/components/
 
 "diy3d/game/src/components/MeshComponent", "diy3d/game/src/components/BaddieStrategyComponent",
 
-"diy3d/game/src/components/CameraComponent", "diy3d/game/src/components/PossessionsComponent"],
+"diy3d/game/src/components/PossessionsComponent", "diy3d/game/src/components/SoundComponent"],
 
 	function(HealthComponent, ObjectComponent, SpeedComponent,
 
              MeshComponent, BaddieStrategyComponent,
 
-	        CameraComponent, PossessionsComponent) {
+	        PossessionsComponent, SoundComponent) {
 
 		"use strict";
 
@@ -21,7 +21,7 @@ define(["diy3d/game/src/components/HealthComponent", "diy3d/game/src/components/
                 MeshComponent,
                 SpeedComponent,
                 BaddieStrategyComponent,
-                CameraComponent
+                SoundComponent
             ]
 		};
 	}

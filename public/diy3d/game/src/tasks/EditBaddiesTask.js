@@ -16,7 +16,7 @@ define(["diy3d/game/src/builders/BaddieBuilder"], function(BaddieBuilder){
         _.each(diff, function(obj){
             var mesh, entityId;
             mesh = game.makeMesh("baddie", name, obj.id);
-            entityId = game.manager.createEntity(['MeshComponent', 'BaddieStrategyComponent']);
+            entityId = game.manager.createEntity(['MeshComponent', 'BaddieStrategyComponent', 'SoundComponent']);
             BaddieBuilder.update(game, mesh, entityId, obj.data.position, obj);
             game.addToIds("baddie", entityId);
         });

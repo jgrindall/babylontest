@@ -7,11 +7,11 @@ define(["diy3d/game/src/commands/ReduceHealthCommand", "diy3d/game/src/commands/
 		this.game = game;
 	};
 
-	BaddieCollisionCommand.prototype.exec = function(){
+	BaddieCollisionCommand.prototype.exec = function(data){
 		new ShowDamageCommand(this.game).exec();
 		new ReduceHealthCommand(this.game, 10).exec();
 		new BecomeInvulnerableCommand(this.game).exec();
-		new PlaySoundCommand(this.game).exec();
+		new PlaySoundCommand(this.game, data.baddieId).exec();
 		this.game.addToQueue(new BecomeVulnerableCommand(this.game), 5);
 	};
 

@@ -20,15 +20,15 @@ define(["diy3d/game/src/commands/BaddieCollisionCommand", "diy3d/game/src/consts
 	};
 
 	BaddieCollisionProcessor.prototype.update = function () {
-		var health, playerPos, firstBaddieHit;
+		var health, playerPos, baddieId;
 		health = this.manager.getComponentDataForEntity('HealthComponent', this.game.playerId);
 		if(health.isRegenerating){
 			return;
 		}
 		playerPos = this.game.camera.position;
-		firstBaddieHit = this._getFirstBaddieHit(playerPos);
-		if(firstBaddieHit){
-            new BaddieCollisionCommand(this.game).exec({"firstBaddieHit": firstBaddieHit});
+		baddieId = this._getFirstBaddieHit(playerPos);
+		if(baddieId){
+            new BaddieCollisionCommand(this.game).exec({"baddieId": baddieId});
 		}
 	};
 
