@@ -96,8 +96,15 @@ define(["diy3d/game/src/cache/MeshCache", "diy3d/game/src/cache/MeshStore",
         };
 
 		Game.prototype.removeEntity = function(type, id){
-		    if(typeof id === "undefined"){
+		    var soundComp;
+            if(typeof id === "undefined"){
                 throw("entity not found " + type + " " + id);
+            }
+            if(this.manager.entityHasComponent(id, 'SoundComponent')){
+                soundComp = this.manager.getComponentDataForEntity('SoundComponent', id);
+                if(soundComp && soundComp.sound){
+                    soundComp.sound.stop();
+                }
             }
             this.manager.removeEntity(id);
             this.ids[type] = _.without(this.ids[type], id);
