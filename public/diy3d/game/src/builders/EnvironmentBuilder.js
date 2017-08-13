@@ -1,8 +1,8 @@
 var baseURL = "http://" + window.location.host;
 
-define(["diy3d/game/src/utils/GeomUtils", "diy3d/game/src/utils/ImageUtils", "diy3d/game/src/utils/MeshUtils", "diy3d/game/src/consts/Consts"],
+define(["diy3d/game/src/utils/GeomUtils", "diy3d/game/src/utils/ImageUtils", "diy3d/game/src/utils/MeshUtils", "diy3d/game/src/Textures", "diy3d/game/src/consts/Consts"],
 
-	function(GeomUtils, ImageUtils, MeshUtils, Consts){
+	function(GeomUtils, ImageUtils, MeshUtils, Textures, Consts){
 
 	"use strict";
 
@@ -64,31 +64,31 @@ define(["diy3d/game/src/utils/GeomUtils", "diy3d/game/src/utils/ImageUtils", "di
                 game.data.types["water"],
                 game.data.types["fire"],
                 function(newSrc){
-                    ground.material.diffuseTexture = new BABYLON.Texture(newSrc, game.scene);
+                    //ground.material.diffuseTexture = new BABYLON.Texture(newSrc, game.scene);
                 }
             );
-            for(var i = 0; i < 100; i++){
+            for(var i = 0; i < 1; i++){
 
-                 var particleSystem = new BABYLON.ParticleSystem("particles", 256, game.scene);
-                 particleSystem.particleTexture = new BABYLON.Texture("/images/diy3d/assets/fire.png", game.scene);
+                 var particleSystem = new BABYLON.ParticleSystem("particles", 48, game.scene);
+                 particleSystem.particleTexture = Textures.getTextureFromURL("fire", "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8/1+yHgAHtAKYD9BncgAAAABJRU5ErkJggg==", game.scene);
                  particleSystem.emitter = ground;
-                 particleSystem.color1 = new BABYLON.Color4(1.1, 0.2, 0.2, 1.0);
-                 particleSystem.color2 = new BABYLON.Color4(1.1, 0.1, 0.1, 1.0);
-                 particleSystem.colorDead = new BABYLON.Color4(0, 0, 0.0, 1.0);
+                 particleSystem.color1 = new BABYLON.Color4(1, 0, 0, 1);
+                 particleSystem.color2 = new BABYLON.Color4(0, 0, 0, 0);
+                 particleSystem.colorDead = new BABYLON.Color4(0, 0, 0, 0);
                  particleSystem.minEmitBox = new BABYLON.Vector3(0, 0, 0);
-                 particleSystem.maxEmitBox = new BABYLON.Vector3(SIZE, 0, SIZE);
-                 particleSystem.minSize = 0.2;
-                 particleSystem.maxSize = 1;
-                 particleSystem.minLifeTime = 0.1;
-                 particleSystem.maxLifeTime = 0.5;
-                 particleSystem.emitRate = 750;
+                 particleSystem.maxEmitBox = new BABYLON.Vector3(SIZE, 1, SIZE);
+                 particleSystem.minSize = 0.15;
+                 particleSystem.maxSize = 0.75;
+                 particleSystem.minLifeTime = 0.75;
+                 particleSystem.maxLifeTime = 1;
+                 particleSystem.emitRate = 500;
                  particleSystem.blendMode = BABYLON.ParticleSystem.BLENDMODE_ONEONE;
-                 particleSystem.gravity = new BABYLON.Vector3(0, -5, 0);
-                 particleSystem.direction1 = new BABYLON.Vector3(-3, 8, 2);
-                 particleSystem.direction2 = new BABYLON.Vector3(1, 8, -3);
-                 particleSystem.minEmitPower = 3;
-                 particleSystem.maxEmitPower = 9;
-                 particleSystem.updateSpeed = 0.01;
+                 particleSystem.gravity = new BABYLON.Vector3(0, 10, 0);
+                 particleSystem.direction1 = new BABYLON.Vector3(-3, 4, 3);
+                 particleSystem.direction2 = new BABYLON.Vector3(3, 4, -3);
+                 particleSystem.minEmitPower = 1;
+                 particleSystem.maxEmitPower = 1.5;
+                 particleSystem.updateSpeed = 0.02;
                  particleSystem.start();
              }
 
@@ -110,31 +110,6 @@ define(["diy3d/game/src/utils/GeomUtils", "diy3d/game/src/utils/ImageUtils", "di
                 skybox.isVisble = false;
             }
 		},
-        addParticles:function(){
-		    /*
-		    * particleSystem = new BABYLON.ParticleSystem("particles", 256, scene);
-             particleSystem.particleTexture = new BABYLON.Texture("/images/diy3d/assets/fire.png", scene);
-             particleSystem.emitter = plane;
-             particleSystem.color1 = new BABYLON.Color4(1.1, 0.2, 0.2, 1.0);
-             particleSystem.color2 = new BABYLON.Color4(1.1, 0.1, 0.1, 1.0);
-             particleSystem.colorDead = new BABYLON.Color4(0, 0, 0.0, 1.0);
-             particleSystem.minEmitBox = new BABYLON.Vector3(0, 0, 0);
-             particleSystem.maxEmitBox = new BABYLON.Vector3(quad[2]*SIZE/2, 0, quad[3]*SIZE/2);
-             particleSystem.minSize = 0.1;
-             particleSystem.maxSize = 0.6;
-             particleSystem.minLifeTime = 0.25;
-             particleSystem.maxLifeTime = 0.75;
-             particleSystem.emitRate = 1000;
-             particleSystem.blendMode = BABYLON.ParticleSystem.BLENDMODE_ONEONE;
-             particleSystem.gravity = new BABYLON.Vector3(0, -10, 0);
-             particleSystem.direction1 = new BABYLON.Vector3(-7, 8, 3);
-             particleSystem.direction2 = new BABYLON.Vector3(7, 8, -3);
-             particleSystem.minEmitPower = 1;
-             particleSystem.maxEmitPower = 3;
-             particleSystem.updateSpeed = 0.005;
-             particleSystem.start();
-             */
-        },
 		addFire: function(scene, quads, meshCache, materialsCache){
             return;
             /*
