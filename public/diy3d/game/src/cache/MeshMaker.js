@@ -14,11 +14,11 @@ define(["diy3d/game/src/consts/Consts"], function(Consts){
             mesh = BABYLON.MeshBuilder.CreatePlane(key, {"height": Consts.BOX_SIZE, "width":Consts.BOX_SIZE}, this.game.scene);
         }
         else if(this.type === "object"){
-            mesh = BABYLON.MeshBuilder.CreatePlane(key, {"height": Consts.BOX_SIZE2, "width":Consts.BOX_SIZE2}, this.game.scene);
+            mesh = BABYLON.MeshBuilder.CreatePlane(key, {"height": Consts.BOX_SIZE*0.75, "width":Consts.BOX_SIZE*0.75}, this.game.scene);
             mesh.billboardMode = BABYLON.Mesh.BILLBOARDMODE_ALL;
         }
         else if(this.type === "tree" || this.type === "baddie"){
-            mesh = BABYLON.MeshBuilder.CreatePlane(key, {"height": Consts.BOX_SIZE, "width":Consts.BOX_SIZE}, this.game.scene);
+            mesh = BABYLON.MeshBuilder.CreatePlane(key, {"height": Consts.BOX_SIZE*0.75, "width":Consts.BOX_SIZE*0.75}, this.game.scene);
             mesh.billboardMode = BABYLON.Mesh.BILLBOARDMODE_ALL;
         }
         else if(this.type === "water" || this.type === "fire"){
