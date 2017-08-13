@@ -90,6 +90,14 @@ define(["diy3d/game/src/utils/GeomUtils", "diy3d/game/src/utils/ImageUtils", "di
                  particleSystem.maxEmitPower = 1.5;
                  particleSystem.updateSpeed = 0.02;
                  particleSystem.start();
+
+                 particleSystem.color1 = new BABYLON.Color4(0, 1, 0, 1);
+
+                 setTimeout(function(){
+                    particleSystem.emitter = game.scene.getMeshByID("baddie_baddie0_0");
+                 }, 5000);
+
+
              }
 
 
