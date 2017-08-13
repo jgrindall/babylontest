@@ -67,40 +67,6 @@ define(["diy3d/game/src/utils/GeomUtils", "diy3d/game/src/utils/ImageUtils", "di
                     //ground.material.diffuseTexture = new BABYLON.Texture(newSrc, game.scene);
                 }
             );
-            for(var i = 0; i < 1; i++){
-
-                 var particleSystem = new BABYLON.ParticleSystem("particles", 48, game.scene);
-                 particleSystem.particleTexture = Textures.getTextureFromURL("fire", "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8/1+yHgAHtAKYD9BncgAAAABJRU5ErkJggg==", game.scene);
-                 particleSystem.emitter = ground;
-                 particleSystem.color1 = new BABYLON.Color4(1, 0, 0, 1);
-                 particleSystem.color2 = new BABYLON.Color4(0, 0, 0, 0);
-                 particleSystem.colorDead = new BABYLON.Color4(0, 0, 0, 0);
-                 particleSystem.minEmitBox = new BABYLON.Vector3(0, 0, 0);
-                 particleSystem.maxEmitBox = new BABYLON.Vector3(SIZE, 1, SIZE);
-                 particleSystem.minSize = 0.15;
-                 particleSystem.maxSize = 0.75;
-                 particleSystem.minLifeTime = 0.75;
-                 particleSystem.maxLifeTime = 1;
-                 particleSystem.emitRate = 500;
-                 particleSystem.blendMode = BABYLON.ParticleSystem.BLENDMODE_ONEONE;
-                 particleSystem.gravity = new BABYLON.Vector3(0, 10, 0);
-                 particleSystem.direction1 = new BABYLON.Vector3(-3, 4, 3);
-                 particleSystem.direction2 = new BABYLON.Vector3(3, 4, -3);
-                 particleSystem.minEmitPower = 1;
-                 particleSystem.maxEmitPower = 1.5;
-                 particleSystem.updateSpeed = 0.02;
-                 particleSystem.start();
-
-                 particleSystem.color1 = new BABYLON.Color4(0, 1, 0, 1);
-
-                 setTimeout(function(){
-                    particleSystem.emitter = game.scene.getMeshByID("baddie_baddie0_0");
-                 }, 5000);
-
-
-             }
-
-
         },
 		updateSky: function(game){
             //todo - do not do this if it has not changed

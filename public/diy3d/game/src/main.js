@@ -21,7 +21,7 @@ require(["diy3d/game/src/Game", "diy3d/game/src/components/Components", "diy3d/g
 
 	"diy3d/game/src/tasks/EditObjectsTask", "diy3d/game/src/tasks/EditPlayerTask", "diy3d/game/src/tasks/EditMusicTask",
 
-"diy3d/game/src/processors/UpdateHUDProcessor",
+"diy3d/game/src/tasks/AddParticlesTask", "diy3d/game/src/tasks/EditParticlesTask", "diy3d/game/src/processors/UpdateHUDProcessor",
 
 "diy3d/game/src/processors/PlayerMovementProcessor", "diy3d/game/src/processors/TerrainCollisionProcessor",
 
@@ -37,7 +37,7 @@ require(["diy3d/game/src/Game", "diy3d/game/src/components/Components", "diy3d/g
 
              EditLightsTask, EditGroundAndSkyTask,
 
-		EditObjectsTask, EditPlayerTask, EditMusicTask, UpdateHUDProcessor,
+		EditObjectsTask, EditPlayerTask, EditMusicTask, AddParticlesTask, EditParticlesTask, UpdateHUDProcessor,
 
 	PlayerMovementProcessor, TerrainCollisionProcessor, BaddieMovementProcessor, UpdateHuntProcessor,
 
@@ -67,6 +67,16 @@ require(["diy3d/game/src/Game", "diy3d/game/src/components/Components", "diy3d/g
         rows[9][11] = {"type": "baddie", "name": "baddie0", "data":{"sfx":"/images/diy3d/assets/alarm.mp3", "move":"random"}};
 
         rows[8][13] = {"type": "object", "name": "object0", "data":{"sfx":"/images/diy3d/assets/alarm.mp3"}};
+
+        rows[4][8] = {"type": "fire", "name": "fire", "data":{}};
+
+        rows[4][9] = {"type": "fire", "name": "fire", "data":{}};
+
+        rows[10][9] = {"type": "fire", "name": "fire", "data":{}};
+
+        rows[11][9] = {"type": "fire", "name": "fire", "data":{}};
+
+        rows[2][2] = {"type": "fire", "name": "fire", "data":{}};
 
 		var json = {
 			"textureList":{
@@ -106,6 +116,7 @@ require(["diy3d/game/src/Game", "diy3d/game/src/components/Components", "diy3d/g
                 .registerTask(CacheTask)
                 .registerTask(EditLightsTask)
                 .registerTask(EditGridTask)
+                .registerTask(AddParticlesTask)
                 .registerTask(EditGroundAndSkyTask)
                 .registerTask(EditWaterAndFireTask)
                 .registerTask(EditWallsTask)
@@ -115,6 +126,7 @@ require(["diy3d/game/src/Game", "diy3d/game/src/components/Components", "diy3d/g
                 .registerTask(AddControlsTask)
                 .registerTask(EditObjectsTask)
                 .registerTask(EditMusicTask)
+                .registerTask(EditParticlesTask)
                 .registerTask(CleanCacheTask)
                 .registerProcessor(PlayerMovementProcessor)
                 .registerProcessor(BaddieMovementProcessor)

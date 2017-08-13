@@ -38,6 +38,10 @@ define(["diy3d/game/src/Textures", "diy3d/game/src/utils/MeshUtils", "diy3d/game
         });
     };
 
+    MaterialsCache.prototype._add = function(){
+
+    };
+
     MaterialsCache.prototype._createFire = function(){
         var fireTexture, fireMaterial;
         fireMaterial = this.getMaterial("fire");
