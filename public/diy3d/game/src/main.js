@@ -19,7 +19,7 @@ require(["diy3d/game/src/Game", "diy3d/game/src/components/Components", "diy3d/g
 
 	"diy3d/game/src/tasks/EditLightsTask", "diy3d/game/src/tasks/EditGroundAndSkyTask",
 
-	"diy3d/game/src/tasks/EditObjectsTask", "diy3d/game/src/tasks/EditPlayerTask", "diy3d/game/src/tasks/EditMusicTask",
+	"diy3d/game/src/tasks/EditObjectsTask", "diy3d/game/src/tasks/EditMaterialsTask", "diy3d/game/src/tasks/EditPlayerTask", "diy3d/game/src/tasks/EditMusicTask",
 
 "diy3d/game/src/tasks/AddParticlesTask", "diy3d/game/src/tasks/EditParticlesTask", "diy3d/game/src/processors/UpdateHUDProcessor",
 
@@ -37,7 +37,7 @@ require(["diy3d/game/src/Game", "diy3d/game/src/components/Components", "diy3d/g
 
              EditLightsTask, EditGroundAndSkyTask,
 
-		EditObjectsTask, EditPlayerTask, EditMusicTask, AddParticlesTask, EditParticlesTask, UpdateHUDProcessor,
+		EditObjectsTask, EditMaterialsTask, EditPlayerTask, EditMusicTask, AddParticlesTask, EditParticlesTask, UpdateHUDProcessor,
 
 	PlayerMovementProcessor, TerrainCollisionProcessor, BaddieMovementProcessor, UpdateHuntProcessor,
 
@@ -103,6 +103,14 @@ require(["diy3d/game/src/Game", "diy3d/game/src/components/Components", "diy3d/g
                 "light":{
                     "type":"default"
                 },
+                "materials":{
+                    "water":{
+                        "color":[0, 1, 0, 0.9]
+                    },
+                    "fire":{
+                        "color":[0, 0.8, 0, 0.9]
+                    }
+                },
                 "player":{
                     "position":[10, 8]
                 },
@@ -117,6 +125,7 @@ require(["diy3d/game/src/Game", "diy3d/game/src/components/Components", "diy3d/g
                 .registerTask(EditLightsTask)
                 .registerTask(EditGridTask)
                 .registerTask(AddParticlesTask)
+                .registerTask(EditMaterialsTask)
                 .registerTask(EditGroundAndSkyTask)
                 .registerTask(EditWaterAndFireTask)
                 .registerTask(EditWallsTask)
