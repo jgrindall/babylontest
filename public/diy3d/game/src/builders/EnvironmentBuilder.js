@@ -15,7 +15,7 @@ define(["diy3d/game/src/utils/GeomUtils", "diy3d/game/src/utils/ImageUtils", "di
         groundHeight = Consts.SIZE_I * Consts.BOX_SIZE;
         ground = BABYLON.MeshBuilder.CreatePlane(GROUND_ID, {"height": groundHeight, "width": groundWidth}, game.scene);
         ground.material = new BABYLON.StandardMaterial(GROUND_ID, game.scene);
-        ground.position = new BABYLON.Vector3(groundWidth/2, 0, groundHeight/2);
+        ground.position = new BABYLON.Vector3(groundWidth/2, -0.1, groundHeight/2);
         ground.rotation = new BABYLON.Vector3(Math.PI/2, 0, 0);
         ground.freezeWorldMatrix();
         return ground;
@@ -37,19 +37,25 @@ define(["diy3d/game/src/utils/GeomUtils", "diy3d/game/src/utils/ImageUtils", "di
     };
 
     var _drawWaterAndFire = function(game, base64, water, fire, callback){
-        console.log(water, fire);
         var canvas = document.createElement("canvas");
         canvas.width = 900;
         canvas.height = 700;
+        var color = game.json.data.materials.fire.color;
+        var c = new BABYLON.Color4(color[0], color[1], color[2], color[3]);
         var img = new Image();
         var sf = 5;//block/size
         var lava = game.preloader.get("lava");
         img.onload = function(){
             var i, pos;
             canvas.getContext("2d").drawImage(img, 0, 0, 900, 700);
-            for(i = 0; i < water.length; i++){
-                pos = water[i].data.position;
-                canvas.getContext("2d").drawImage(lava, pos[1]*SIZE*sf, pos[0]*SIZE*sf, SIZE*sf, SIZE*sf);
+            for(i = 0; i < fire.length; i++){
+                pos = fire[i].data.position;
+                var clrStr = "rgba(" + color[0]*255 + ", " + color[1]*255 + "," + color[2]*255 + "," + color[3] + ")";
+                console.log(clrStr);
+                canvas.getContext("2d").fillStyle = clrStr;
+                canvas.getContext("2d").fillRect(pos[1]*SIZE*5, pos[0]*SIZE*5, SIZE*5, SIZE*5);
+                canvas.getContext("2d").drawImage(lava, pos[1]*SIZE*5, pos[0]*SIZE*5, SIZE*5, SIZE*5);
+                $("body").append(canvas);
             }
             callback(canvas.toDataURL());
         };
@@ -64,7 +70,7 @@ define(["diy3d/game/src/utils/GeomUtils", "diy3d/game/src/utils/ImageUtils", "di
                 game.data.types["water"],
                 game.data.types["fire"],
                 function(newSrc){
-                    //ground.material.diffuseTexture = new BABYLON.Texture(newSrc, game.scene);
+                    ground.material.diffuseTexture = new BABYLON.Texture(newSrc, game.scene);
                 }
             );
         },
